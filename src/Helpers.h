@@ -34,7 +34,6 @@ namespace helpers
 
         void empty()
         {
-            m_idCounter = 0u;
             m_delegates.empty();
         }
 

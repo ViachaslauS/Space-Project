@@ -7,6 +7,8 @@ Game::Game(AppContext& ctx)
     : m_context(ctx)
 {
     m_background = LoadTexture("stars_background.jpg");
+
+    m_playerShip.initialize();
 }
 
 void Game::update(float dt)
@@ -19,9 +21,12 @@ void Game::update(float dt)
             mainMenuPopup->show(true);
         }
     }
+    m_playerShip.update(dt);
 }
 
 void Game::render()
 {
     DrawTexture(m_background, 0, 0, WHITE);
+
+    m_playerShip.render();
 }
