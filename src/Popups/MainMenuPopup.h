@@ -13,7 +13,7 @@ public:
     void render() override;
 
 private:
-    bool m_isStartGame = false;
+    bool m_isStartGamePressed = false;
     bool m_isQuit = false;
 
     helpers::MulticastDelegate<>& m_quitSignal;

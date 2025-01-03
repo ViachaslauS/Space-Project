@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Popups/Popups.h"
+
 class Popup
 {
 public:
@@ -15,7 +17,17 @@ public:
         return m_isVisible;
     }
 
+    void setType(PopupType type)
+    {
+        m_type = type;
+    }
+    PopupType getType()
+    {
+        return m_type;
+    }
 private:
     bool m_isVisible = false;
     bool m_inputDisabled = false;
+
+    PopupType m_type = PopupType::Count;
 };

@@ -2,10 +2,12 @@
 
 #include "raylib.h"
 
+#include "AppContext.h"
+
 class Game
 {
 public:
-    Game();
+    Game(AppContext& ctx);
 
 public:
     void update(float dt);
@@ -13,4 +15,5 @@ public:
 
 private:
     Texture m_background;
+    AppContext& m_context;
 };
