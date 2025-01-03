@@ -1,7 +1,8 @@
 #pragma once
 
 #include "raylib.h"
-#include <PlayerShip.h>
+#include "PlayerShip.h"
+#include "Background.h"
 
 #include "AppContext.h"
 
@@ -16,7 +17,7 @@ public:
     void setActive(bool active);
 
 private:
-    Texture m_background;
+    Background m_background;
     AppContext& m_context;
 
     PlayerShip m_playerShip;

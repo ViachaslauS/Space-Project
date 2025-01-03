@@ -1,0 +1,99 @@
+#include "Background.h"
+
+#include <cmath>
+#include <Helpers.h>
+
+namespace
+{
+    constexpr float MoveSpeed = -0.02f;
+    constexpr float InitialSpeedSpread = 0.005f;
+
+    const char* PlanetSpriteSheetName = "CelestialObjects.png";
+
+    constexpr uint32_t PlanetSpriteSize = 64u;
+    constexpr uint32_t PlanetsCount = 4u;
+
+    constexpr float StartXOffset = 100.0f;
+    constexpr float StartXOfssetSpread = 50.0f;
+
+    constexpr float BaseScale = 2.0f;
+    constexpr float ScaleSpread = 1.3f;
+
+    constexpr float SpawnPlanetDelay = 3.0f;
+    constexpr float SpawnPlanetDelaySpread = 1.5f;
+}
+
+Background::Background()
+{
+    SetRandomSeed(GetTime());
+
+    m_backgroundTexture = LoadTexture("stars_background.jpg");
+    m_planetsTexture = LoadTexture(PlanetSpriteSheetName);
+
+    for (size_t i = 0u; i < m_planets.size(); ++i)
+    {
+        resetPlanet(m_planets[i]);
+    }
+}
+
+void Background::update(float dt)
+{
+    for (Planet& planet : m_planets)
+    {
+        if (planet.startDelay > 0.0f)
+        {
+            planet.startDelay -= dt;
+            continue;
+        }
+
+        planet.relativePos.x += planet.velocity.x * dt;
+        planet.relativePos.y += planet.velocity.y * dt;
+
+        if (planet.relativePos.x <= -0.15f)
+        {
+            resetPlanet(planet);
+        }
+    }
+}
+
+void Background::render()
+{
+    DrawTexture(m_backgroundTexture, 0, 0, WHITE);
+
+    for (size_t i = 0u; i < m_planets.size(); ++i)
+    {
+        Rectangle rect;
+        rect.x = m_planets[i].planetTextureNum * PlanetSpriteSize;
+        rect.y = 0;
+
+        rect.width = PlanetSpriteSize;
+        rect.height = PlanetSpriteSize;
+
+        const Vector2 pos = {
+            m_planets[i].relativePos.x * GetScreenWidth(),
+            m_planets[i].relativePos.y * GetScreenHeight(),
+        };
+
+        Rectangle rectScaled = rect;
+        rectScaled.x = pos.x;
+        rectScaled.y = pos.y;
+        rectScaled.width = rect.width * m_planets[i].scale;
+        rectScaled.height = rect.height * m_planets[i].scale;
+
+
+        DrawTexturePro(m_planetsTexture, rect, rectScaled, {}, 0.0f, GRAY);
+    }
+}
+
+void Background::resetPlanet(Planet& planetToReset)
+{
+    planetToReset.planetTextureNum = GetRandomValue(0, PlanetsCount - 1u);
+    planetToReset.velocity.x = helpers::lerpWithDeviation(MoveSpeed, InitialSpeedSpread, helpers::randFlt());
+    planetToReset.velocity.y = 0.0f;
+
+    planetToReset.relativePos.x = 1.2f;
+    planetToReset.relativePos.y = helpers::randFlt();
+
+    planetToReset.scale = helpers::lerpWithDeviation(BaseScale, ScaleSpread, helpers::randFlt());
+    planetToReset.startDelay = helpers::lerpWithDeviation(SpawnPlanetDelay, SpawnPlanetDelaySpread, helpers::randFlt());
+}
