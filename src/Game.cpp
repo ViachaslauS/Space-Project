@@ -2,6 +2,7 @@
 
 #include "Popups/Popups.h"
 #include "Popups/Popup.h"
+#include "Popups/PausePopup.h"
 
 Game::Game(AppContext& ctx)
     : m_context(ctx)
@@ -15,10 +16,16 @@ void Game::update(float dt)
 {
     if (IsKeyPressed(KEY_ESCAPE))
     {
-        auto mainMenuPopup = m_context.popups.getPopup(PopupType::MainMenuPopup);
-        if (mainMenuPopup != nullptr)
+        auto pausePopup = m_context.popups.getPopup(PopupType::PausePopup);
+        if (pausePopup != nullptr)
         {
-            mainMenuPopup->show(true);
+            pausePopup->show(true);
+        }
+        else
+        {
+            auto pausePopup = new PausePopup(m_context);
+            pausePopup->show(true);
+            m_context.popups.addPopup(pausePopup);
         }
     }
     m_playerShip.update(dt);

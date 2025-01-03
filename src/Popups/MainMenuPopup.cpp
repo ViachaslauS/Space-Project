@@ -1,7 +1,6 @@
 #include "MainMenuPopup.h"
 
 #include "external/raygui.h"
-#include "raylib.h"
 
 MainMenuPopup::MainMenuPopup(helpers::MulticastDelegate<>& quitSignal)
     : Popup()
