@@ -1,5 +1,3 @@
-// by Slava
-
 #pragma once
 
 #include "Vitality.h"
