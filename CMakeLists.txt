@@ -7,6 +7,8 @@ project(gravigun CXX C)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS FALSE)
 
+add_compile_options(-w)
+
 add_executable(gravigun
     "src/main.cpp"
     "src/Game.cpp"
@@ -17,6 +19,7 @@ add_executable(gravigun
     "src/Popups/PausePopup.cpp"
     "src/Popups/Popup.cpp"
     "src/Popups/Popups.cpp"
+    "src/Background.cpp"
 
     "include/resource_dir.h"
     "src/AppContext.h"
@@ -29,7 +32,9 @@ add_executable(gravigun
     "src/Popups/Popup.h"
     "src/Popups/Popups.h"
     "src/Vitality.h"
-
+    "src/Background.h"
+    "src/Helpers.h"
+    "src/external/reasings.h"
 )
 
 add_subdirectory(src/external/box2d)

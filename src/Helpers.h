@@ -1,9 +1,8 @@
-// by Slava
-
 #pragma once
 
 #include <map>
 #include <functional>
+#include <random>
 
 namespace helpers
 {
@@ -47,4 +46,16 @@ namespace helpers
 
         std::map<DelegateHandle, std::function<void(Args...)>> m_delegates;
     };
+    
+
+    inline float randFlt()
+    {
+        return static_cast<float>(std::rand()) / RAND_MAX;
+    }
+
+    template <class T>
+    T lerpWithDeviation(T base, T deviation, float progress)
+    {
+        return std::lerp(base - deviation, base + deviation, progress);
+    }
 }
