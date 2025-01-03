@@ -1,0 +1,1 @@
+cmake -B _build -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" -A x64
