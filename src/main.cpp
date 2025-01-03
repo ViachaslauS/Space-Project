@@ -69,6 +69,7 @@ int main ()
     {
         //Update
         const auto dt = GetFrameTime();
+        game.setActive(context.popups.isCoveredPopup() == false);
         game.update(dt);
         updateContext(dt, context);
 

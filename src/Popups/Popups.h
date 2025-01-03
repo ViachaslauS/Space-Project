@@ -28,6 +28,8 @@ public:
     void update(float dt);
     void render();
 
+    bool isCoveredPopup();
+
 private:
     std::vector<Popup*> m_popups;
 };

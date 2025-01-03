@@ -13,9 +13,12 @@ public:
     void update(float dt);
     void render();
 
+    void setActive(bool active);
+
 private:
     Texture m_background;
     AppContext& m_context;
 
     PlayerShip m_playerShip;
+    bool m_isActive = false;
 };

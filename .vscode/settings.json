@@ -9,6 +9,9 @@
 		"**/*.exe": true,
 	},
 	"files.associations": {
-		"vector": "cpp"
+		"vector": "cpp",
+		"__availability": "cpp",
+		"__hash_table": "cpp",
+		"*.m": "cpp"
 	}
 }

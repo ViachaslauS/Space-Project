@@ -1,6 +1,7 @@
 #include "Popups.h"
 
 #include "Popup.h"
+#include <algorithm>
 
 Popups::Popups()
 {   
@@ -26,6 +27,15 @@ void Popups::render()
             popup->render();
         }
     }
+}
+
+bool Popups::isCoveredPopup()
+{
+    auto hasCovered = std::any_of(m_popups.cbegin(), m_popups.cend(), [](auto popup) {
+        return popup->isVisible();
+    });
+
+    return hasCovered;
 }
 
 void Popups::addPopup(Popup* popup)

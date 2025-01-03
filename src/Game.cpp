@@ -14,21 +14,25 @@ Game::Game(AppContext& ctx)
 
 void Game::update(float dt)
 {
-    if (IsKeyPressed(KEY_ESCAPE))
+    if (m_isActive)
     {
-        auto pausePopup = m_context.popups.getPopup(PopupType::PausePopup);
-        if (pausePopup != nullptr)
+        // Here should be logic for unpaused game
+        if (IsKeyPressed(KEY_ESCAPE))
         {
-            pausePopup->show(true);
+            auto pausePopup = m_context.popups.getPopup(PopupType::PausePopup);
+            if (pausePopup != nullptr)
+            {
+                pausePopup->show(true);
+            }
+            else
+            {
+                pausePopup = new PausePopup(m_context);
+                pausePopup->show(true);
+                m_context.popups.addPopup(pausePopup);
+            }
         }
-        else
-        {
-            auto pausePopup = new PausePopup(m_context);
-            pausePopup->show(true);
-            m_context.popups.addPopup(pausePopup);
-        }
+        m_playerShip.update(dt);
     }
-    m_playerShip.update(dt);
 }
 
 void Game::render()
@@ -36,4 +40,9 @@ void Game::render()
     DrawTexture(m_background, 0, 0, WHITE);
 
     m_playerShip.render();
+}
+
+void Game::setActive(bool active)
+{
+    m_isActive = active;
 }
