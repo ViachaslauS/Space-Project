@@ -9,6 +9,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 #include "raylib.h"
 
+#include "GameObject.h"
+
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
 #define RAYGUI_IMPLEMENTATION
@@ -31,15 +33,23 @@ int main ()
 	bool showMessageBox = false;
 	bool quitGame = false;
 
+	VitalityParams tempParams;
+	GameObject tempObj(tempParams);
+
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
+		const float dt = GetFrameTime();
+		tempObj.update(dt);
+
 	 BeginDrawing();
             ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-            if (GuiButton((Rectangle){ 600, 370, 120, 30 }, "Start Game")) showMessageBox = true;
+			tempObj.render();
 
-			if (GuiButton((Rectangle){ 600, 450, 120, 30 }, "Rage Quit")) quitGame = true;
+			if (GuiButton((Rectangle { 600, 370, 120, 30 }), "Start Game")) showMessageBox = true;
+
+			if (GuiButton((Rectangle{ 600, 450, 120, 30 }), "Rage Quit")) quitGame = true;
 
             if (showMessageBox)
             {
