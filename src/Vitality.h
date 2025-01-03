@@ -13,10 +13,10 @@ struct ShieldParams
 
 struct VitalityParams
 {
-    bool bImmortal = false;
+    bool isImmortal = false;
     float maxHp = 100.0f;
 
-    bool bHasShield = false;
+    bool hasShield = false;
     ShieldParams shieldParams;
 };
 
@@ -24,7 +24,7 @@ struct VitalityData
 {
     VitalityData(const VitalityParams& params)
         : currentHP(params.maxHp)
-        , currentShield(params.bHasShield ? params.shieldParams.maxShield : -1.0f)
+        , currentShield(params.hasShield ? params.shieldParams.maxShield : -1.0f)
     {}
 
     float currentHP = 0.0f;

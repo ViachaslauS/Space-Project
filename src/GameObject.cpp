@@ -22,7 +22,7 @@ void GameObject::render()
 
 bool GameObject::isDead() const
 {
-    if (m_vitality.bImmortal)
+    if (m_vitality.isImmortal)
     {
         return false;
     }
