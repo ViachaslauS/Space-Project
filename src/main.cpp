@@ -11,6 +11,9 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
+#define RAYGUI_IMPLEMENTATION
+#include "external/raygui.h"
+
 int main ()
 {
 	// Tell the window to use vsync and work on high DPI displays
@@ -24,24 +27,31 @@ int main ()
 
 	// Load a texture from the resources directory
 	Texture wabbit = LoadTexture("wabbit_alpha.png");
-	
+
+	bool showMessageBox = false;
+	bool quitGame = false;
+
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
-		// drawing
-		BeginDrawing();
+	 BeginDrawing();
+            ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-		// Setup the back buffer for drawing (clear color and depth buffers)
-		ClearBackground(BLACK);
+            if (GuiButton((Rectangle){ 600, 370, 120, 30 }, "Start Game")) showMessageBox = true;
 
-		// draw some text using the default font
-		DrawText("Hello Raylib", 200,200,20,WHITE);
+			if (GuiButton((Rectangle){ 600, 450, 120, 30 }, "Rage Quit")) quitGame = true;
 
-		// draw our texture to the screen
-		DrawTexture(wabbit, 400, 200, WHITE);
-		
-		// end the frame and get ready for the next one  (display frame, poll input, etc...)
-		EndDrawing();
+            if (showMessageBox)
+            {
+               //Start Game logic
+            }
+
+			if (quitGame)
+			{
+				CloseWindow();
+			}
+
+        EndDrawing();
 	}
 
 	// cleanup
