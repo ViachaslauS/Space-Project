@@ -6,21 +6,26 @@
 namespace
 {
     constexpr float MoveSpeed = -0.02f;
+
     constexpr float InitialSpeedSpread = 0.005f;
+
+    static_assert(MoveSpeed < 0.0f && InitialSpeedSpread > 0.0f && MoveSpeed + InitialSpeedSpread < 0.0f);
 
     const char* PlanetSpriteSheetName = "CelestialObjects.png";
 
     constexpr uint32_t PlanetSpriteSize = 64u;
-    constexpr uint32_t PlanetsCount = 4u;
+
+    constexpr uint32_t PlanetRows = 3u;
+    constexpr uint32_t PlanetColumns = 4u;
 
     constexpr float StartXOffset = 100.0f;
     constexpr float StartXOfssetSpread = 50.0f;
 
-    constexpr float BaseScale = 2.0f;
-    constexpr float ScaleSpread = 1.3f;
+    constexpr float BaseScale = 1.5f;
+    constexpr float ScaleSpread = 1.0f;
 
-    constexpr float SpawnPlanetDelay = 3.0f;
-    constexpr float SpawnPlanetDelaySpread = 1.5f;
+    constexpr float SpawnPlanetDelay = 8.0f;
+    constexpr float SpawnPlanetDelaySpread = 4.0f;
 }
 
 Background::Background()
@@ -63,8 +68,8 @@ void Background::render()
     for (size_t i = 0u; i < m_planets.size(); ++i)
     {
         Rectangle rect;
-        rect.x = m_planets[i].planetTextureNum * PlanetSpriteSize;
-        rect.y = 0;
+        rect.x = (m_planets[i].planetTextureNum % PlanetColumns) * PlanetSpriteSize;
+        rect.y = (m_planets[i].planetTextureNum / PlanetColumns) * PlanetSpriteSize;
 
         rect.width = PlanetSpriteSize;
         rect.height = PlanetSpriteSize;
@@ -75,10 +80,10 @@ void Background::render()
         };
 
         Rectangle rectScaled = rect;
-        rectScaled.x = pos.x;
-        rectScaled.y = pos.y;
         rectScaled.width = rect.width * m_planets[i].scale;
         rectScaled.height = rect.height * m_planets[i].scale;
+        rectScaled.x = pos.x - rectScaled.width * 0.5f;
+        rectScaled.y = pos.y - rectScaled.height * 0.5f;
 
 
         DrawTexturePro(m_planetsTexture, rect, rectScaled, {}, 0.0f, GRAY);
@@ -87,12 +92,17 @@ void Background::render()
 
 void Background::resetPlanet(Planet& planetToReset)
 {
-    planetToReset.planetTextureNum = GetRandomValue(0, PlanetsCount - 1u);
+    planetToReset.planetTextureNum = GetRandomValue(0, PlanetRows * PlanetColumns - 1u);
     planetToReset.velocity.x = helpers::lerpWithDeviation(MoveSpeed, InitialSpeedSpread, helpers::randFlt());
     planetToReset.velocity.y = 0.0f;
 
     planetToReset.relativePos.x = 1.2f;
-    planetToReset.relativePos.y = helpers::randFlt();
+
+
+    // do not spawn planets near player ship
+    const float rndRelPosY = helpers::randFlt();
+    const float rndTrueRelPosY = helpers::randFlt();
+    planetToReset.relativePos.y = rndRelPosY <= 0.5f ? rndTrueRelPosY * 0.3f : 1.0f - rndTrueRelPosY * 0.3f;;
 
     planetToReset.scale = helpers::lerpWithDeviation(BaseScale, ScaleSpread, helpers::randFlt());
     planetToReset.startDelay = helpers::lerpWithDeviation(SpawnPlanetDelay, SpawnPlanetDelaySpread, helpers::randFlt());
