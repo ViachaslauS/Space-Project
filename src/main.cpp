@@ -20,17 +20,16 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "Popups/MainMenuPopup.h"
 #include "Game.h"
 #include "Helpers.h"
+#include "AppContext.h"
 
-Popups popups;
-
-void update(float dt)
+void updateContext(float dt, AppContext& ctx)
 {
-	popups.update(dt);
+	ctx.popups.update(dt);
 }
 
-void render()
+void renderContext(AppContext& ctx)
 {
-	popups.render();
+	ctx.popups.render();
 }
 
 int main ()
@@ -56,29 +55,36 @@ int main ()
 	});
 
 	// Init game classes for UI
-	Game game;
+	AppContext context;
 	auto mainMenuPopup = new MainMenuPopup(quitSignal);
 	mainMenuPopup->show(true);
-	popups.addPopup(mainMenuPopup);
+	context.popups.addPopup(mainMenuPopup);
+	Game game(context);
+
+	//Disable esc key
+	SetExitKey(0);
 
 	// game loop
-	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
-	{
-		const auto dt = GetFrameTime();
-		update(dt);
-		game.update(dt);
-	 	BeginDrawing();
+    while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
+    {
+        //Update
+        const auto dt = GetFrameTime();
+        game.update(dt);
+        updateContext(dt, context);
+
+        //Render
+        BeginDrawing();
             ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-			game.render();
-			render();
+            game.render();
+            renderContext(context);
 
         EndDrawing();
 
-		if (quitRequest)
-		{
-			break;
-		}
-	}
+        if (quitRequest)
+        {
+            break;
+        }
+    }
 
 	// cleanup
 	// unload our texture so it can be cleaned up

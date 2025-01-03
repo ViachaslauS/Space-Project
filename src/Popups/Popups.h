@@ -4,6 +4,15 @@
 
 class Popup;
 
+enum class PopupType
+{
+    MainMenuPopup,
+    DefeatPopup,
+    UpgradeSkillPopup,
+
+    Count,
+};
+
 class Popups
 {
 public:
@@ -12,6 +21,8 @@ public:
 public:
     void addPopup(Popup* popup);
     void killPopup(Popup* popup);
+
+    Popup* getPopup(PopupType type);
 
     void update(float dt);
     void render();
