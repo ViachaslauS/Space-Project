@@ -11,64 +11,80 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 #include "GameObject.h"
 
-#include "resource_dir.h" // utility header for SearchAndSetResourceDir
+#include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
 #define RAYGUI_IMPLEMENTATION
 #include "external/raygui.h"
 
+#include "Popups/Popups.h"
+#include "Popups/MainMenuPopup.h"
+#include "Game.h"
+#include "Helpers.h"
+
+Popups popups;
+
+void update(float dt)
+{
+	popups.update(dt);
+}
+
+void render()
+{
+	popups.render();
+}
+
 int main ()
 {
-    // Tell the window to use vsync and work on high DPI displays
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+	// Tell the window to use vsync and work on high DPI displays
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
-    // Create the window and OpenGL context
-    InitWindow(1280, 800, "Hello Raylib");
+	// Create the window and OpenGL context
+	InitWindow(1280, 800, "Hello Raylib");
 
-    // Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
-    SearchAndSetResourceDir("resources");
+	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
+	SearchAndSetResourceDir("resources");
 
-    // Load a texture from the resources directory
-    Texture wabbit = LoadTexture("wabbit_alpha.png");
+	// Load a texture from the resources directory
+	Texture wabbit = LoadTexture("wabbit_alpha.png");
 
-    bool showMessageBox = false;
-    bool quitGame = false;
+	// Add quit signal
+	helpers::MulticastDelegate quitSignal;
 
-    VitalityParams tempParams;
-    GameObject tempObj(tempParams);
+	auto quitRequest = false;
+	quitSignal.add([&quitRequest]() {
+		quitRequest = true;
+	});
 
-    // game loop
-    while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
-    {
-        const float dt = GetFrameTime();
-        tempObj.update(dt);
+	// Init game classes for UI
+	Game game;
+	auto mainMenuPopup = new MainMenuPopup(quitSignal);
+	mainMenuPopup->show(true);
+	popups.addPopup(mainMenuPopup);
 
-        BeginDrawing();
-        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-
-        tempObj.render();
-
-        if (GuiButton((Rectangle { 600, 370, 120, 30 }), "Start Game")) showMessageBox = true;
-
-        if (GuiButton((Rectangle{ 600, 450, 120, 30 }), "Rage Quit")) quitGame = true;
-
-        if (showMessageBox)
-        {
-            //Start Game logic
-        }
+	// game loop
+	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
+	{
+		const auto dt = GetFrameTime();
+		update(dt);
+		game.update(dt);
+	 	BeginDrawing();
+            ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+			game.render();
+			render();
 
         EndDrawing();
 
-        if (quitGame)
-        {
-            break;
-        }
-    }
+		if (quitRequest)
+		{
+			break;
+		}
+	}
 
-    // cleanup
-    // unload our texture so it can be cleaned up
-    UnloadTexture(wabbit);
+	// cleanup
+	// unload our texture so it can be cleaned up
+	UnloadTexture(wabbit);
 
-    // destroy the window and cleanup the OpenGL context
-    CloseWindow();
-    return 0;
+	// destroy the window and cleanup the OpenGL context
+	CloseWindow();
+	return 0;
 }
