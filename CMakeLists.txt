@@ -17,6 +17,19 @@ add_executable(gravigun
     "src/Popups/PausePopup.cpp"
     "src/Popups/Popup.cpp"
     "src/Popups/Popups.cpp"
+
+    "include/resource_dir.h"
+    "src/AppContext.h"
+    "src/Game.h"
+    "src/GameObject.h"
+    "src/PlayerShip.h"
+    "src/PlayerStats.h"
+    "src/Popups/MainMenuPopup.h"
+    "src/Popups/PausePopup.h"
+    "src/Popups/Popup.h"
+    "src/Popups/Popups.h"
+    "src/Vitality.h"
+
 )
 
 add_subdirectory(src/external/box2d)
