@@ -13,6 +13,7 @@ add_executable(gravigun
     "src/main.cpp"
     "src/Game.cpp"
     "src/GameObject.cpp"
+    "src/GravityZone.cpp"
     "src/Physics.cpp"
     "src/PlayerShip.cpp"
     "src/PlayerStats.cpp"
@@ -27,6 +28,7 @@ add_executable(gravigun
     "src/AppContext.h"
     "src/Game.h"
     "src/GameObject.h"
+    "src/GravityZone.hpp"
     "src/Physics.hpp"
     "src/PlayerShip.h"
     "src/PlayerStats.h"
@@ -41,7 +43,9 @@ add_executable(gravigun
     "src/external/reasings.h"
 )
 
+option(BOX2D_SAMPLES "Build the Box2D samples" OFF)
 add_subdirectory(src/external/box2d)
+
 add_subdirectory(src/external/raylib)
 
 target_link_libraries(gravigun PRIVATE box2d raylib)
