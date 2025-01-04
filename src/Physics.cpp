@@ -38,8 +38,27 @@ namespace
     void drawSolidPolygon(b2Transform transform, const b2Vec2* vertices, int vertexCount, float radius, b2HexColor color,
                           void* context)
     {
-        // TODO: proper debug drawing, this doesn't work
-        drawPolygon(vertices, vertexCount, color, context);
+        if (vertexCount <= 0) {
+            TRACELOG(LOG_ERROR, "Zero vertices in shape passed to debug draw");
+            return;
+        }
+
+        std::vector<Vector2> points;
+        for (int i = 0; i < vertexCount; i++)
+        {
+            auto newVert = b2TransformPoint(transform, vertices[i]);
+            points.push_back({ newVert.x, newVert.y });
+        }
+        Color c = {
+                (uint8_t)(color & 0xff0000),
+                (uint8_t)(color & 0x00ff00),
+                (uint8_t)(color & 0x0000ff),
+                0xff, };
+        for (auto i = 1z; i < points.size(); i++)
+        {
+            DrawLineEx(points[i - 1], points[i], 2.0f, c);
+        }
+        DrawLineEx(points.back(), points.front(), 2.0f, c);
     }
 }
 
