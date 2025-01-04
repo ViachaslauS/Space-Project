@@ -11,6 +11,9 @@ public:
     void update(float dt);
     void render();
 
+    uint32_t getCurrDifficulty() const;
+    float getDifficultyProgress() const;
+
 private:
     void updateDifficulty(float dt);
 

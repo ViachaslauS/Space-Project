@@ -43,6 +43,16 @@ void GameplayManager::render()
 
 }
 
+uint32_t GameplayManager::getCurrDifficulty() const
+{
+    return m_currDifficulty;
+}
+
+float GameplayManager::getDifficultyProgress() const
+{
+    return m_difficultyProgress / DifficultyUpgradeTime;
+}
+
 void GameplayManager::updateDifficulty(float dt)
 {
     m_difficultyProgress += dt;
