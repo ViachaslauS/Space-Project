@@ -7,7 +7,7 @@ namespace
 {
     constexpr float MoveSpeed = -0.02f;
 
-    constexpr float InitialSpeedSpread = 0.005f;
+    constexpr float InitialSpeedSpread = 0.01f;
 
     static_assert(MoveSpeed < 0.0f && InitialSpeedSpread > 0.0f && MoveSpeed + InitialSpeedSpread < 0.0f);
 
@@ -24,8 +24,8 @@ namespace
     constexpr float BaseScale = 1.5f;
     constexpr float ScaleSpread = 1.0f;
 
-    constexpr float SpawnPlanetDelay = 8.0f;
-    constexpr float SpawnPlanetDelaySpread = 4.0f;
+    constexpr float SpawnPlanetDelay = 20.0f;
+    constexpr float SpawnPlanetDelaySpread = 19.0f;
 }
 
 Background::Background()
@@ -92,8 +92,13 @@ void Background::render()
 
 void Background::resetPlanet(Planet& planetToReset)
 {
+    const float ScaleMultiplier = helpers::randFlt();
+    planetToReset.scale = helpers::lerpWithDeviation(BaseScale, ScaleSpread, ScaleMultiplier);
+
     planetToReset.planetTextureNum = GetRandomValue(0, PlanetRows * PlanetColumns - 1u);
-    planetToReset.velocity.x = helpers::lerpWithDeviation(MoveSpeed, InitialSpeedSpread, helpers::randFlt());
+
+    // add velocity based on planet scale
+    planetToReset.velocity.x = MoveSpeed * (ScaleMultiplier + 0.5f );
     planetToReset.velocity.y = 0.0f;
 
     planetToReset.relativePos.x = 1.2f;
@@ -104,6 +109,5 @@ void Background::resetPlanet(Planet& planetToReset)
     const float rndTrueRelPosY = helpers::randFlt();
     planetToReset.relativePos.y = rndRelPosY <= 0.5f ? rndTrueRelPosY * 0.3f : 1.0f - rndTrueRelPosY * 0.3f;;
 
-    planetToReset.scale = helpers::lerpWithDeviation(BaseScale, ScaleSpread, helpers::randFlt());
     planetToReset.startDelay = helpers::lerpWithDeviation(SpawnPlanetDelay, SpawnPlanetDelaySpread, helpers::randFlt());
 }

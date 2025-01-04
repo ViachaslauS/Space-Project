@@ -6,7 +6,7 @@
 
 class Background final
 {
-    static constexpr uint32_t MaxPlanetsOnScreen = 2u;
+    static constexpr uint32_t MaxPlanetsOnScreen = 6u;
 
     struct Planet
     {
