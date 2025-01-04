@@ -7,6 +7,7 @@
 #include "GravityZone.hpp"
 #include "Physics.hpp"
 #include "PlayerShip.h"
+#include "GameplayManager.h"
 
 class Game
 {
@@ -21,6 +22,8 @@ public:
 
 private:
     Background m_background;
+
+    GameplayManager m_gameplayManager;
 
     Physics m_physics;
     GravityZoneSystem m_gravityZones;

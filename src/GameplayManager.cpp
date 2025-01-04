@@ -73,9 +73,20 @@ bool GameplayManager::spawnEvent()
 
     int32_t eventToSpawn = static_cast<int32_t>(std::abs(normDist(m_rdGen)));
 
-    while (eventToSpawn >= MaxEventsCount)
+    int iterations = 0;
+    while (eventToSpawn > MaxEventsCount)
     {
+        if (++iterations > 10)
+        {
+            TraceLog(LOG_ERROR, "[GameplayManager]: Maybe there are endless loop, let's get out of here quickly");
+            break;
+        }
         eventToSpawn = std::abs(static_cast<int32_t>(MaxEventsCount) * 2 - (eventToSpawn));
+    }
+
+    if (eventToSpawn == MaxEventsCount)
+    {
+        eventToSpawn--;
     }
 
     Vector2 SpawnEventPos = events_helper::getEventSpawnPos(static_cast<EventType>(eventToSpawn));
