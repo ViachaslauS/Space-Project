@@ -23,6 +23,8 @@ add_executable(gravigun
     "src/Popups/Popup.cpp"
     "src/Popups/Popups.cpp"
     "src/Background.cpp"
+    "src/GameplayManager.cpp"
+    "src/GameEventsSystem.cpp"
 
     "include/resource_dir.h"
     "src/AppContext.h"
@@ -41,6 +43,8 @@ add_executable(gravigun
     "src/Background.h"
     "src/Helpers.h"
     "src/external/reasings.h"
+    "src/GameplayManager.h"
+    "src/GameEventsSystem.h"
 )
 
 option(BOX2D_SAMPLES "Build the Box2D samples" OFF)

@@ -21,7 +21,7 @@ void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, 
 
 void GravityZoneSystem::update(float dt)
 {
-    for (auto i = 0z; i < activeZones.size();)
+    for (auto i = 0; i < activeZones.size();)
     {
         activeZones[i].phase += dt;
         activeZones[i].remainingTime -= dt;
