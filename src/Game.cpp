@@ -3,11 +3,25 @@
 #include "Popups/Popups.h"
 #include "Popups/Popup.h"
 #include "Popups/PausePopup.h"
+#include "Popups/LevelUpPopup.h"
+#include "PlayerStats.h"
 
 Game::Game(AppContext& ctx)
     : m_context(ctx)
 {
     m_playerShip.initialize();
+    
+    //Init stats and levelup callback
+    auto& stats = PlayerStats::get();
+    stats.onLevelUp.add([this]() {
+        auto popup = m_context.popups.getPopup(PopupType::LevelUpPopup);
+        if (popup == nullptr)
+        {
+            popup = new LevelUpPopup();
+            m_context.popups.addPopup(popup);
+        }
+        popup->show(true);
+    });
 }
 
 void Game::update(float dt)
@@ -18,16 +32,12 @@ void Game::update(float dt)
         if (IsKeyPressed(KEY_ESCAPE))
         {
             auto pausePopup = m_context.popups.getPopup(PopupType::PausePopup);
-            if (pausePopup != nullptr)
-            {
-                pausePopup->show(true);
-            }
-            else
+            if (pausePopup == nullptr)
             {
                 pausePopup = new PausePopup(m_context);
-                pausePopup->show(true);
                 m_context.popups.addPopup(pausePopup);
             }
+            pausePopup->show(true);
         }
         m_playerShip.update(dt);
     }

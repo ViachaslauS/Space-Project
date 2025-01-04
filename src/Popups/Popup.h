@@ -10,6 +10,7 @@ public:
 public:
     virtual void update(float dt);
     virtual void render();
+    virtual void onStateChanged();
 
     void show(bool show);
     bool isVisible()
