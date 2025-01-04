@@ -85,6 +85,7 @@ namespace
         case ObjectType::RocketProjectile:
         case ObjectType::LaserProjectile:
         case ObjectType::Asteroid:
+        case ObjectType::EnemyShip:
             return b2BodyType::b2_dynamicBody;
         default:
             // uh oh
@@ -134,12 +135,14 @@ PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, flo
     bodyDef.isBullet = isBullet(object->m_objectType);
 
     auto comp = std::make_unique<PhysicsComp>();
+    comp->physics = this;
+    comp->object = object;
     comp->id = b2CreateBody(b2d->worldId, &bodyDef);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.userData = reinterpret_cast<void *>(object);
     shapeDef.isSensor = isSensor(object->m_objectType);
-    b2CreatePolygonShape(comp->id, &shapeDef, &poly);
+    comp->shapeId = b2CreatePolygonShape(comp->id, &shapeDef, &poly);
 
     object->setPhysicsComp(comp.get());
     comps.push_back(std::move(comp));
@@ -154,6 +157,8 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     bodyDef.isBullet = isBullet(object->m_objectType);
 
     auto comp = std::make_unique<PhysicsComp>();
+    comp->physics = this;
+    comp->object = object;
     comp->id = b2CreateBody(b2d->worldId, &bodyDef);
 
     b2Vec2 c { 0.0f, 0.0f };
@@ -161,8 +166,9 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.userData = reinterpret_cast<void *>(object);
     shapeDef.isSensor = isSensor(object->m_objectType);
-    b2CreateCircleShape(comp->id, &shapeDef, &circle);
+    comp->shapeId = b2CreateCircleShape(comp->id, &shapeDef, &circle);
 
+    object->setPhysicsComp(comp.get());
     comps.push_back(std::move(comp));
     return comps.back().get();
 }
@@ -208,6 +214,12 @@ void Physics::update()
         auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginEvent->shapeIdB));
         obj1->onCollision(obj2);
     }
+
+    for (auto &c : comps) {
+        auto body = b2Shape_GetBody(c->shapeId);
+        auto pos = b2Body_GetPosition(body);
+        c->object->setPos({ pos.x, pos.y });
+    }
 }
 
 void Physics::debugRender()
@@ -218,4 +230,17 @@ void Physics::debugRender()
 void Physics::toggleDebugRender()
 {
     b2d->dDraw.drawShapes = !b2d->dDraw.drawShapes;
+}
+
+void Physics::setVelocity(PhysicsComp *comp, const Vector2 &velocity)
+{
+    b2Vec2 vec { velocity.x, velocity.y };
+    b2Body_SetLinearVelocity(comp->id, vec);
+}
+
+void Physics::applyForce(PhysicsComp *comp, const Vector2 &dir)
+{
+    b2Vec2 vec { dir.x, dir.y };
+    auto pos = b2Body_GetPosition(comp->id);
+    b2Body_ApplyForce(comp->id, vec, pos, true);
 }

@@ -44,8 +44,28 @@ void GravityZone::onCollision(GameObject *other) {
     }
 
     if (move) {
-
+        Vector2 vec;
+        switch (dir) {
+        case Direction::Top:
+            vec.y = 1.0f;
+            vec.x = 0.0f;
+            break;
+        case Direction::Right:
+            vec.y = 0.0f;
+            vec.x = 1.0f;
+            break;
+        case Direction::Down:
+            vec.y = 0.0f;
+            vec.x = -1.0f;
+            break;
+        case Direction::Left:
+            vec.y = -1.0f;
+            vec.x = 1.0f;
+            break;
+        }
+        other->applyForce(vec);
     }
+
 }
 
 GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)

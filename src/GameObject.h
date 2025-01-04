@@ -44,6 +44,7 @@ public:
     Vector2 center() const;
 
     void setPos(const Vector2 &pos);
+    void applyForce(const Vector2 &dir);
 
     int getTeamId() const;
 

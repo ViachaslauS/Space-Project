@@ -124,9 +124,9 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         {
             auto newShip = std::make_unique<SmallEnemyShip>(m_objectManager);
             newShip->setPosition(pos);
-            newShip->setSpeed(Vector2 { 20, 0 });
-            newShip->initialize();
+
             m_physics.createRectangularBody(pos, 100.0f, 50.0f, newShip.get());
+            newShip->setSpeed(Vector2 { 20, 0 });
 
             m_spawnedObjects.push_back(std::move(newShip));
             return true;
@@ -143,9 +143,9 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         {
             //Add speed logic
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
-            newAsteroid->setVelocity(Vector2 { -30, 0 });
             newAsteroid->initialize();
             m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
+            newAsteroid->setVelocity(Vector2 { -30, 0 });
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
@@ -153,9 +153,9 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         {
             //ADD speed logic
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
-            newAsteroid->setVelocity(Vector2 { -30, 0 });
             newAsteroid->initialize();
             m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
+            newAsteroid->setVelocity(Vector2 { -30, 0 });
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }

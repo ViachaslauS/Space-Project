@@ -7,12 +7,14 @@
 
 struct Vector2;
 class GameObject;
+struct Physics;
 
 struct PhysicsComp
 {
     GameObject *object;
     b2ShapeId shapeId;
     b2BodyId id;
+    Physics *physics;
 };
 
 struct Physics
@@ -22,6 +24,9 @@ struct Physics
 
     PhysicsComp* createRectangularBody(const Vector2 &center, float width, float height, GameObject *object);
     PhysicsComp* createCircularBody(const Vector2 &center, float radius, GameObject *object);
+
+    void setVelocity(PhysicsComp *comp, const Vector2 &velocity);
+    void applyForce(PhysicsComp *comp, const Vector2 &dir);
 
     bool removeBody(PhysicsComp *comp);
     void update();
