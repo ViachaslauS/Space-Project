@@ -10,8 +10,8 @@
 class GameObject
 {
 public:
-    GameObject(const VitalityParams& vitality);
-    virtual ~GameObject() = default;
+    GameObject(const VitalityParams& vitality, int teamId);
+    virtual ~GameObject();
 
     virtual void initialize();
 
@@ -26,12 +26,19 @@ public:
 
     Vector2 center() const;
 
+    int getTeamId() const
+    {
+        return m_teamId;
+    }
+
+
     helpers::MulticastDelegate<float, const VitalityData&> OnReceiveDamage;
 
 
 protected:
     VitalityParams m_vitality;
     VitalityData m_vitalityData;
+    int m_teamId = -1;
 
     Texture m_texture;
     

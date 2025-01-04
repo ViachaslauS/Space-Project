@@ -4,6 +4,8 @@
 #include <functional>
 #include <random>
 
+#include "raylib.h"
+
 namespace helpers
 {
     using DelegateHandle = uint32_t;
@@ -57,5 +59,10 @@ namespace helpers
     T lerpWithDeviation(T base, T deviation, float progress)
     {
         return std::lerp(base - deviation, base + deviation, progress);
+    }
+
+    static bool isInWindow(Vector2 pos)
+    {
+        return pos.x < 1920 && pos.x > 0 && pos.y < 1080 && pos.y > 0;
     }
 }

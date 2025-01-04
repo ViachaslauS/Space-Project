@@ -1,6 +1,7 @@
 #include "GameplayManager.h"
 
-#include "GameEventsSystem.h"
+#include "Enemies/SmallEnemyShip.h"
+#include "Enemies/Asteroid.h"
 
 #include <algorithm>
 #include <array>
@@ -36,11 +37,18 @@ void GameplayManager::update(float dt)
 {
     updateDifficulty(dt);
     updateEvents(dt);
+    for (auto obj : m_spawnedObjects)
+    {
+        obj->update(dt);
+    }
 }
 
 void GameplayManager::render()
 {
-
+    for (auto obj : m_spawnedObjects)
+    {
+        obj->render();
+    }
 }
 
 uint32_t GameplayManager::getCurrDifficulty() const
@@ -99,9 +107,60 @@ bool GameplayManager::spawnEvent()
         eventToSpawn--;
     }
 
-    Vector2 SpawnEventPos = events_helper::getEventSpawnPos(static_cast<EventType>(eventToSpawn));
+    Vector2 spawnEventPos = events_helper::getEventSpawnPos(static_cast<EventType>(eventToSpawn));
 
-    // TOOD: spawn logic
+    return spawnNewObject(static_cast<EventType>(eventToSpawn), spawnEventPos);
 
-    return false;
+}
+
+bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
+{
+    switch (type)
+    {
+        case EventType::SpawnSmallEnemyShip:
+        {
+            auto newShip = new SmallEnemyShip();
+            newShip->setPosition(pos);
+            newShip->setSpeed(Vector2 { 20, 0 });
+            newShip->initialize();
+            m_spawnedObjects.push_back(newShip);
+            return true;
+        }
+        case EventType::Boss:
+        {
+            return true;
+        }
+        case EventType::SpawnBigEnemyShip:
+        {
+            return false;
+        }
+        case EventType::SpawnDummyAsteroid:
+        {
+            //Add speed logic
+            auto newAsteroid = new Asteroid();
+            newAsteroid->setPosition(pos);
+            newAsteroid->setSpeed(Vector2 { -30, 0 });
+            newAsteroid->initialize();
+            m_spawnedObjects.push_back(newAsteroid);
+            return true;
+        }
+        case EventType::SpawnEvilAsteroid:
+        {
+            //ADD speed logic
+            auto newAsteroid = new Asteroid();
+            newAsteroid->setPosition(pos);
+            newAsteroid->setSpeed(Vector2 { -30, 0 });
+            newAsteroid->initialize();
+            m_spawnedObjects.push_back(newAsteroid);
+            return true;
+        }
+        case EventType::SpawnLoot:
+        {
+            return false;
+        }
+        default:
+        {
+            return false;
+        }
+    }
 }

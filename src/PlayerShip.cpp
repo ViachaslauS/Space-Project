@@ -1,6 +1,7 @@
 #include "PlayerShip.h"
 
 #include "external/reasings.h"
+#include "Weapons/LaserWeapon.h"
 
 namespace
 {
@@ -27,21 +28,21 @@ namespace
 }
 
 PlayerShip::PlayerShip()
-    : GameObject(PlayerBaseVitality)
+    : BaseShip(PlayerBaseVitality, 0)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
+    m_weapons.push_back(new LaserWeapon(getTeamId()));
 }
 
 void PlayerShip::initialize()
 {
+    BaseShip::initialize();
     reset();
-
-    m_size = { static_cast<float>(m_texture.width), static_cast<float>(m_texture.height) };
 }
 
 void PlayerShip::update(float dt)
 {
-    GameObject::update(dt);
+    BaseShip::update(dt);
 
     m_offsetProgress += ShakeSpeed * dt;
 
@@ -57,8 +58,13 @@ void PlayerShip::update(float dt)
 
 void PlayerShip::reset()
 {
-    GameObject::reset();
+    BaseShip::reset();
 
     m_pos = screenCenter();
     m_offsetProgress = 0.0f;
+}
+
+void PlayerShip::render()
+{
+    BaseShip::render();
 }
