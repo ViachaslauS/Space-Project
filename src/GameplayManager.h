@@ -35,7 +35,7 @@ private:
 
     float m_lastEventSawnTime;
 
-    std::vector<GameObject*> m_spawnedObjects;
+    std::vector<std::unique_ptr<GameObject>> m_spawnedObjects;
 
     mutable std::random_device m_rd;
     mutable std::mt19937 m_rdGen;

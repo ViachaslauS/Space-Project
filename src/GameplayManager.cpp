@@ -39,7 +39,7 @@ void GameplayManager::update(float dt)
 {
     updateDifficulty(dt);
     updateEvents(dt);
-    for (auto obj : m_spawnedObjects)
+    for (auto &obj : m_spawnedObjects)
     {
         obj->update(dt);
     }
@@ -47,7 +47,7 @@ void GameplayManager::update(float dt)
 
 void GameplayManager::render()
 {
-    for (auto obj : m_spawnedObjects)
+    for (auto &obj : m_spawnedObjects)
     {
         obj->render();
     }
@@ -121,11 +121,12 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
     {
         case EventType::SpawnSmallEnemyShip:
         {
-            auto newShip = new SmallEnemyShip();
+            auto newShip = std::make_unique<SmallEnemyShip>();
             newShip->setPosition(pos);
             newShip->setSpeed(Vector2 { 20, 0 });
             newShip->initialize();
-            m_spawnedObjects.push_back(newShip);
+            // auto pc = physics.createRectangularBody(pos, )
+            m_spawnedObjects.push_back(std::move(newShip));
             return true;
         }
         case EventType::Boss:
@@ -139,21 +140,21 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         case EventType::SpawnDummyAsteroid:
         {
             //Add speed logic
-            auto newAsteroid = new Asteroid();
+            auto newAsteroid = std::make_unique<Asteroid>();
             newAsteroid->setPosition(pos);
             newAsteroid->setSpeed(Vector2 { -30, 0 });
             newAsteroid->initialize();
-            m_spawnedObjects.push_back(newAsteroid);
+            m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
         case EventType::SpawnEvilAsteroid:
         {
             //ADD speed logic
-            auto newAsteroid = new Asteroid();
+            auto newAsteroid = std::make_unique<Asteroid>();
             newAsteroid->setPosition(pos);
             newAsteroid->setSpeed(Vector2 { -30, 0 });
             newAsteroid->initialize();
-            m_spawnedObjects.push_back(newAsteroid);
+            m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
         case EventType::SpawnLoot:
