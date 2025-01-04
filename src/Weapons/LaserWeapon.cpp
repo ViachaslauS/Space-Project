@@ -1,7 +1,7 @@
 #include "Weapons/LaserWeapon.h"
 
-LaserWeapon::LaserWeapon(int teamId)
-    : BaseWeapon(teamId, ObjectType::LaserProjectile)
+LaserWeapon::LaserWeapon(ObjectsManager &om, int teamId)
+    : BaseWeapon(om, teamId, ObjectType::LaserProjectile)
 {
     auto laserTexture = LoadTexture("laser.png");
     laserTexture.height = 50;

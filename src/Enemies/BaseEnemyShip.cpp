@@ -17,8 +17,8 @@ namespace
     };
 }
 
-BaseEnemyShip::BaseEnemyShip()
-    : BaseShip(EnemyBaseVitality, 1, ObjectType::EnemyShip)
+BaseEnemyShip::BaseEnemyShip(ObjectsManager &om)
+    : BaseShip(om, EnemyBaseVitality, 1, ObjectType::EnemyShip)
 {
 }
 

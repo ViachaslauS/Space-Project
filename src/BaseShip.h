@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Weapons/BaseWeapon.h"
 
+class ObjectsManager;
+
 enum class WeaponType
 {
     LaserWeapon,
@@ -14,7 +16,7 @@ enum class WeaponType
 class BaseShip : public GameObject
 {
 public:
-    BaseShip(const VitalityParams& vitality, int teamId, ObjectType type);
+    BaseShip(ObjectsManager &om, const VitalityParams& vitality, int teamId, ObjectType type);
 
     virtual void initialize() override;
     virtual void update(float dt) override;

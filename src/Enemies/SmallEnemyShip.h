@@ -5,8 +5,10 @@
 class SmallEnemyShip : public BaseEnemyShip
 {
 public:
-    SmallEnemyShip();
+    SmallEnemyShip(ObjectsManager &om);
 
 public:
     void initialize() override;
+
+    ObjectsManager &m_om;
 };

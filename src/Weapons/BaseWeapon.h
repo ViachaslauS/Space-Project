@@ -6,10 +6,12 @@
 
 #include <vector>
 
+struct ObjectsManager;
+
 class BaseWeapon : public GameObject
 {
 public:
-    BaseWeapon(int teamId, ObjectType type);
+    BaseWeapon(ObjectsManager &om, int teamId, ObjectType type);
 
 public:
     const Vector2& getPos() const;

@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "Physics.hpp"
 
+class ObjectsManager;
+
 class GravityZone : public GameObject
 {
 public:
@@ -16,7 +18,8 @@ public:
         Left,
     };
 
-    GravityZone(const VitalityParams &vp,
+    GravityZone(ObjectsManager &om,
+                const VitalityParams &vp,
                 const Vector2 &pos,
                 const Vector2 &size,
                 float activeTime,
@@ -35,9 +38,10 @@ public:
 
 struct GravityZoneSystem
 {
-    GravityZoneSystem(Physics &p);
+    GravityZoneSystem(Physics &p, ObjectsManager &om);
 
     Physics &physics;
+    ObjectsManager &objManager;
 
     std::vector<std::unique_ptr<GravityZone>> activeZones;
 

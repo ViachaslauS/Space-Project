@@ -1,19 +1,11 @@
 #include "ObjectsManager.h"
+#include "Physics.hpp"
 
 #include <algorithm>
 #include <iterator>
 
-ObjectsManager::ObjectsManager()
-{
-    m_objects.clear();
-}
-
-ObjectsManager& ObjectsManager::get()
-{
-    static ObjectsManager objectsManager;
-
-    return objectsManager;
-}
+ObjectsManager::ObjectsManager(Physics &physics)
+ : m_physics(physics) {}
 
 void ObjectsManager::addObject(const GameObject* obj)
 {
@@ -25,6 +17,7 @@ void ObjectsManager::deleteObject(const GameObject* obj)
     auto it = std::find(m_objects.begin(), m_objects.end(), obj);
     if (it != m_objects.end())
     {
+        m_physics.removeBody((*it)->m_physicsComp);
         std::swap(*it, m_objects.back());
         m_objects.pop_back();
     }

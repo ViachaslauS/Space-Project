@@ -3,20 +3,19 @@
 #include "GameObject.h"
 #include "ObjectsManager.h"
 
-GameObject::GameObject(const VitalityParams& vitality, int teamId, ObjectType type)
-    : m_vitality(vitality)
+GameObject::GameObject(ObjectsManager &objectManager, const VitalityParams& vitality, int teamId, ObjectType type)
+    : m_objectManager(objectManager)
+    , m_vitality(vitality)
     , m_vitalityData(vitality)
     , m_teamId(teamId)
     , m_objectType(type)
 {
-    auto& objManager = ObjectsManager::get();
-    objManager.addObject(this);
+    m_objectManager.addObject(this);
 }
 
 GameObject::~GameObject()
 {
-    auto& objManager = ObjectsManager::get();
-    objManager.deleteObject(this);
+    m_objectManager.deleteObject(this);
 }
 
 void GameObject::initialize()
@@ -70,6 +69,11 @@ void GameObject::reset()
 Vector2 GameObject::center() const
 {
     return { m_pos.x - m_size.x * 0.5f, m_pos.y - m_size.y * 0.5f };
+}
+
+void GameObject::setPos(const Vector2 &pos)
+{
+    m_pos = pos;
 }
 
 int GameObject::getTeamId() const

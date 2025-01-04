@@ -24,8 +24,9 @@ namespace
     }
 }
 
-GameplayManager::GameplayManager(Physics &physics)
+GameplayManager::GameplayManager(Physics &physics, ObjectsManager &om)
     : m_physics(physics)
+    , m_objectManager(om)
     , m_currDifficulty(0)
     , m_difficultyProgress(0.0f)
     , m_lastEventSawnTime(0.0f)
@@ -121,11 +122,12 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
     {
         case EventType::SpawnSmallEnemyShip:
         {
-            auto newShip = std::make_unique<SmallEnemyShip>();
+            auto newShip = std::make_unique<SmallEnemyShip>(m_objectManager);
             newShip->setPosition(pos);
             newShip->setSpeed(Vector2 { 20, 0 });
             newShip->initialize();
-            // auto pc = physics.createRectangularBody(pos, )
+            m_physics.createRectangularBody(pos, 100.0f, 50.0f, newShip.get());
+
             m_spawnedObjects.push_back(std::move(newShip));
             return true;
         }
@@ -140,20 +142,20 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         case EventType::SpawnDummyAsteroid:
         {
             //Add speed logic
-            auto newAsteroid = std::make_unique<Asteroid>();
-            newAsteroid->setPosition(pos);
-            newAsteroid->setSpeed(Vector2 { -30, 0 });
+            auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
+            newAsteroid->setVelocity(Vector2 { -30, 0 });
             newAsteroid->initialize();
+            m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
         case EventType::SpawnEvilAsteroid:
         {
             //ADD speed logic
-            auto newAsteroid = std::make_unique<Asteroid>();
-            newAsteroid->setPosition(pos);
-            newAsteroid->setSpeed(Vector2 { -30, 0 });
+            auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
+            newAsteroid->setVelocity(Vector2 { -30, 0 });
             newAsteroid->initialize();
+            m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }

@@ -1,4 +1,5 @@
 #include "Asteroid.h"
+#include "Physics.hpp"
 
 #include "raymath.h"
 
@@ -18,8 +19,8 @@ namespace
     };
 }
 
-Asteroid::Asteroid()
-    : GameObject(AsteroidBaseVitality, 2, ObjectType::Asteroid)
+Asteroid::Asteroid(ObjectsManager &om)
+    : GameObject(om, AsteroidBaseVitality, 2, ObjectType::Asteroid)
 {
     m_texture = LoadTexture("Asteroid.png");
 }
@@ -32,5 +33,9 @@ void Asteroid::initialize()
 void Asteroid::update(float dt)
 {
     GameObject::update(dt);
-    m_pos += Vector2Scale(m_speed, dt);
+}
+
+void Asteroid::setVelocity(const Vector2 &velocity)
+{
+    m_physicsComp->physics->setVelocity(m_physicsComp, velocity);
 }
