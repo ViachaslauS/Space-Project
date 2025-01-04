@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include <random>
+#include <cmath>
 
 #include "raylib.h"
 
@@ -64,5 +65,16 @@ namespace helpers
     static bool isInWindow(Vector2 pos)
     {
         return pos.x < 1920 && pos.x > 0 && pos.y < 1080 && pos.y > 0;
+    }
+
+    inline float lerpTudaSuda(float t)
+    {
+        return std::abs(t - (std::floor(t * 2))) * 2;
+    }
+
+    template <class ArrType>
+    bool isValidIdx(const ArrType& arr, auto idx)
+    {
+        return idx >= 0 && idx < arr.size();
     }
 }

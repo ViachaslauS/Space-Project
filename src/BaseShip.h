@@ -9,6 +9,7 @@ enum class WeaponType
 {
     LaserWeapon,
     RocketWeapon,
+    GraviGun,
 
     Count,
 };
@@ -27,6 +28,8 @@ public:
     {
         m_pos = pos;
     }
+
+    const std::vector<BaseWeapon*>& getWeapons() const;
 
 protected:
     std::vector<BaseWeapon*> m_weapons;

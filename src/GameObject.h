@@ -14,6 +14,7 @@ enum class ObjectType
     LaserProjectile,
     Asteroid,
     EnemyShip,
+    Weapon
 };
 
 // base class for all in-game object like asteroids, enemy ships etc.

@@ -2,6 +2,7 @@
 
 #include "external/reasings.h"
 #include "Weapons/LaserWeapon.h"
+#include "Weapons/Gravigun.hpp"
 
 namespace
 {
@@ -31,7 +32,7 @@ PlayerShip::PlayerShip(ObjectsManager &om)
     : BaseShip(om, PlayerBaseVitality, 0, ObjectType::PlayerShip)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
-    m_weapons.push_back(new LaserWeapon(om, getTeamId()));
+    m_weapons.push_back(new Gravigun(om, getTeamId()));
 }
 
 void PlayerShip::initialize()
