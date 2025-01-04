@@ -82,10 +82,10 @@ Physics::Physics()
 
 PhysicsComp Physics::createRectangularBody(const Vector2 &pos, float width, float height)
 {
-    b2Vec2 extent = { width, height };
+    b2Vec2 extent = { width / 2.0f, height / 2.0f };
     b2Polygon poly = b2MakeBox(extent.x, extent.y);
     b2BodyDef bodyDef = b2DefaultBodyDef();
-    bodyDef.position = { pos.x - width / 2, pos.y - height / 2};
+    bodyDef.position = { pos.x, pos.y };
 
     PhysicsComp comp;
     comp.id = b2CreateBody(b2d->worldId, &bodyDef);
