@@ -2,14 +2,15 @@
 
 #include "BaseShip.h"
 
+class ObjectsManager;
 
 class BaseEnemyShip : public BaseShip
 {
 public:
-    BaseEnemyShip();
+    BaseEnemyShip(ObjectsManager &om);
 
     virtual void initialize() override;
-    
+
     virtual void update(float dt) override;
     virtual void render() override;
 

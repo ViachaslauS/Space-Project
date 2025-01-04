@@ -16,8 +16,8 @@ namespace
     };
 }
 
-BaseWeapon::BaseWeapon(int teamId, ObjectType type)
-    : GameObject(WeaponBaseVitality, teamId, type)
+BaseWeapon::BaseWeapon(ObjectsManager &om, int teamId, ObjectType type)
+    : GameObject(om, WeaponBaseVitality, teamId, type)
 {
 }
 

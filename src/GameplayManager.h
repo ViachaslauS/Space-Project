@@ -11,9 +11,10 @@ struct Physics;
 class GameplayManager
 {
 public:
-    GameplayManager(Physics &p);
+    GameplayManager(Physics &p, ObjectsManager &om);
 
     Physics &m_physics;
+    ObjectsManager &m_objectManager;
 
     void update(float dt);
     void render();

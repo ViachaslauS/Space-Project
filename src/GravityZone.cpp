@@ -2,12 +2,13 @@
 
 #include "GravityZone.hpp"
 
-GravityZone::GravityZone(const VitalityParams &vp,
+GravityZone::GravityZone(ObjectsManager &om,
+                         const VitalityParams &vp,
                          const Vector2 &pos,
                          const Vector2 &size,
                          float activeTime,
                          GravityZone::Direction dir)
-    : GameObject(vp, -1, ObjectType::GravityZone)
+    : GameObject(om, vp, -1, ObjectType::GravityZone)
     , remainingTime(activeTime)
     , phase(0.0f)
     , dir(dir)
@@ -47,8 +48,9 @@ void GravityZone::onCollision(GameObject *other) {
     }
 }
 
-GravityZoneSystem::GravityZoneSystem(Physics &p)
-    : physics(p) {}
+GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
+    : physics(p)
+    , objManager(om) {}
 
 void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, float activeTime, float width, float height)
 {
@@ -56,14 +58,14 @@ void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, 
     Vector2 size { width, height };
 
     auto &newZone = activeZones.emplace_back(std::make_unique<GravityZone>(
-        vp,
-        pos,
-        size,
-        activeTime,
-        dir));
+                                                 objManager,
+                                                 vp,
+                                                 pos,
+                                                 size,
+                                                 activeTime,
+                                                 dir));
 
-    auto physComp = physics.createRectangularBody(pos, width, height, newZone.get());
-    newZone->setPhysicsComp(physComp);
+    physics.createRectangularBody(pos, width, height, newZone.get());
 }
 
 void GravityZoneSystem::update(float dt)

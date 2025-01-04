@@ -2,10 +2,12 @@
 
 #include "Weapons/BaseWeapon.h"
 
+class ObjectsManager;
+
 class RocketWeapon : public BaseWeapon
 {
 public:
-    RocketWeapon(int teamId);
+    RocketWeapon(ObjectsManager &om, int teamId);
 
 public:
     void update(float dt) override;

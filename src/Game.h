@@ -5,6 +5,7 @@
 #include "AppContext.h"
 #include "Background.h"
 #include "GravityZone.hpp"
+#include "ObjectsManager.h"
 #include "Physics.hpp"
 #include "PlayerShip.h"
 #include "GameplayManager.h"
@@ -26,6 +27,7 @@ public:
 private:
     Background m_background;
 
+    ObjectsManager m_objectManager;
     GameplayManager m_gameplayManager;
 
     Physics m_physics;

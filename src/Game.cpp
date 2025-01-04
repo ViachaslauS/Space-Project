@@ -9,9 +9,11 @@
 #include "PlayerStats.h"
 
 Game::Game(AppContext& ctx)
-    : m_context(ctx)
-    , m_gravityZones(m_physics)
-    , m_gameplayManager(m_physics)
+    : m_objectManager(m_physics)
+    , m_gameplayManager(m_physics, m_objectManager)
+    , m_gravityZones(m_physics, m_objectManager)
+    , m_context(ctx)
+    , m_playerShip(m_objectManager)
     , m_hud(*this)
 {
     m_playerShip.initialize();

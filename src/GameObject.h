@@ -4,6 +4,8 @@
 #include "Vitality.h"
 #include "Helpers.h"
 
+class ObjectsManager;
+
 enum class ObjectType
 {
     GravityZone,
@@ -22,7 +24,7 @@ public:
     PhysicsComp *m_physicsComp = nullptr;
     const ObjectType m_objectType;
 
-    GameObject(const VitalityParams& vitality, int teamId, ObjectType objectType);
+    GameObject(ObjectsManager &objectManger, const VitalityParams& vitality, int teamId, ObjectType objectType);
 
     void setPhysicsComp(PhysicsComp *physicsComp);
 
@@ -41,6 +43,8 @@ public:
 
     Vector2 center() const;
 
+    void setPos(const Vector2 &pos);
+
     int getTeamId() const;
 
     virtual void onCollision(GameObject *other);
@@ -50,6 +54,7 @@ public:
     ObjectType getObjectType();
 
 protected:
+    ObjectsManager &m_objectManager;
     VitalityParams m_vitality;
     VitalityData m_vitalityData;
     int m_teamId = -1;

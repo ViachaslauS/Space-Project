@@ -4,8 +4,9 @@
 #include "Weapons/LaserWeapon.h"
 #include "Weapons/RocketWeapon.h"
 
-SmallEnemyShip::SmallEnemyShip()
-    :BaseEnemyShip()
+SmallEnemyShip::SmallEnemyShip(ObjectsManager &om)
+    : BaseEnemyShip(om)
+    , m_om(om)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
 }
@@ -17,11 +18,11 @@ void SmallEnemyShip::initialize()
     switch (weaponType)
     {
     case 0:
-        m_weapons.push_back(new LaserWeapon(getTeamId()));
+        m_weapons.push_back(new LaserWeapon(m_om, getTeamId()));
         break;
 
     case 1:
-        m_weapons.push_back(new RocketWeapon(getTeamId()));
+        m_weapons.push_back(new RocketWeapon(m_om, getTeamId()));
         break;
 
     default:

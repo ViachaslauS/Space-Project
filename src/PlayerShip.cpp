@@ -27,11 +27,11 @@ namespace
     }
 }
 
-PlayerShip::PlayerShip()
-    : BaseShip(PlayerBaseVitality, 0, ObjectType::PlayerShip)
+PlayerShip::PlayerShip(ObjectsManager &om)
+    : BaseShip(om, PlayerBaseVitality, 0, ObjectType::PlayerShip)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
-    m_weapons.push_back(new LaserWeapon(getTeamId()));
+    m_weapons.push_back(new LaserWeapon(om, getTeamId()));
 }
 
 void PlayerShip::initialize()
