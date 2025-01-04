@@ -18,6 +18,8 @@ struct Physics
     ~Physics();
 
     PhysicsComp createRectangularBody(const Vector2 &center, float width, float height);
+    PhysicsComp createCircularBody(const Vector2 &center, float radius);
+
     bool removeBody(const PhysicsComp &comp);
     void update();
     void debugRender();

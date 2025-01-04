@@ -60,6 +60,19 @@ namespace
         }
         DrawLineEx(points.back(), points.front(), 2.0f, c);
     }
+
+    void drawSolidCircle(b2Transform transform, float radius, b2HexColor color, void* context)
+    {
+        Vector2 center { transform.p.x, transform.p.y };
+
+        Color c = {
+                (uint8_t)(color & 0xff0000),
+                (uint8_t)(color & 0x00ff00),
+                (uint8_t)(color & 0x0000ff),
+                0xff, };
+
+        DrawCircleLinesV(center, radius, c);
+    }
 }
 
 Physics::~Physics() = default;
@@ -69,6 +82,7 @@ Physics::Physics()
 {
     b2d->dDraw.DrawPolygon = &drawPolygon;
     b2d->dDraw.DrawSolidPolygon = &drawSolidPolygon;
+    b2d->dDraw.DrawSolidCircle = &drawSolidCircle;
 
     float lengthUnitsPerMeter = 128.0f;
     b2SetLengthUnitsPerMeter(lengthUnitsPerMeter);
@@ -93,6 +107,23 @@ PhysicsComp Physics::createRectangularBody(const Vector2 &pos, float width, floa
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     b2CreatePolygonShape(comp.id, &shapeDef, &poly);
+
+    return comp;
+}
+
+PhysicsComp Physics::createCircularBody(const Vector2 &center, float radius)
+{
+    b2BodyDef bodyDef = b2DefaultBodyDef();
+    bodyDef.position = { center.x, center.y };
+
+    PhysicsComp comp;
+    comp.id = b2CreateBody(b2d->worldId, &bodyDef);
+    comps.push_back(comp);
+
+    b2Vec2 c { 0.0f, 0.0f };
+    b2Circle circle { c, radius };
+    b2ShapeDef shapeDef = b2DefaultShapeDef();
+    b2CreateCircleShape(comp.id, &shapeDef, &circle);
 
     return comp;
 }
