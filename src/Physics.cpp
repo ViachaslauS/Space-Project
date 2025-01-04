@@ -142,14 +142,15 @@ bool Physics::removeBody(const PhysicsComp &comp)
         }
         i++;
     }
-    TRACELOG(LOG_ERROR, "Failed to find PhysicsComp");
+
     // no such comp >:(
+    TRACELOG(LOG_ERROR, "Failed to find PhysicsComp");
     return false;
 }
 
 void Physics::update()
 {
-    b2World_Step(b2d->worldId, 0.016f, 5);
+    b2World_Step(b2d->worldId, 0.016f, 4);
 }
 
 void Physics::debugRender()
