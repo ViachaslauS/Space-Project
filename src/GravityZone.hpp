@@ -2,12 +2,12 @@
 
 #include <vector>
 
-#include "raymath.h"
-
+#include "GameObject.h"
 #include "Physics.hpp"
 
-struct GravityZone
+class GravityZone : public GameObject
 {
+public:
     enum class Direction
     {
         Top,
@@ -16,12 +16,18 @@ struct GravityZone
         Left,
     };
 
-    Vector2 pos;
-    float width;
-    float height;
-    float remainingTime;
+    GravityZone(const VitalityParams &vp,
+                const Vector2 &pos,
+                const Vector2 &size,
+                float activeTime,
+                Direction dir,
+                const PhysicsComp &physComp);
 
-    float phase = 0.0f;
+    float remainingTime;
+    float phase = 0.0f; // for rendering, maybe unneeded
+
+    void render() override;
+    void update(float dt) override;
 
     Direction dir;
     PhysicsComp phys;

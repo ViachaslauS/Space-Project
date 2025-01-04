@@ -34,6 +34,8 @@ void Game::update(float dt)
 {
     if (m_isActive)
     {
+        m_physics.update(); // processing physics must come before all other updates
+
         // Here should be logic for unpaused game
         if (IsKeyReleased(KEY_ESCAPE))
         {
@@ -68,7 +70,6 @@ void Game::update(float dt)
         m_playerShip.update(dt);
         m_gameplayManager.update(dt);
         m_gravityZones.update(dt);
-        m_physics.update();
         m_hud.update(dt);
     }
 
