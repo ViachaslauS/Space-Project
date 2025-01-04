@@ -1,16 +1,26 @@
 // by Slava
 
 #include "GameObject.h"
+#include "ObjectsManager.h"
 
-GameObject::GameObject(const VitalityParams& vitality)
+GameObject::GameObject(const VitalityParams& vitality, int teamId)
     : m_vitality(vitality)
     , m_vitalityData(vitality)
+    , m_teamId(teamId)
 {
+    auto& objManager = ObjectsManager::get();
+    objManager.addObject(this);
+}
+
+GameObject::~GameObject()
+{
+    auto& objManager = ObjectsManager::get();
+    objManager.deleteObject(this);
 }
 
 void GameObject::initialize()
 {
-
+    m_size = { static_cast<float>(m_texture.width), static_cast<float>(m_texture.height) };
 }
 
 void GameObject::update(float dt)

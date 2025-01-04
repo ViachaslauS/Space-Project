@@ -3,6 +3,9 @@
 #include <random>
 #include <type_traits>
 
+#include "GameObject.h"
+#include "GameEventsSystem.h"
+
 class GameplayManager
 {
 public:
@@ -20,11 +23,15 @@ private:
     void updateEvents(float dt);
     bool spawnEvent();
 
+    bool spawnNewObject(EventType type, Vector2 pos);
+
 private:
     uint32_t m_currDifficulty;
     float m_difficultyProgress;
 
     float m_lastEventSawnTime;
+
+    std::vector<GameObject*> m_spawnedObjects;
 
     mutable std::random_device m_rd;
     mutable std::mt19937 m_rdGen;
