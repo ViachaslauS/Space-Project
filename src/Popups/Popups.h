@@ -8,7 +8,7 @@ enum class PopupType
 {
     MainMenuPopup,
     DefeatPopup,
-    UpgradeSkillPopup,
+    LevelUpPopup,
     PausePopup,
 
     Count,
