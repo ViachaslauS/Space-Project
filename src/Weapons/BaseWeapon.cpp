@@ -79,5 +79,5 @@ void BaseWeapon::shoot()
 
 const Vector2& BaseWeapon::getNearestEnemyPosition() const
 {
-
+    return Vector2();
 }
