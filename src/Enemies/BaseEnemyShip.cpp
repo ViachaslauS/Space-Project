@@ -3,12 +3,12 @@
 #include "raymath.h"
 namespace
 {
-     constexpr VitalityParams EnemyBaseVitality = 
+     constexpr VitalityParams EnemyBaseVitality =
     {
         false,
         100.0f,
         true,
-        ShieldParams 
+        ShieldParams
         {
             100.0f,
             2.0f,
@@ -18,7 +18,7 @@ namespace
 }
 
 BaseEnemyShip::BaseEnemyShip()
-    : BaseShip(EnemyBaseVitality, 1)
+    : BaseShip(EnemyBaseVitality, 1, ObjectType::EnemyShip)
 {
 }
 

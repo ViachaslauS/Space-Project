@@ -6,13 +6,11 @@ GravityZone::GravityZone(const VitalityParams &vp,
                          const Vector2 &pos,
                          const Vector2 &size,
                          float activeTime,
-                         GravityZone::Direction dir,
-                         const PhysicsComp &physComp)
-    : GameObject(vp)
+                         GravityZone::Direction dir)
+    : GameObject(vp, -1, ObjectType::GravityZone)
     , remainingTime(activeTime)
     , phase(0.0f)
     , dir(dir)
-    , phys(phys)
 {
     m_pos = pos;
     m_size = size;
@@ -36,34 +34,49 @@ void GravityZone::update(float dt)
     phase += dt;
 }
 
+void GravityZone::onCollision(GameObject *other) {
+    auto move = false;
+    switch (other->m_objectType) {
+    case ObjectType::RocketProjectile:
+    case ObjectType::Asteroid:
+        move = true;
+    }
+
+    if (move) {
+
+    }
+}
+
 GravityZoneSystem::GravityZoneSystem(Physics &p)
     : physics(p) {}
 
 void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, float activeTime, float width, float height)
 {
-    VitalityParams p;
-    auto physComp = physics.createRectangularBody(pos, width, height, ObjectType::GravityZone);
+    VitalityParams vp;
     Vector2 size { width, height };
-    activeZones.emplace_back(
-        p,
+
+    auto &newZone = activeZones.emplace_back(std::make_unique<GravityZone>(
+        vp,
         pos,
         size,
         activeTime,
-        dir,
-        physComp);
+        dir));
+
+    auto physComp = physics.createRectangularBody(pos, width, height, newZone.get());
+    newZone->setPhysicsComp(physComp);
 }
 
 void GravityZoneSystem::update(float dt)
 {
     for (auto i = 0; i < activeZones.size();)
     {
-        activeZones[i].update(dt);
+        activeZones[i]->update(dt);
 
-        activeZones[i].remainingTime -= dt;
-        if (activeZones[i].remainingTime < 0.0f)
+        activeZones[i]->remainingTime -= dt;
+        if (activeZones[i]->remainingTime < 0.0f)
         {
-            physics.removeBody(activeZones[i].phys);
-            activeZones[i] = activeZones.back();
+            physics.removeBody(activeZones[i]->m_physicsComp);
+            activeZones[i] = std::move(activeZones.back());
             activeZones.pop_back();
         } else {
             i++;
@@ -75,6 +88,6 @@ void GravityZoneSystem::render()
 {
     for (auto &z : activeZones)
     {
-        z.render();
+        z->render();
     }
 }

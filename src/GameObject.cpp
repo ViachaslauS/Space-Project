@@ -3,10 +3,11 @@
 #include "GameObject.h"
 #include "ObjectsManager.h"
 
-GameObject::GameObject(const VitalityParams& vitality, int teamId)
+GameObject::GameObject(const VitalityParams& vitality, int teamId, ObjectType type)
     : m_vitality(vitality)
     , m_vitalityData(vitality)
     , m_teamId(teamId)
+    , m_objectType(type)
 {
     auto& objManager = ObjectsManager::get();
     objManager.addObject(this);
@@ -64,7 +65,6 @@ void GameObject::OnDie()
 
 void GameObject::reset()
 {
-
 }
 
 Vector2 GameObject::center() const
@@ -75,4 +75,14 @@ Vector2 GameObject::center() const
 int GameObject::getTeamId() const
 {
     return m_teamId;
+}
+
+void GameObject::setPhysicsComp(PhysicsComp *physicsComp)
+{
+    m_physicsComp = physicsComp;
+}
+
+void GameObject::onCollision(GameObject *other)
+{
+    // void by default?
 }

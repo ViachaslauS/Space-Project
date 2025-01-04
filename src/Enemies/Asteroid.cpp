@@ -4,12 +4,12 @@
 
 namespace
 {
-     constexpr VitalityParams AsteroidBaseVitality = 
+     constexpr VitalityParams AsteroidBaseVitality =
     {
         false,
         20.0f,
         false,
-        ShieldParams 
+        ShieldParams
         {
             0.0f,
             0.0f,
@@ -19,7 +19,7 @@ namespace
 }
 
 Asteroid::Asteroid()
-    : GameObject(AsteroidBaseVitality, 2)
+    : GameObject(AsteroidBaseVitality, 2, ObjectType::Asteroid)
 {
     m_texture = LoadTexture("Asteroid.png");
 }

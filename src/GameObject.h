@@ -1,19 +1,17 @@
 #pragma once
 
+#include "Physics.hpp"
 #include "Vitality.h"
 #include "Helpers.h"
-
-#include "raylib.h"
 
 enum class ObjectType
 {
     GravityZone,
     PlayerShip,
-    EnemyProjectile,
-    PlayerProjectile,
-    EnemyMissile,
-    PlayerMissile,
+    RocketProjectile,
+    LaserProjectile,
     Asteroid,
+    EnemyShip,
 };
 
 // base class for all in-game object like asteroids, enemy ships etc.
@@ -21,9 +19,13 @@ class GameObject
 {
 public:
     // for physics collisions
-    ObjectType m_objectType;
+    PhysicsComp *m_physicsComp = nullptr;
+    const ObjectType m_objectType;
 
-    GameObject(const VitalityParams& vitality, int teamId, ObjectType type);
+    GameObject(const VitalityParams& vitality, int teamId, ObjectType objectType);
+
+    void setPhysicsComp(PhysicsComp *physicsComp);
+
     virtual ~GameObject();
 
     virtual void initialize();
@@ -46,6 +48,7 @@ public:
     helpers::MulticastDelegate<float, const VitalityData&> OnReceiveDamage;
 
     ObjectType getObjectType();
+
 protected:
     VitalityParams m_vitality;
     VitalityData m_vitalityData;

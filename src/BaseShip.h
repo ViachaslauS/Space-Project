@@ -14,7 +14,7 @@ enum class WeaponType
 class BaseShip : public GameObject
 {
 public:
-    BaseShip(const VitalityParams& vitality, int teamId);
+    BaseShip(const VitalityParams& vitality, int teamId, ObjectType type);
 
     virtual void initialize() override;
     virtual void update(float dt) override;

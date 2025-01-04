@@ -20,8 +20,7 @@ public:
                 const Vector2 &pos,
                 const Vector2 &size,
                 float activeTime,
-                Direction dir,
-                const PhysicsComp &physComp);
+                Direction dir);
 
     float remainingTime;
     float phase = 0.0f; // for rendering, maybe unneeded
@@ -29,8 +28,9 @@ public:
     void render() override;
     void update(float dt) override;
 
+    void onCollision(GameObject *other) override;
+
     Direction dir;
-    PhysicsComp phys;
 };
 
 struct GravityZoneSystem
@@ -39,8 +39,7 @@ struct GravityZoneSystem
 
     Physics &physics;
 
-
-    std::vector<GravityZone> activeZones;
+    std::vector<std::unique_ptr<GravityZone>> activeZones;
 
     void addZone(const Vector2 &pos, GravityZone::Direction dir, float activeTime, float width, float height);
 
