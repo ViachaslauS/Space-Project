@@ -10,6 +10,7 @@
 #include "PlayerShip.h"
 #include "GameplayManager.h"
 #include "HUD/HUDContainer.hpp"
+#include "PlayerController.hpp"
 
 class Game
 {
@@ -36,6 +37,7 @@ private:
     AppContext& m_context;
 
     PlayerShip m_playerShip;
+    PlayerController m_playerController;
 
     HUDContainer m_hud;
 

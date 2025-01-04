@@ -16,8 +16,8 @@ namespace
     };
 }
 
-BaseWeapon::BaseWeapon(ObjectsManager &om, int teamId, ObjectType type)
-    : GameObject(om, WeaponBaseVitality, teamId, type)
+BaseWeapon::BaseWeapon(ObjectsManager & om, int teamId)
+    : GameObject(om, WeaponBaseVitality, teamId, ObjectType::Weapon)
 {
 }
 
@@ -34,11 +34,15 @@ void BaseWeapon::setPos(const Vector2& pos)
 void BaseWeapon::update(float dt)
 {
     GameObject::update(dt);
-    m_currentCooldown += dt;
-    if (m_currentCooldown >= m_weaponCooldown)
+
+    if (m_autoFire)
     {
-        shoot();
-        m_currentCooldown = 0.0f;
+        m_currentCooldown += dt;
+        if (m_currentCooldown >= m_weaponCooldown)
+        {
+            shoot();
+            m_currentCooldown = 0.0f;
+        }
     }
 
     for (auto projectile : m_projectiles)
@@ -54,6 +58,21 @@ void BaseWeapon::render()
     {
         projectile->render();
     }
+}
+
+void BaseWeapon::renderCrosshair(Vector2 Pos) const
+{
+
+}
+
+void BaseWeapon::setActive(bool newActive)
+{
+    m_isActive = newActive;
+}
+
+bool BaseWeapon::isActiveWeapon() const
+{
+    return m_isActive;
 }
 
 void BaseWeapon::shoot()

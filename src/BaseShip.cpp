@@ -29,6 +29,11 @@ void BaseShip::render()
     }
 }
 
+const std::vector<BaseWeapon*>& BaseShip::getWeapons() const
+{
+    return m_weapons;
+}
+
 void BaseShip::reset()
 {
     GameObject::reset();

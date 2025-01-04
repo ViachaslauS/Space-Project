@@ -36,6 +36,9 @@ add_executable(gravigun
     "src/Enemies/Asteroid.cpp"
     "src/ObjectsManager.cpp"
     "src/BaseShip.cpp"
+    "src/PlayerController.cpp"
+    "src/Weapons/Gravigun.cpp"
+    "src/Weapons/GravizoneParticles.cpp"
 
     "include/resource_dir.h"
     "src/AppContext.h"
@@ -65,7 +68,9 @@ add_executable(gravigun
     "src/ObjectsManager.h"
     "src/Weapons/Projectile.h"
     "src/BaseShip.h"
-
+    "src/PlayerController.hpp"
+    "src/Weapons/Gravigun.hpp"
+    "src/Weapons/GravizoneParticles.hpp"
 )
 
 option(BOX2D_SAMPLES "Build the Box2D samples" OFF)

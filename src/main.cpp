@@ -37,8 +37,8 @@ int main ()
     // Tell the window to use vsync and work on high DPI displays
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
-    SetRandomSeed(GetTime());
-    std::srand(GetTime());
+    SetRandomSeed(std::time(0));
+    std::srand(std::time(0));
 
     // Create the window and OpenGL context
     InitWindow(1280, 800, "gravigun is gravifun");

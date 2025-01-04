@@ -17,6 +17,7 @@ Game::Game(AppContext& ctx)
     , m_hud(*this)
 {
     m_playerShip.initialize();
+    m_playerController.setShip(&m_playerShip);
 
     //Init stats and levelup callback
     auto& stats = PlayerStats::get();
@@ -71,12 +72,12 @@ void Game::update(float dt)
         }
         noZoneDirection:
         m_playerShip.update(dt);
+        m_playerController.update(dt);
         m_gameplayManager.update(dt);
         m_gravityZones.update(dt);
         m_hud.update(dt);
+        m_background.update(dt);
     }
-
-    m_background.update(dt);
 }
 
 void Game::render()
@@ -89,6 +90,11 @@ void Game::render()
 
     m_gravityZones.render();
 
+    if (m_isActive)
+    {
+        m_playerController.render();
+    }
+
     m_physics.debugRender();
 
     m_hud.render();
@@ -97,6 +103,8 @@ void Game::render()
 void Game::setActive(bool active)
 {
     m_isActive = active;
+
+    ShowCursor();
 }
 
 const GameplayManager& Game::getGameplayManager() const
