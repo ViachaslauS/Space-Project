@@ -5,12 +5,12 @@
 
 namespace
 {
-    constexpr VitalityParams PlayerBaseVitality = 
+    constexpr VitalityParams PlayerBaseVitality =
     {
         false,
         100.0f,
         true,
-        ShieldParams 
+        ShieldParams
         {
             100.0f,
             2.0f,
@@ -28,7 +28,7 @@ namespace
 }
 
 PlayerShip::PlayerShip()
-    : BaseShip(PlayerBaseVitality, 0)
+    : BaseShip(PlayerBaseVitality, 0, ObjectType::PlayerShip)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
     m_weapons.push_back(new LaserWeapon(getTeamId()));

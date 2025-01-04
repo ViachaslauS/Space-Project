@@ -2,12 +2,12 @@
 
 namespace
 {
-    constexpr VitalityParams WeaponBaseVitality = 
+    constexpr VitalityParams WeaponBaseVitality =
     {
         false,
         10.0f,
         false,
-        ShieldParams 
+        ShieldParams
         {
             0.0f,
             0.0f,
@@ -16,8 +16,8 @@ namespace
     };
 }
 
-BaseWeapon::BaseWeapon(int teamId)
-    : GameObject(WeaponBaseVitality, teamId)
+BaseWeapon::BaseWeapon(int teamId, ObjectType type)
+    : GameObject(WeaponBaseVitality, teamId, type)
 {
 }
 

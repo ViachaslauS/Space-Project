@@ -1,7 +1,7 @@
 #include "Weapons/RocketWeapon.h"
 
 RocketWeapon::RocketWeapon(int teamId)
-    : BaseWeapon(teamId)
+    : BaseWeapon(teamId, ObjectType::RocketProjectile)
 {
     auto rocketTexture = LoadTexture("rocket.png");
     rocketTexture.height = 50;

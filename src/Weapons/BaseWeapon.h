@@ -9,7 +9,7 @@
 class BaseWeapon : public GameObject
 {
 public:
-    BaseWeapon(int teamId);
+    BaseWeapon(int teamId, ObjectType type);
 
 public:
     const Vector2& getPos() const;

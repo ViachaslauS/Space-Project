@@ -1,7 +1,7 @@
 #include "BaseShip.h"
 
-BaseShip::BaseShip(const VitalityParams& vitality, int teamId)
-    : GameObject(vitality, teamId)
+BaseShip::BaseShip(const VitalityParams& vitality, int teamId, ObjectType type)
+    : GameObject(vitality, teamId, type)
 {
 }
 
