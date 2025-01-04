@@ -11,6 +11,7 @@ class GameObject
 {
 public:
     GameObject(const VitalityParams& vitality);
+    virtual ~GameObject() = default;
 
     virtual void initialize();
 
