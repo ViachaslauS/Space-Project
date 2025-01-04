@@ -1,4 +1,5 @@
 #include "GameplayManager.h"
+#include "Physics.hpp"
 
 #include "Enemies/SmallEnemyShip.h"
 #include "Enemies/Asteroid.h"
@@ -23,8 +24,9 @@ namespace
     }
 }
 
-GameplayManager::GameplayManager()
-    : m_currDifficulty(0)
+GameplayManager::GameplayManager(Physics &physics)
+    : m_physics(physics)
+    , m_currDifficulty(0)
     , m_difficultyProgress(0.0f)
     , m_lastEventSawnTime(0.0f)
     , m_rd()

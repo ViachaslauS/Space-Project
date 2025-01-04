@@ -5,6 +5,7 @@
 #include "raymath.h"
 #include "utils.h"
 
+#include "GameObject.h"
 #include "Physics.hpp"
 
 struct Physics::B2d
@@ -79,17 +80,10 @@ namespace
     b2BodyType objectTypeToBodyType(ObjectType type) {
         switch (type) {
         case ObjectType::GravityZone:
-            return b2BodyType::b2_staticBody;
         case ObjectType::PlayerShip:
             return b2BodyType::b2_staticBody;
-        case ObjectType::EnemyProjectile:
-            return b2BodyType::b2_dynamicBody;
-        case ObjectType::PlayerProjectile:
-            return b2BodyType::b2_dynamicBody;
-        case ObjectType::EnemyMissile:
-            return b2BodyType::b2_dynamicBody;
-        case ObjectType::PlayerMissile:
-            return b2BodyType::b2_dynamicBody;
+        case ObjectType::RocketProjectile:
+        case ObjectType::LaserProjectile:
         case ObjectType::Asteroid:
             return b2BodyType::b2_dynamicBody;
         default:
@@ -100,8 +94,7 @@ namespace
     }
 
     bool isBullet(ObjectType type) {
-        return type == ObjectType::EnemyProjectile
-            || type == ObjectType::PlayerProjectile;
+        return type == ObjectType::LaserProjectile;
     }
 
     bool isSensor(ObjectType type) {
@@ -131,53 +124,58 @@ Physics::Physics()
     b2d->worldId = b2CreateWorld(&worldDef);
 }
 
-PhysicsComp Physics::createRectangularBody(const Vector2 &pos, float width, float height, GameObject *object)
+PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, float height, GameObject *object)
 {
     b2Vec2 extent = { width / 2.0f, height / 2.0f };
     b2Polygon poly = b2MakeBox(extent.x, extent.y);
     b2BodyDef bodyDef = b2DefaultBodyDef();
-    bodyDef.type = objectTypeToBodyType(type);
+    bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { pos.x, pos.y };
-    bodyDef.isBullet = isBullet(type);
+    bodyDef.isBullet = isBullet(object->m_objectType);
 
-    PhysicsComp comp;
-    comp.id = b2CreateBody(b2d->worldId, &bodyDef);
-    comps.push_back(comp);
+    auto comp = std::make_unique<PhysicsComp>();
+    comp->id = b2CreateBody(b2d->worldId, &bodyDef);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
-    b2CreatePolygonShape(comp.id, &shapeDef, &poly);
+    shapeDef.userData = reinterpret_cast<void *>(object);
+    shapeDef.isSensor = isSensor(object->m_objectType);
+    b2CreatePolygonShape(comp->id, &shapeDef, &poly);
 
-    return comp;
+    object->setPhysicsComp(comp.get());
+    comps.push_back(std::move(comp));
+    return comps.back().get();
 }
 
-PhysicsComp Physics::createCircularBody(const Vector2 &center, float radius, GameObject *object)
+PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, GameObject *object)
 {
     b2BodyDef bodyDef = b2DefaultBodyDef();
-    bodyDef.type = objectTypeToBodyType(type);
+    bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { center.x, center.y };
-    bodyDef.isBullet = isBullet(type);
+    bodyDef.isBullet = isBullet(object->m_objectType);
 
-    PhysicsComp comp;
-    comp.id = b2CreateBody(b2d->worldId, &bodyDef);
-    comps.push_back(comp);
+    auto comp = std::make_unique<PhysicsComp>();
+    comp->id = b2CreateBody(b2d->worldId, &bodyDef);
 
     b2Vec2 c { 0.0f, 0.0f };
     b2Circle circle { c, radius };
     b2ShapeDef shapeDef = b2DefaultShapeDef();
-    b2CreateCircleShape(comp.id, &shapeDef, &circle);
+    shapeDef.userData = reinterpret_cast<void *>(object);
+    shapeDef.isSensor = isSensor(object->m_objectType);
+    b2CreateCircleShape(comp->id, &shapeDef, &circle);
 
-    return comp;
+    comps.push_back(std::move(comp));
+    return comps.back().get();
 }
 
-bool Physics::removeBody(const PhysicsComp &comp)
+bool Physics::removeBody(PhysicsComp *comp)
 {
     size_t i = 0;
     while (i < comps.size())
     {
-        if (B2_ID_EQUALS(comps[i].id, comp.id))
+        if (B2_ID_EQUALS(comps[i]->id, comp->id))
         {
-            b2DestroyBody(comp.id);
-            comps[i] = comps.back();
+            b2DestroyBody(comp->id);
+            comps[i] = std::move(comps.back());
             comps.pop_back();
             return true;
         }
@@ -193,10 +191,22 @@ void Physics::update()
 {
     b2World_Step(b2d->worldId, 0.016f, 4);
 
+    b2SensorEvents sensorEvents = b2World_GetSensorEvents(b2d->worldId);
+    for (int i = 0; i < sensorEvents.beginCount; ++i)
+    {
+        b2SensorBeginTouchEvent* beginTouch = sensorEvents.beginEvents + i;
+        auto obj1 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginTouch->sensorShapeId));
+        auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginTouch->visitorShapeId));
+        obj1->onCollision(obj2);
+    }
+
     auto contactEvents = b2World_GetContactEvents(b2d->worldId);
     for (int i = 0; i < contactEvents.beginCount; ++i)
     {
-
+        b2ContactBeginTouchEvent* beginEvent = contactEvents.beginEvents + i;
+        auto obj1 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginEvent->shapeIdA));
+        auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginEvent->shapeIdB));
+        obj1->onCollision(obj2);
     }
 }
 

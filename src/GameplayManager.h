@@ -6,10 +6,14 @@
 #include "GameObject.h"
 #include "GameEventsSystem.h"
 
+struct Physics;
+
 class GameplayManager
 {
 public:
-    GameplayManager();
+    GameplayManager(Physics &p);
+
+    Physics &m_physics;
 
     void update(float dt);
     void render();

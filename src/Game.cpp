@@ -11,6 +11,7 @@
 Game::Game(AppContext& ctx)
     : m_context(ctx)
     , m_gravityZones(m_physics)
+    , m_gameplayManager(m_physics)
     , m_hud(*this)
 {
     m_playerShip.initialize();
