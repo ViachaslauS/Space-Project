@@ -54,7 +54,7 @@ namespace
                 (uint8_t)(color & 0x00ff00),
                 (uint8_t)(color & 0x0000ff),
                 0xff, };
-        for (auto i = 1z; i < points.size(); i++)
+        for (auto i = 1; i < points.size(); i++)
         {
             DrawLineEx(points[i - 1], points[i], 2.0f, c);
         }
@@ -130,7 +130,7 @@ PhysicsComp Physics::createCircularBody(const Vector2 &center, float radius)
 
 bool Physics::removeBody(const PhysicsComp &comp)
 {
-    size_t i = 0z;
+    size_t i = 0;
     while (i < comps.size())
     {
         if (B2_ID_EQUALS(comps[i].id, comp.id))
