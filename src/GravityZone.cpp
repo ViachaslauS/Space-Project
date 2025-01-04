@@ -38,7 +38,6 @@ void GravityZoneSystem::update(float dt)
 
 void GravityZoneSystem::render()
 {
-    // TODO: add gradient render depending on direction
     for (const auto &z : activeZones)
     {
         Rectangle rec;
