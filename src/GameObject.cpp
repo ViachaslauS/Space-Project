@@ -71,3 +71,8 @@ Vector2 GameObject::center() const
 {
     return { m_pos.x - m_size.x * 0.5f, m_pos.y - m_size.y * 0.5f };
 }
+
+int GameObject::getTeamId() const
+{
+    return m_teamId;
+}

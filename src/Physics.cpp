@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "box2d/box2d.h"
 #include "raylib.h"
 #include "raymath.h"
@@ -18,7 +20,7 @@ namespace
     {
         if (vertexCount <= 0) {
             // what
-            TRACELOG(LOG_ERROR, "Zero vertices in shape passed to debug draw");
+            TraceLog(LOG_ERROR, "Zero vertices in shape passed to debug draw");
             return;
         }
 
@@ -39,7 +41,7 @@ namespace
                           void* context)
     {
         if (vertexCount <= 0) {
-            TRACELOG(LOG_ERROR, "Zero vertices in shape passed to debug draw");
+            TraceLog(LOG_ERROR, "Zero vertices in shape passed to debug draw");
             return;
         }
 
@@ -73,9 +75,44 @@ namespace
 
         DrawCircleLinesV(center, radius, c);
     }
+
+    b2BodyType objectTypeToBodyType(ObjectType type) {
+        switch (type) {
+        case ObjectType::GravityZone:
+            return b2BodyType::b2_staticBody;
+        case ObjectType::PlayerShip:
+            return b2BodyType::b2_staticBody;
+        case ObjectType::EnemyProjectile:
+            return b2BodyType::b2_dynamicBody;
+        case ObjectType::PlayerProjectile:
+            return b2BodyType::b2_dynamicBody;
+        case ObjectType::EnemyMissile:
+            return b2BodyType::b2_dynamicBody;
+        case ObjectType::PlayerMissile:
+            return b2BodyType::b2_dynamicBody;
+        case ObjectType::Asteroid:
+            return b2BodyType::b2_dynamicBody;
+        default:
+            // uh oh
+            TraceLog(LOG_ERROR, "Unknown physics object type");
+            assert(false);
+        }
+    }
+
+    bool isBullet(ObjectType type) {
+        return type == ObjectType::EnemyProjectile
+            || type == ObjectType::PlayerProjectile;
+    }
+
+    bool isSensor(ObjectType type) {
+        return type == ObjectType::GravityZone;
+    }
 }
 
-Physics::~Physics() = default;
+Physics::~Physics()
+{
+    b2DestroyWorld(b2d->worldId);
+}
 
 Physics::Physics()
     : b2d(std::make_unique<B2d>())
@@ -94,12 +131,14 @@ Physics::Physics()
     b2d->worldId = b2CreateWorld(&worldDef);
 }
 
-PhysicsComp Physics::createRectangularBody(const Vector2 &pos, float width, float height)
+PhysicsComp Physics::createRectangularBody(const Vector2 &pos, float width, float height, GameObject *object)
 {
     b2Vec2 extent = { width / 2.0f, height / 2.0f };
     b2Polygon poly = b2MakeBox(extent.x, extent.y);
     b2BodyDef bodyDef = b2DefaultBodyDef();
+    bodyDef.type = objectTypeToBodyType(type);
     bodyDef.position = { pos.x, pos.y };
+    bodyDef.isBullet = isBullet(type);
 
     PhysicsComp comp;
     comp.id = b2CreateBody(b2d->worldId, &bodyDef);
@@ -111,10 +150,12 @@ PhysicsComp Physics::createRectangularBody(const Vector2 &pos, float width, floa
     return comp;
 }
 
-PhysicsComp Physics::createCircularBody(const Vector2 &center, float radius)
+PhysicsComp Physics::createCircularBody(const Vector2 &center, float radius, GameObject *object)
 {
     b2BodyDef bodyDef = b2DefaultBodyDef();
+    bodyDef.type = objectTypeToBodyType(type);
     bodyDef.position = { center.x, center.y };
+    bodyDef.isBullet = isBullet(type);
 
     PhysicsComp comp;
     comp.id = b2CreateBody(b2d->worldId, &bodyDef);
@@ -144,13 +185,19 @@ bool Physics::removeBody(const PhysicsComp &comp)
     }
 
     // no such comp >:(
-    TRACELOG(LOG_ERROR, "Failed to find PhysicsComp");
+    TraceLog(LOG_ERROR, "Failed to find PhysicsComp");
     return false;
 }
 
 void Physics::update()
 {
     b2World_Step(b2d->worldId, 0.016f, 4);
+
+    auto contactEvents = b2World_GetContactEvents(b2d->worldId);
+    for (int i = 0; i < contactEvents.beginCount; ++i)
+    {
+
+    }
 }
 
 void Physics::debugRender()
