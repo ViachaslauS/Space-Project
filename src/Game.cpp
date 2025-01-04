@@ -11,6 +11,7 @@
 Game::Game(AppContext& ctx)
     : m_context(ctx)
     , m_gravityZones(m_physics)
+    , m_hud(*this)
 {
     m_playerShip.initialize();
 
@@ -25,6 +26,8 @@ Game::Game(AppContext& ctx)
         }
         popup->show(true);
     });
+
+    m_hud.init({});
 }
 
 void Game::update(float dt)
@@ -66,6 +69,7 @@ void Game::update(float dt)
         m_gameplayManager.update(dt);
         m_gravityZones.update(dt);
         m_physics.update();
+        m_hud.update(dt);
     }
 
     m_background.update(dt);
@@ -82,9 +86,16 @@ void Game::render()
     m_gravityZones.render();
 
     m_physics.debugRender();
+
+    m_hud.render();
 }
 
 void Game::setActive(bool active)
 {
     m_isActive = active;
+}
+
+const GameplayManager& Game::getGameplayManager() const
+{
+    return m_gameplayManager;
 }
