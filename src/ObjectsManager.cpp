@@ -17,7 +17,9 @@ void ObjectsManager::deleteObject(const GameObject* obj)
     auto it = std::find(m_objects.begin(), m_objects.end(), obj);
     if (it != m_objects.end())
     {
-        m_physics.removeBody((*it)->m_physicsComp);
+        if ((*it)->m_physicsComp != nullptr) {
+            m_physics.removeBody((*it)->m_physicsComp);
+        }
         std::swap(*it, m_objects.back());
         m_objects.pop_back();
     }
