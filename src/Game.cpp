@@ -63,6 +63,7 @@ void Game::update(float dt)
         }
         noZoneDirection:
         m_playerShip.update(dt);
+        m_gameplayManager.update(dt);
         m_gravityZones.update(dt);
         m_physics.update();
     }
@@ -74,9 +75,11 @@ void Game::render()
 {
     m_background.render();
 
-    m_gravityZones.render();
+    m_gameplayManager.render();
 
     m_playerShip.render();
+
+    m_gravityZones.render();
 
     m_physics.debugRender();
 }
