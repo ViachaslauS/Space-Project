@@ -37,7 +37,7 @@ public:
 
 protected:
     virtual void shoot();
-    virtual const Vector2& getSpeedToEnemy();
+    virtual const Vector2 getSpeedToEnemy();
 
 protected:
     float m_weaponCooldown = 0.0f;
