@@ -5,6 +5,7 @@
 #include "PlayerStats.h"
 
 #include "utils.h"
+#include <algorithm>
 
 GameObject::GameObject(ObjectsManager &objectManager, const VitalityParams& vitality, int teamId, ObjectType type)
     : m_objectManager(objectManager)
@@ -28,7 +29,11 @@ void GameObject::initialize()
 
 void GameObject::update(float dt)
 {
-
+    m_noDamageTime += dt;
+    if (m_noDamageTime >= m_vitality.shieldParams.startRegenDelay && m_vitalityData.currentShield < m_vitality.shieldParams.maxShield)
+    {
+        m_vitalityData.currentShield = std::clamp(m_vitalityData.currentShield + m_vitality.shieldParams.regenPerSec * dt, 0.0f, m_vitality.shieldParams.maxShield);
+    }
 }
 
 void GameObject::render()
@@ -40,6 +45,14 @@ void GameObject::damage(float damage)
 {
     if (!m_vitality.isImmortal)
     {
+        m_noDamageTime = 0.0f;
+        if (m_vitality.hasShield)
+        {
+            auto curShield = m_vitalityData.currentShield - damage;
+            auto curDamage = damage - m_vitalityData.currentShield;
+            m_vitalityData.currentShield = curShield < 0 ? 0 : curShield;
+            damage = curDamage < 0 ? 0 : curDamage;
+        }
         m_vitalityData.currentHP -= damage;
 
         if (isDead())
