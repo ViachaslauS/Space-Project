@@ -132,6 +132,7 @@ PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, flo
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { pos.x, pos.y };
+    bodyDef.fixedRotation = true;
     bodyDef.isBullet = isBullet(object->m_objectType);
 
     auto comp = std::make_unique<PhysicsComp>();
@@ -154,6 +155,7 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { center.x, center.y };
+    bodyDef.fixedRotation = true;
     bodyDef.isBullet = isBullet(object->m_objectType);
 
     auto comp = std::make_unique<PhysicsComp>();
