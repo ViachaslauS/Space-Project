@@ -104,20 +104,20 @@ GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
     , objManager(om)
     {}
 
-void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, float activeTime, float width, float height)
+void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir)
 {
     VitalityParams vp;
-    Vector2 size { width, height };
+    Vector2 size { params.width, params.height };
 
     auto &newZone = activeZones.emplace_back(std::make_unique<GravityZone>(
                                                  objManager,
                                                  vp,
                                                  pos,
                                                  size,
-                                                 activeTime,
+                                                 params.gzLifetime,
                                                  dir));
 
-    physics.createRectangularBody(pos, width, height, newZone.get());
+    physics.createRectangularBody(pos, params.width, params.height, newZone.get());
 }
 
 void GravityZoneSystem::update(float dt)

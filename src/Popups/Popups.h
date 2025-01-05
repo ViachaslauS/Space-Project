@@ -3,6 +3,7 @@
 #include <vector>
 
 class Popup;
+class Game;
 
 enum class PopupType
 {
@@ -25,6 +26,8 @@ public:
 
     Popup* getPopup(PopupType type);
 
+    void setGame(Game* game);
+
     void update(float dt);
     void render();
 
@@ -32,4 +35,5 @@ public:
 
 private:
     std::vector<Popup*> m_popups;
+    Game* m_game = nullptr;
 };

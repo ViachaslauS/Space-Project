@@ -13,11 +13,28 @@ struct CrosshairInfo
     Rectangle textureRect;
 };
 
+enum class WeaponType
+{
+    Gravigun,
+    Laser,
+    RocketLauncher,
+
+    Count
+};
+
 class BaseWeapon : public GameObject
 {
 public:
     BaseWeapon(ObjectsManager &om, int teamId, Projectile baseProjectile);
     ~BaseWeapon();
+
+    struct WeaponParam
+    {
+        float weaponCooldown = 1.0f;
+        float weaponDamage = 1.0f;
+    };
+
+    void applyParams(WeaponParam newParams);
 
     const Vector2& getPos() const;
     void setPos(const Vector2& pos);
@@ -35,13 +52,19 @@ public:
 
     Texture getWeaponTexture() const;
 
+    WeaponType getWeaponType() const;
+
+
 protected:
     virtual void shoot();
     virtual const Vector2 getSpeedToEnemy();
 
 protected:
-    float m_weaponCooldown = 0.0f;
-    float m_currentCooldown = 0.0f;
+    WeaponType m_weaponType = WeaponType::Count;
+
+    float m_currCooldown = 0.0f;
+
+    WeaponParam m_params;
 
     bool m_autoFire = true;
     bool m_isActive = true;

@@ -4,17 +4,36 @@
 
 #include "GameObject.h"
 #include "Weapons/BaseWeapon.h"
+#include <cassert>
 
 class ObjectsManager;
 
-enum class WeaponType
+struct WeaponParamMap
 {
-    LaserWeapon,
-    RocketWeapon,
-    GraviGun,
-
-    Count,
+    WeaponType weaponType;
+    BaseWeapon::WeaponParam params;
 };
+
+inline const std::vector<WeaponParamMap> DefaultWeaponParamsMap = 
+{
+    { WeaponType::Gravigun, { 2.0f, 2.0f }},
+    { WeaponType::Laser, { 1.0f, 1.0f }},
+    { WeaponType::RocketLauncher, { 2.5, 10.0f }}
+};
+
+inline BaseWeapon::WeaponParam GetDefaultParam(WeaponType weaponType)
+{
+    for (auto& param : DefaultWeaponParamsMap)
+    {
+        if (param.weaponType == weaponType)
+        {
+            return param.params;
+        }
+    }
+
+    assert(false && "what are you looking for, huh?");
+    return {};
+}
 
 class BaseShip : public GameObject
 {
@@ -37,7 +56,15 @@ public:
 
     const std::vector<std::unique_ptr<BaseWeapon>>& getWeapons() const;
 
+    void applyWeaponParam(WeaponType weaponType, BaseWeapon::WeaponParam newParam);
+
+protected:
+    void updateAllWeaponParams();
+    BaseWeapon::WeaponParam getParamForWeaponType(WeaponType weaponType) const;
+
 protected:
     int m_maxWeaponCount = 1;
     std::vector<std::unique_ptr<BaseWeapon>> m_weapons;
+
+    std::vector<WeaponParamMap> m_weaponParams = DefaultWeaponParamsMap;
 };

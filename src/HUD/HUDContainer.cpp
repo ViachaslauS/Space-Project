@@ -16,7 +16,7 @@ void HUDContainer::init(Vector2 /*relPos*/)
 
     registerChild(m_gameState, { 0.85f, 0.05f });
     registerChild(m_playerState, { 0.025f, 0.01f });
-    registerChild(m_playerXp, { 0.07f, 0.85f });
+    registerChild(m_playerXp, { 0.09f, 0.88f });
 }
 
 void HUDContainer::update(float dt)

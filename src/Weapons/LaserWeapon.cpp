@@ -14,10 +14,11 @@ namespace
 LaserWeapon::LaserWeapon(ObjectsManager& om, int teamId)
     : BaseWeapon(om, teamId, Projectile(om, teamId, ObjectType::LaserProjectile))
 {
+    m_weaponType = WeaponType::Laser;
+
     auto laserTexture = LoadTexture("laser.png");
     laserTexture.height = 50;
     laserTexture.width = 50;
-    m_weaponCooldown = 1.5f;
 
     //Configure bullet params
     m_baseProjectile.texture = laserTexture;

@@ -11,9 +11,14 @@
 #include "GameplayManager.h"
 #include "HUD/HUDContainer.hpp"
 #include "PlayerController.hpp"
+#include "Skills.h"
+
+#include <vector>
 
 class Game
 {
+    friend class Skills;
+
 public:
     Game(AppContext& ctx);
 
@@ -27,7 +32,13 @@ public:
     const PlayerShip& getPlayerShip() const;
     const PlayerController& getPlayerController() const;
 
+    void reset();
+
+    Skills& getSkills();
+
 private:
+    Skills m_skills;
+
     Background m_background;
 
     ObjectsManager m_objectManager;

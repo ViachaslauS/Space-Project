@@ -8,11 +8,12 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
 {
     m_autoFire = false;
     m_isActive = false;
+    m_weaponType = WeaponType::Gravigun;
 
     auto rocketTexture = LoadTexture("rocket.png");
     rocketTexture.height = 50;
     rocketTexture.width = 50;
-    m_weaponCooldown = 4.0f;
+
     //Configure bullet params
     m_baseProjectile.texture = rocketTexture;
 
@@ -78,10 +79,10 @@ void Gravigun::handleInput()
         setDirection(GravityZone::Direction::Down);
     }
 
-    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_SPACE))
     {
         auto pos = GetMousePosition();
-        m_gravityZones.addZone(pos, m_currDirection, 3.0f, m_bounds.width, m_bounds.height);
+        m_gravityZones.addZone(pos, m_currDirection);
     }
 }
 
