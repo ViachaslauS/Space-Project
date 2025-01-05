@@ -129,7 +129,6 @@ void GravityZoneSystem::update(float dt)
         activeZones[i]->remainingTime -= dt;
         if (activeZones[i]->remainingTime < 0.0f)
         {
-            physics.removeBody(activeZones[i]->m_physicsComp);
             activeZones[i] = std::move(activeZones.back());
             activeZones.pop_back();
         } else {
