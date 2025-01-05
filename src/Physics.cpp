@@ -1,12 +1,14 @@
 #include <cassert>
 
 #include "box2d/box2d.h"
-#include "raylib.h"
-#include "raymath.h"
 #include "utils.h"
 
 #include "GameObject.h"
 #include "Physics.hpp"
+
+namespace rlgl {
+    #include "rlgl.h"
+}
 
 struct Physics::B2d
 {
@@ -77,6 +79,38 @@ namespace
         DrawCircleLinesV(center, radius, c);
     }
 
+    void drawSolidCapsule(b2Vec2 p1, b2Vec2 p2, float radius, b2HexColor color, void*)
+    {
+        b2Vec2 v = b2Sub(p2, p1);
+        b2Vec2 vn = b2Normalize(v);
+        b2Rot r { vn.x, vn.y };
+        float angle = b2Rot_GetAngle(r);
+        float step = M_PI / 10.0f;
+
+        rlgl::rlBegin(RL_LINES);
+        rlgl::rlColor4ub((uint8_t)(color & 0xff0000),
+                   (uint8_t)(color & 0x00ff00),
+                   (uint8_t)(color & 0x0000ff),
+                   0xff);
+
+        // NOTE: Circle outline is drawn pixel by pixel every degree (0 to 360)
+        for (int i = 1; i < 10; i += 2)
+        {
+            rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2 + step * (i - 1)) * radius,
+                             p1.y + sinf(angle + M_PI_2 + (i - 1) * step) * radius);
+            rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2 + step * i) * radius,
+                             p1.y + sinf(angle + M_PI_2 + i * step) * radius);
+        }
+        for (int i = 1; i < 10; i += 2)
+        {
+            rlgl::rlVertex2f(p2.x + cosf(angle - M_PI_2 + step * (i - 1)) * radius,
+                             p2.y + sinf(angle - M_PI_2 + (i - 1) * step) * radius);
+            rlgl::rlVertex2f(p2.x + cosf(angle + M_PI_2 + step * i) * radius,
+                             p2.y + sinf(angle + M_PI_2 + i * step) * radius);
+        }
+        rlgl::rlEnd();
+    }
+
     b2BodyType objectTypeToBodyType(ObjectType type) {
         switch (type) {
         case ObjectType::GravityZone:
@@ -135,6 +169,7 @@ Physics::Physics()
     b2d->dDraw.DrawPolygon = &drawPolygon;
     b2d->dDraw.DrawSolidPolygon = &drawSolidPolygon;
     b2d->dDraw.DrawSolidCircle = &drawSolidCircle;
+    b2d->dDraw.DrawSolidCapsule = &drawSolidCapsule;
 
     float lengthUnitsPerMeter = 200.0f;
     b2SetLengthUnitsPerMeter(lengthUnitsPerMeter);
@@ -196,6 +231,36 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     shapeDef.filter.categoryBits = getCategory(object->getTeamId());
     shapeDef.filter.maskBits = getMask(object->getTeamId());
     comp->shapeId = b2CreateCircleShape(comp->id, &shapeDef, &circle);
+
+    object->setPhysicsComp(comp.get());
+    comps.push_back(std::move(comp));
+    return comps.back().get();
+}
+
+PhysicsComp* Physics::createCapsuleBody(const Vector2 &center1, const Vector2 &center2, float thickness, GameObject *object, bool canRotate)
+{
+    b2BodyDef bodyDef = b2DefaultBodyDef();
+    b2Vec2 center { (center1.x + center2.x) * 0.5f , (center1.y + center2.y) * 0.5f };
+    bodyDef.type = objectTypeToBodyType(object->m_objectType);
+    bodyDef.position = center;
+    bodyDef.fixedRotation = !canRotate;
+    bodyDef.enableSleep = false;
+    bodyDef.isBullet = isBullet(object->m_objectType);
+
+    auto comp = std::make_unique<PhysicsComp>();
+    comp->physics = this;
+    comp->object = object;
+    comp->id = b2CreateBody(b2d->worldId, &bodyDef);
+
+    b2Vec2 c1 = b2Sub(center, { center1.x, center1.y });
+    b2Vec2 c2 = b2Sub(center, { center2.x, center2.y });
+    b2Capsule capsule { c1, c2, thickness };
+    b2ShapeDef shapeDef = b2DefaultShapeDef();
+    shapeDef.userData = reinterpret_cast<void *>(object);
+    shapeDef.isSensor = isSensor(object->m_objectType);
+    shapeDef.filter.categoryBits = getCategory(object->getTeamId());
+    shapeDef.filter.maskBits = getMask(object->getTeamId());
+    comp->shapeId = b2CreateCapsuleShape(comp->id, &shapeDef, &capsule);
 
     object->setPhysicsComp(comp.get());
     comps.push_back(std::move(comp));

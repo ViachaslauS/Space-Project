@@ -76,5 +76,4 @@ void PlayerShip::onCollision(GameObject *other)
         damage(5);
         break;
     }
-    }
 }

@@ -26,6 +26,7 @@ struct Physics
 
     PhysicsComp* createRectangularBody(const Vector2 &center, float width, float height, GameObject *object, bool canRotate = false);
     PhysicsComp* createCircularBody(const Vector2 &center, float radius, GameObject *object);
+    PhysicsComp* createCapsuleBody(const Vector2 &center1, const Vector2 &center2, float thickness, GameObject *object, bool canRotate);
 
     void setVelocity(PhysicsComp *comp, const Vector2 &velocity);
     void setVelocityWithRotation(PhysicsComp *comp, const Vector2 &velocity);

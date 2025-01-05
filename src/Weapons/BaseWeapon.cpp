@@ -124,8 +124,11 @@ void BaseWeapon::shoot()
     auto projectile = new Projectile(m_baseProjectile);
     auto pos = center();
     projectile->setPos(pos);
+    auto w2 = projectile->texture.width * 0.5f;
+    Vector2 c1 { pos.x - w2, pos.y };
+    Vector2 c2 { pos.x + w2, pos.y };
 
-    m_objectManager.getPhysics().createRectangularBody(pos, projectile->texture.height, projectile->texture.width, projectile, true);
+    m_objectManager.getPhysics().createCapsuleBody(c1, c2, projectile->texture.height, projectile, true);
     auto velocity = getSpeedToEnemy();
     projectile->setVelocity(velocity);
     projectile->setState(Projectile::State::Alive);

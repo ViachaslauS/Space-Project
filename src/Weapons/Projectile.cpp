@@ -54,9 +54,7 @@ void Projectile::render()
     if (state == State::Alive)
     {
         auto drawPos = m_pos;
-        drawPos.y -= texture.height * 0.5f;
-        drawPos.x -= texture.width * 0.5f;
-        DrawTextureEx(texture, drawPos, m_rotation * (180 / PI), 1.0f, WHITE);
+        DrawTextureEx(texture, m_pos, m_rotation * (180 / PI), 1.0f, WHITE);
     }
 }
 
