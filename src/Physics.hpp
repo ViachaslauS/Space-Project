@@ -28,6 +28,8 @@ struct Physics
     PhysicsComp* createCircularBody(const Vector2 &center, float radius, GameObject *object);
 
     void setVelocity(PhysicsComp *comp, const Vector2 &velocity);
+    void setVelocityWithRotation(PhysicsComp *comp, const Vector2 &velocity);
+
     Vector2 getVelocity(PhysicsComp *comp);
     float getRotation(PhysicsComp *comp);
 

@@ -285,6 +285,17 @@ void Physics::setVelocity(PhysicsComp *comp, const Vector2 &velocity)
     b2Body_SetLinearVelocity(comp->id, vec);
 }
 
+void Physics::setVelocityWithRotation(PhysicsComp *comp, const Vector2 &velocity)
+{
+    b2Vec2 vec { velocity.x, velocity.y };
+    b2Vec2 norm = b2Normalize(vec);
+    b2Rot rot { norm.x, norm.y };
+
+    b2Body_SetLinearVelocity(comp->id, vec);
+    auto pos = b2Body_GetPosition(comp->id);
+    b2Body_SetTransform(comp->id, pos, rot);
+}
+
 Vector2 Physics::getVelocity(PhysicsComp *comp)
 {
     auto vel = b2Body_GetLinearVelocity(comp->id);
