@@ -264,6 +264,12 @@ Vector2 Physics::getVelocity(PhysicsComp *comp)
     return ret;
 }
 
+float Physics::getRotation(PhysicsComp *comp)
+{
+    auto r = b2Body_GetRotation(comp->id);
+    return b2Rot_GetAngle(r);
+}
+
 void Physics::applyForce(PhysicsComp *comp, const Vector2 &dir)
 {
     b2Vec2 vec { dir.x, dir.y };

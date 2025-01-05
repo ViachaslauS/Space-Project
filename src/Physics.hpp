@@ -29,6 +29,8 @@ struct Physics
 
     void setVelocity(PhysicsComp *comp, const Vector2 &velocity);
     Vector2 getVelocity(PhysicsComp *comp);
+    float getRotation(PhysicsComp *comp);
+
     void applyForce(PhysicsComp *comp, const Vector2 &dir);
 
     bool removeBody(PhysicsComp *comp);
