@@ -129,7 +129,7 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
 {
     const auto enemies = m_objectManager.getEnemyObjects(m_teamId);
     Vector2 nearestPos = Vector2{ 0,0 };
-    float nearest = MAXFLOAT;
+    float nearest = std::numeric_limits<float>::max();
     for (auto& enemy : enemies)
     {
         if (enemy->m_objectType != ObjectType::GravityZone && enemy->m_objectType != ObjectType::LaserProjectile && enemy->m_objectType != ObjectType::RocketProjectile)
