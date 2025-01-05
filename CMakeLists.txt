@@ -38,6 +38,7 @@ add_executable(gravigun
     "src/Enemies/SmallEnemyShip.cpp"
     "src/Enemies/Asteroid.cpp"
     "src/ObjectsManager.cpp"
+    "src/Weapons/Projectile.cpp"
     "src/BaseShip.cpp"
     "src/PlayerController.cpp"
     "src/Weapons/Gravigun.cpp"
