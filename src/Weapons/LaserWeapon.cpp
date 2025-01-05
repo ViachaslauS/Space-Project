@@ -26,6 +26,8 @@ LaserWeapon::LaserWeapon(ObjectsManager& om, int teamId)
 
     m_crosshair.crosshairTexture = LoadTexture("arrows.png");
     m_crosshair.textureRect = CrosshairTextureRect;
+
+    m_texture = LoadTexture("laserWeapon.png");
 }
 
 void LaserWeapon::update(float dt)

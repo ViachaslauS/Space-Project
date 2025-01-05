@@ -145,7 +145,7 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             auto newShip = std::make_unique<SmallEnemyShip>(m_objectManager);
             newShip->initialize();
             newShip->setPosition(pos);
-            m_physics.createRectangularBody(pos, 100.0f, 50.0f, newShip.get());
+            m_physics.createRectangularBody(pos, 280.0f, 65.0f, newShip.get());
             newShip->setVelocity(Vector2 { 20, 0 });
             newShip->onDieSignal.add([this, obj = newShip.get()]() {
                 deleteSpawnedObject(obj);

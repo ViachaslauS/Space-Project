@@ -64,7 +64,6 @@ void BaseWeapon::update(float dt)
             m_currCooldown = 0.0f;
         }
     }
-
     for (auto i = 0; i < m_deleteCandidateProjectiles.size(); i++)
     {
         auto deleteProjectile = m_deleteCandidateProjectiles[i];
@@ -87,7 +86,12 @@ void BaseWeapon::update(float dt)
 
 void BaseWeapon::render()
 {
-    DrawTexture(m_texture, m_pos.x, m_pos.y, WHITE);
+    auto rot = m_weaponAngle * (180/PI);
+    if (rot < 0)
+    {
+        rot+= 360;
+    }
+    DrawTextureEx(m_texture, center(), rot, 1.0f, WHITE);
     for (auto projectile : m_projectiles)
     {
         projectile->render();
@@ -131,6 +135,7 @@ void BaseWeapon::shoot()
     m_objectManager.getPhysics().createCapsuleBody(c1, c2, projectile->texture.height, projectile, true);
     auto velocity = getSpeedToEnemy();
     projectile->setVelocity(velocity);
+    projectile->setPos(pos + Vector2Normalize(velocity));
     projectile->setState(Projectile::State::Alive);
     projectile->onDieSignal.add([this, projectile]() {
        m_deleteCandidateProjectiles.push_back(projectile);
@@ -147,7 +152,7 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
     {
         if (enemy->m_objectType != ObjectType::GravityZone && enemy->m_objectType != ObjectType::LaserProjectile && enemy->m_objectType != ObjectType::RocketProjectile)
         {
-            auto distanceVector = enemy->getPos() - m_pos;
+            auto distanceVector = enemy->center() - m_pos;
             float length = std::sqrt(std::pow(distanceVector.x, 2) + std::pow(distanceVector.y, 2));
             if (length < nearest)
             {
@@ -158,10 +163,17 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
     }
     if (nearestPos == Vector2{ 0, 0 })
     {
-        return Vector2{ 100, 0};
+        nearest = 1;
     }
-
     nearestPos.x += helpers::randFlt(-150.0f, 150.0f);
     nearestPos.y += helpers::randFlt(-150.0f, 150.0f);
+    calculateDirAngle(nearestPos + m_pos);
     return Vector2Scale(nearestPos, (1.0f / nearest) * 300.0f);
+}
+
+void BaseWeapon::calculateDirAngle(const Vector2 dir)
+{
+    auto normDir = Vector2Normalize(dir);
+    auto base = Vector2{ 1, 0 };
+    m_weaponAngle = Vector2Angle(normDir, base);
 }

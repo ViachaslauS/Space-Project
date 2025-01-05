@@ -21,15 +21,29 @@ namespace
 
     constexpr float ShakeSpeed = 0.6f;
     constexpr float ShakeRadius = 4.0f;
+    Vector2 screenCenter()
+    {
+        return { GetScreenWidth() * 0.5f, GetScreenHeight() * 0.5f };
+    }
+
+    std::vector<std::pair<int, int>> WeaponPositions = {
+        { 47, -30 },
+        { -150, -40 },
+        { -180, -15 },
+        { -52, 14 },
+        { 135, 6 },
+    };
 }
 
 PlayerShip::PlayerShip(ObjectsManager &om, GravityZoneSystem &gz)
     : BaseShip(om, PlayerBaseVitality, 0, ObjectType::PlayerShip)
     , m_gravityZones(gz)
 {
-    m_texture = LoadTexture("temp-spaceships/klaed_base.png");
+    m_texture = LoadTexture("mainShip.png");
+    m_texture.width = 400;
+    m_texture.height = 65;
     m_maxWeaponCount = 5;
-
+    m_weaponPositions = WeaponPositions;
     addWeapon(new Gravigun(om, getTeamId(), m_gravityZones));
 }
 

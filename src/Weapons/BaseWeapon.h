@@ -58,6 +58,7 @@ public:
 protected:
     virtual void shoot();
     virtual const Vector2 getSpeedToEnemy();
+    void calculateDirAngle(const Vector2 dir);
 
 protected:
     WeaponType m_weaponType = WeaponType::Count;
@@ -74,4 +75,6 @@ protected:
     std::vector<Projectile*> m_deleteCandidateProjectiles;
 
     Projectile m_baseProjectile;
+
+    float m_weaponAngle = 0.0f;;
 };

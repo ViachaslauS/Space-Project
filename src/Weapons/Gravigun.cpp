@@ -20,6 +20,8 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     m_bounds.x = 0.0f;
     m_bounds.y = 0.0f;
 
+    m_texture = LoadTexture("gravigunWeapon.png");
+
     setDirection(GravityZone::Direction::Right);
 }
 
