@@ -4,6 +4,9 @@
 BaseShip::BaseShip(ObjectsManager &om, const VitalityParams& vitality, int teamId, ObjectType type)
     : GameObject(om, vitality, teamId, type)
 {
+    m_weaponPlaceTexture = LoadTexture("weaponPlace.png");
+    m_weaponPlaceTexture.width = 19;
+    m_weaponPlaceTexture.height = 17;
 }
 
 void BaseShip::initialize()
@@ -14,16 +17,19 @@ void BaseShip::initialize()
 void BaseShip::update(float dt)
 {
     GameObject::update(dt);
-    for (auto& weapon : m_weapons)
+    for (auto i = 0; i < m_weapons.size(); i++)
     {
-        weapon->setPos(m_pos);
-        weapon->update(dt);
+        auto pos = Vector2{ m_pos.x + m_weaponPositions[i].first, m_pos.y + m_weaponPositions[i].second};
+
+        m_weapons[i]->setPos(pos);
+        m_weapons[i]->update(dt);
     }
 }
 
 void BaseShip::render()
 {
     GameObject::render();
+    renderWeaponPlaces();
     for (auto& weapon : m_weapons)
     {
         weapon->render();
@@ -94,4 +100,12 @@ void BaseShip::reset()
 void BaseShip::onCollision(GameObject* obj)
 {
     GameObject::onCollision(obj);
+}
+
+void BaseShip::renderWeaponPlaces()
+{
+    for (auto pos : m_weaponPositions)
+    {
+        DrawTexture(m_weaponPlaceTexture, m_pos.x + pos.first, m_pos.y + pos.second, WHITE);
+    }
 }

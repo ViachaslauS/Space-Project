@@ -4,12 +4,24 @@
 #include "Weapons/LaserWeapon.h"
 #include "Weapons/RocketWeapon.h"
 
+namespace
+{
+    std::vector<std::pair<int,int>> WeaponPos = 
+    {
+        { -15, -50 }
+    };
+}
+
 SmallEnemyShip::SmallEnemyShip(ObjectsManager &om)
     : BaseEnemyShip(om)
     , m_om(om)
 {
-    m_texture = LoadTexture("temp-spaceships/klaed_base.png");
+    m_texture = LoadTexture("smallEnemyShip.png");
+    m_texture.width = 300;
+    m_texture.height = 80;
     m_xpValue = 200.0f;
+
+    m_weaponPositions = WeaponPos;
 }
 
 void SmallEnemyShip::initialize()

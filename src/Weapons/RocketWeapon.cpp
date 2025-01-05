@@ -11,6 +11,8 @@ RocketWeapon::RocketWeapon(ObjectsManager &om, int teamId)
     //Configure bullet params
     m_baseProjectile.texture = rocketTexture;
     m_baseProjectile.damage = 200.0f;
+
+    m_texture = LoadTexture("rocketWeapon.png");
 }
 
 void RocketWeapon::update(float dt)

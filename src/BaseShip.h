@@ -6,6 +6,7 @@
 #include "Weapons/BaseWeapon.h"
 #include <cassert>
 
+#include <utility>
 class ObjectsManager;
 
 struct WeaponParamMap
@@ -14,7 +15,7 @@ struct WeaponParamMap
     BaseWeapon::WeaponParam params;
 };
 
-inline const std::vector<WeaponParamMap> DefaultWeaponParamsMap = 
+inline const std::vector<WeaponParamMap> DefaultWeaponParamsMap =
 {
     { WeaponType::Gravigun, { 2.0f, 2.0f }},
     { WeaponType::Laser, { 1.0f, 1.0f }},
@@ -46,6 +47,8 @@ public:
     virtual void render() override;
     virtual void onCollision(GameObject* obj) override;
 
+    virtual void renderWeaponPlaces();
+
     void addWeapon(BaseWeapon* newWeapon);
     int getMaxWeapons() const;
 
@@ -67,4 +70,6 @@ protected:
     std::vector<std::unique_ptr<BaseWeapon>> m_weapons;
 
     std::vector<WeaponParamMap> m_weaponParams = DefaultWeaponParamsMap;
+    std::vector<std::pair<int,int>> m_weaponPositions;
+    Texture m_weaponPlaceTexture;
 };
