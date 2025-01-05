@@ -102,7 +102,16 @@ struct GravityZoneSystem
 
     std::vector<std::unique_ptr<GravityZone>> activeZones;
 
-    void addZone(const Vector2 &pos, GravityZone::Direction dir, float activeTime, float width, float height);
+    struct GZParams
+    {
+        float gzLifetime = 0.2f;
+        float width = 80.0f;
+        float height = 100.0f;
+    };
+
+    GZParams params;
+
+    void addZone(const Vector2 &pos, GravityZone::Direction dir);
 
     void update(float dt);
     void render();

@@ -102,3 +102,13 @@ const PlayerController& Game::getPlayerController() const
 {
     return m_playerController;
 }
+
+void Game::reset()
+{
+    m_skills.resetSkills(*this);
+}
+
+Skills& Game::getSkills()
+{
+    return m_skills;
+}

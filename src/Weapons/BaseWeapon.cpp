@@ -36,6 +36,11 @@ BaseWeapon::~BaseWeapon()
     m_deleteCandidateProjectiles.clear();
 }
 
+void BaseWeapon::applyParams(WeaponParam newParams)
+{
+    m_params = newParams;
+}
+
 const Vector2& BaseWeapon::getPos() const
 {
     return m_pos;
@@ -52,11 +57,11 @@ void BaseWeapon::update(float dt)
 
     if (m_autoFire)
     {
-        m_currentCooldown += dt;
-        if (m_currentCooldown >= m_weaponCooldown)
+        m_currCooldown += dt;
+        if (m_currCooldown >= m_params.weaponCooldown)
         {
             shoot();
-            m_currentCooldown = 0.0f;
+            m_currCooldown = 0.0f;
         }
     }
 
@@ -107,6 +112,11 @@ bool BaseWeapon::isActiveWeapon() const
 Texture BaseWeapon::getWeaponTexture() const
 {
     return m_texture;
+}
+
+WeaponType BaseWeapon::getWeaponType() const
+{
+    return m_weaponType;
 }
 
 void BaseWeapon::shoot()

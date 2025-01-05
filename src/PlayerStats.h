@@ -7,8 +7,12 @@
 #include "Helpers.h"
 #include "Skills.h"
 
+class Skills;
+
 class PlayerStats final
 {
+    friend class Skills;
+
 public:
     static PlayerStats& get();
 
@@ -30,13 +34,7 @@ public:
     XPInfo getXPInfo() const;
     float getLevelUpXpCost() const;
 
-    struct SkillProp
-    {
-        Skills::Skills skill;
-        uint32_t currLevel;
-        uint32_t maxLevel;
-    };
-    std::vector<SkillProp>& getSkills();
+    int getSkillsToUpgradeMax() const;
 
     helpers::MulticastDelegate<const XPInfo&> onXPChanged;
     helpers::MulticastDelegate<> onLevelUp;
@@ -45,6 +43,9 @@ private:
     PlayerStats();
 
 private:
+    float m_xpMultiplier = 1.0f;
+
+    int m_skillsToUpgradeCount = 2;
+
     XPInfo m_xp;
-    std::vector<SkillProp> m_skillsProp;
 };

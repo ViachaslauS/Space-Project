@@ -1,99 +1,178 @@
 #include "Popups/LevelUpPopup.h"
 
 #include "external/raygui.h"
+#include "raymath.h"
 #include "PlayerStats.h"
+
+#include "external/reasings.h"
+
+#include "Game.h"
 
 namespace
 {
-    static constexpr uint32_t UpgradeSkillsMaxCount = 3;
+    const char* bgTextureName = "popups.png";
+
+    const Rectangle bgItemRect = 
+    {
+        36.0f, 45.0f,
+        243.0f, 101.0f
+    };
+
+    NPatchInfo bgNpatch = {
+        .source = bgItemRect,
+        .left = 34,
+        .top = 34,
+        .right = 102,
+        .bottom = 18,
+        .layout = NPATCH_NINE_PATCH
+    };
+
+    const Vector2 relBgScale = { 0.22f, 0.42f };
+    const float relDistBetween = 0.04f;
+
+    const int SelectedYOffset = 524;
+    const Rectangle bgItemRectSelected =
+    {
+        54.0f, SelectedYOffset,
+        243.0f, 101.0f
+    };
+
+    NPatchInfo bgNpatchSelected = {
+        .source = bgItemRectSelected,
+        .left = 33,
+        .top = 34,
+        .right = 102,
+        .bottom = 18,
+        .layout = NPATCH_NINE_PATCH
+    };
+
+    const float ScaleTime = 0.5f;
 }
 
 LevelUpPopup::LevelUpPopup()
+    : Popup()
 {
     setType(PopupType::LevelUpPopup);
+
+    m_bgTexture = LoadTexture(bgTextureName);
 }
 
 void LevelUpPopup::update(float dt)
 {
-    if (m_noUpgradeSkills)
+    if (!m_game || !m_infos.size())
     {
-        m_noUpgradeSkills = false;
         show(false);
-        return;
     }
-    if (m_skillUpgradeNum != -1)
+
+    const Vector2 overallPanelSize = Vector2Multiply(Vector2AddValue(relBgScale, relDistBetween), { (float)GetScreenWidth(), (float)GetScreenHeight() });
+    const Vector2 overallSize{ overallPanelSize.x * m_infos.size(), overallPanelSize.y };
+    const float offset = GetScreenWidth() * 0.5f - overallSize.x * 0.5f;
+
+    for (int i = 0; i < m_infos.size(); i++)
     {
-        auto& stats = PlayerStats::get();
-        auto& skills = stats.getSkills();
-        auto it = std::find_if(skills.begin(), skills.end(), [this](auto& skillProp) {
-            return m_upgradeSkills[m_skillUpgradeNum] == skillProp.skill;
-        });
-        if (it != skills.end())
+        auto& panel = m_infos[i];
+        updateScale(dt, panel);
+
+        panel.rectData.width = relBgScale.x * GetScreenWidth() * panel.currScale;
+        panel.rectData.height = relBgScale.y * GetScreenHeight() * panel.currScale;
+
+        panel.rectData.x = offset + overallPanelSize.x * i;
+        panel.rectData.y = GetScreenHeight() * 0.5f - panel.rectData.height * 0.5f;
+
+        if (isMouseIn(panel.rectData))
         {
-            it->currLevel++;
+            panel.bSelected = true;
+
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+            {
+                m_game->getSkills().learnPlayerSkill(*m_game, panel.prop.skill, panel.prop.level + 1);
+                show(false);
+            }
         }
-        m_skillUpgradeNum = -1;
-        show(false);
+        else
+        {
+            panel.bSelected = false;
+        }
     }
 }
 
 void LevelUpPopup::render()
 {
-    if (m_upgradeSkills.empty())
+    if (!m_game)
     {
-        m_noUpgradeSkills = true;
         return;
     }
-    if (GuiButton((Rectangle { 70, 60, 350, 700}), Skills::getSkillName(m_upgradeSkills[0])))
+
+    for (int i = 0; i < m_infos.size(); i++)
     {
-        m_skillUpgradeNum = 0;
-    }
-    if (m_upgradeSkills.size() > 1)
-    {
-        if (GuiButton((Rectangle { 470, 60, 350, 700}), Skills::getSkillName(m_upgradeSkills[1])))
-        {
-            m_skillUpgradeNum = 1;
-        }
-        if (m_upgradeSkills.size() > 2)
-        {
-            if (GuiButton((Rectangle { 870, 60, 350, 700}), Skills::getSkillName(m_upgradeSkills[2])))
-            {
-                m_skillUpgradeNum = 2;
-            }
-        }
+        const auto& panel = m_infos[i];
+        NPatchInfo targetNPatch = panel.bSelected ? bgNpatchSelected : bgNpatch;
+
+        DrawTextureNPatch(m_bgTexture, targetNPatch, panel.rectData, { 0.0f, 0.0f }, 0.0f, WHITE);
+        DrawText(panel.prop.desc, panel.rectData.x + panel.rectData.width * 0.05f, panel.rectData.y + panel.rectData.height * 0.3f, 30, WHITE);
     }
 }
 
 void LevelUpPopup::onStateChanged()
 {
-    if (isVisible())
-    {
-        calculateSkills();
-    }
-}
+    m_infos.clear();
 
-void LevelUpPopup::calculateSkills()
-{
-    m_upgradeSkills.clear();
-    auto& stats = PlayerStats::get();
-    auto& skills = stats.getSkills();
-    std::vector<Skills::Skills> skillsCanBeUpgraded;
-    for (const auto& skill : skills)
-    {
-        if (skill.currLevel != skill.maxLevel)
-        {
-            skillsCanBeUpgraded.push_back(skill.skill);
-        }
-    }
-    if (skillsCanBeUpgraded.empty())
+    if (!m_game || !isVisible())
     {
         return;
     }
 
-    const auto upgradeSkillCount = skillsCanBeUpgraded.size() < UpgradeSkillsMaxCount ? skillsCanBeUpgraded.size() : UpgradeSkillsMaxCount;
-    for (auto i = 0; i < upgradeSkillCount; i++)
+    auto& skills = m_game->getSkills();
+
+    auto allAvailable = skills.getAvailableToUpgrade(*m_game);
+
+    const int maxToUpgrade = PlayerStats::get().getSkillsToUpgradeMax();
+
+    for (int i = 0; i < maxToUpgrade; i++)
     {
-        const auto randSkill = GetRandomValue(0, skillsCanBeUpgraded.size() - 1);
-        m_upgradeSkills.push_back(skillsCanBeUpgraded[randSkill]);
+        if (allAvailable.empty())
+        {
+            break;
+        }
+
+        int skillIdx = std::rand() % allAvailable.size();
+
+        PanelInfo info;
+
+        info.bSelected = false;
+        info.prop = allAvailable[skillIdx];
+        info.rectData = bgItemRect;
+
+        std::swap(allAvailable[skillIdx], allAvailable.back());
+        allAvailable.pop_back();
+
+        m_infos.push_back(info);
     }
+}
+
+Vector2 LevelUpPopup::getPanelSize() const
+{
+    return Vector2Multiply(Vector2AddValue(relBgScale, relDistBetween), { (float)GetScreenWidth(), (float)GetScreenHeight() });
+
+}
+
+void LevelUpPopup::updateScale(float dt, PanelInfo& panel)
+{
+    if (panel.scaleProgress < ScaleTime)
+    {
+        panel.scaleProgress += dt;
+
+        std::clamp(panel.scaleProgress, 0.0f, 1.0f);
+
+        panel.currScale = EaseBackOut(panel.scaleProgress, 0.0f, 1.0f, ScaleTime);
+    }
+    else
+    {
+        panel.currScale = 1.0f;
+    }
+}
+
+bool LevelUpPopup::isMouseIn(Rectangle rect)
+{
+    return CheckCollisionPointRec(GetMousePosition(), rect);
 }

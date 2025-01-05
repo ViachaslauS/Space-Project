@@ -1,6 +1,7 @@
 #include "PlayerController.hpp"
 
 #include "PlayerShip.h"
+#include "PlayerStats.h"
 
 #include "external/raygui.h"
 

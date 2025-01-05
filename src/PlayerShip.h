@@ -4,10 +4,12 @@
 #include "BaseShip.h"
 
 class ObjectsManager;
+class Skills;
 struct GravityZoneSystem;
 
 class PlayerShip : public BaseShip
 {
+    friend class Skills;
 public:
     PlayerShip(ObjectsManager &om, GravityZoneSystem &gz);
 

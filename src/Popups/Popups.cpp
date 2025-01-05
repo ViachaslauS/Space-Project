@@ -40,6 +40,7 @@ bool Popups::isCoveredPopup()
 
 void Popups::addPopup(Popup* popup)
 {
+    popup->setGame(m_game);
     m_popups.push_back(popup);
 }
 
@@ -66,5 +67,15 @@ Popup* Popups::getPopup(PopupType type)
     else
     {
         return nullptr;
+    }
+}
+
+void Popups::setGame(Game* game)
+{
+    m_game = game;
+
+    for (auto popup : m_popups)
+    {
+        popup->setGame(game);
     }
 }

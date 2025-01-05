@@ -25,3 +25,8 @@ void Popup::onStateChanged()
 {
 
 }
+
+void Popup::setGame(Game* game)
+{
+    m_game = game;
+}

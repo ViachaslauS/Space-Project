@@ -5,6 +5,7 @@
 #include "Helpers.h"
 
 class ObjectsManager;
+class Skills;
 
 enum class ObjectType
 {
@@ -20,6 +21,7 @@ enum class ObjectType
 // base class for all in-game object like asteroids, enemy ships etc.
 class GameObject
 {
+    friend class Skills;
 public:
     // for physics collisions
     PhysicsComp *m_physicsComp = nullptr;

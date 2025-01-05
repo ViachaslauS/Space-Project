@@ -24,22 +24,15 @@ void PlayerStats::reset()
 {
     onXPChanged.empty();
     m_xp.reset();
-
-    m_skillsProp.clear();
-    m_skillsProp.reserve(static_cast<size_t>(Skills::Skills::Count));
-    for (auto i = 0; i < static_cast<size_t>(Skills::Skills::Count); i++)
-    {
-        m_skillsProp.push_back({ static_cast<Skills::Skills>(i), 0u, 10u });
-    }
 }
 
 void PlayerStats::addXP(float XP)
 {
-    m_xp.currentXP += XP;
+    m_xp.currentXP += XP * m_xpMultiplier;
 
-    if (m_xp.currentXP >= getLevelUpXpCost())
+    while (m_xp.currentXP >= getLevelUpXpCost())
     {
-        m_xp.currentXP -= XPPerLvl;
+        m_xp.currentXP -= getLevelUpXpCost();
         ++m_xp.currentLvl;
         onLevelUp.broadcast();
     }
@@ -57,7 +50,7 @@ float PlayerStats::getLevelUpXpCost() const
     return XPPerLvl * m_xp.currentLvl;
 }
 
-std::vector<PlayerStats::SkillProp>& PlayerStats::getSkills()
+int PlayerStats::getSkillsToUpgradeMax() const
 {
-    return m_skillsProp;
+    return m_skillsToUpgradeCount;
 }

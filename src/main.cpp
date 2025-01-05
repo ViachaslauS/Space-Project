@@ -35,13 +35,13 @@ void renderContext(AppContext& ctx)
 int main ()
 {
     // Tell the window to use vsync and work on high DPI displays
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_BORDERLESS_WINDOWED_MODE);
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
 
     SetRandomSeed(std::time(0));
     std::srand(std::time(0));
 
     // Create the window and OpenGL context
-    InitWindow(1920, 1080, "gravigun is gravifun");
+    InitWindow(1440, 900, "gravigun is gravifun");
     MaximizeWindow();
 
 
@@ -71,6 +71,8 @@ int main ()
     mainMenuPopup->show(true);
     context.popups.addPopup(mainMenuPopup);
     Game game(context);
+
+    context.popups.setGame(&game);
 
     //Disable esc key
     SetExitKey(0);

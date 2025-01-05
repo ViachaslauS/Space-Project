@@ -3,22 +3,37 @@
 #include "Popups/Popup.h"
 #include "Skills.h"
 
+#include <vector>
+
 class LevelUpPopup : public Popup
 {
 public:
     LevelUpPopup();
 
-public:
+    struct PanelInfo
+    {
+        Skills::SkillProp prop{};
+
+        Rectangle rectData{};
+        bool bSelected = false;
+
+        float scaleProgress = 0.0f;
+        float currScale = 0.0f;
+    };
+
     void update(float dt) override;
     void render() override;
     void onStateChanged() override;
 
 private:
-    void calculateSkills();
+    Vector2 getPanelSize() const;
+
+    void updateScale(float dt, PanelInfo& panel);
+
+    bool isMouseIn(Rectangle rect);
 
 private:
-    std::vector<Skills::Skills> m_upgradeSkills;
+    Texture m_bgTexture;
 
-    bool m_noUpgradeSkills = false;
-    int m_skillUpgradeNum = -1;
+    std::vector<PanelInfo> m_infos;
 };
