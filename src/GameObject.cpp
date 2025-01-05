@@ -96,12 +96,6 @@ void GameObject::onCollision(GameObject *other)
     // void by default?
 }
 
-void GameObject::applyForce(const Vector2 &dir)
+void GameObject::onSensorCollision(GameObject *other, bool exit)
 {
-    if (m_physicsComp == nullptr) {
-        // assert?
-        TraceLog(LOG_ERROR, "Attempt to apply force to non-physical game object!");
-        return;
-    }
-    m_physicsComp->physics->applyForce(m_physicsComp, dir);
 }

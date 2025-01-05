@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include "GravityZone.hpp"
 
@@ -35,7 +36,7 @@ void GravityZone::update(float dt)
     phase += dt;
 }
 
-void GravityZone::onCollision(GameObject *other) {
+void GravityZone::onSensorCollision(GameObject *other, bool exit) {
     auto move = false;
     switch (other->m_objectType) {
     case ObjectType::RocketProjectile:
@@ -47,23 +48,32 @@ void GravityZone::onCollision(GameObject *other) {
         Vector2 vec;
         switch (dir) {
         case Direction::Top:
-            vec.y = 1.0f;
+            vec.y = 200000.0f;
             vec.x = 0.0f;
             break;
         case Direction::Right:
             vec.y = 0.0f;
-            vec.x = 1.0f;
+            vec.x = 200000.0f;
             break;
         case Direction::Down:
-            vec.y = 0.0f;
-            vec.x = -1.0f;
+            vec.y = -200000.0f;
+            vec.x = 0.0f;
             break;
         case Direction::Left:
-            vec.y = -1.0f;
-            vec.x = 1.0f;
+            vec.y = 0.0f;
+            vec.x = -200000.0f;
             break;
         }
-        other->applyForce(vec);
+
+        // TODO: damage if there's opposing force
+        Vector2 res;
+        if (exit) {
+            res = Vector2Subtract(other->m_physicsComp->gravityZoneForce, vec);
+        } else {
+            res = Vector2Add(other->m_physicsComp->gravityZoneForce, vec);
+        }
+
+        other->m_physicsComp->gravityZoneForce = res;
     }
 
 }
