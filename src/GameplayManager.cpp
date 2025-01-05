@@ -147,7 +147,7 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         {
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
             newAsteroid->initialize();
-            m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
+            m_physics.createCircularBody(pos, 20.0f, newAsteroid.get());
             newAsteroid->setVelocity(calculateVelocityToPlayer(pos, true));
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
@@ -156,7 +156,7 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         {
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
             newAsteroid->initialize();
-            m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
+            m_physics.createCircularBody(pos, 20.0f, newAsteroid.get());
             newAsteroid->setVelocity(calculateVelocityToPlayer(pos, false));
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;

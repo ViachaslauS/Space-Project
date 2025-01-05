@@ -85,6 +85,7 @@ void BaseWeapon::shoot()
     if (it == m_projectiles.end())
     {
         projectile = new Projectile(m_baseProjectile);
+        m_projectiles.push_back(projectile);
     }
     else
     {
@@ -93,7 +94,6 @@ void BaseWeapon::shoot()
     projectile->pos = center();
     projectile->speed = Vector2{ 100, 0 };
     projectile->setState(Projectile::State::Alive);
-    m_projectiles.push_back(projectile);
 }
 
 const Vector2& BaseWeapon::getNearestEnemyPosition() const
