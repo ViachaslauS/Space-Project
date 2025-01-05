@@ -3,6 +3,7 @@
 
 #include "Enemies/SmallEnemyShip.h"
 #include "Enemies/Asteroid.h"
+#include "PlayerShip.h"
 
 #include <algorithm>
 #include <array>
@@ -10,6 +11,7 @@
 #include <random>
 #include <functional>
 #include <raylib.h>
+#include <raymath.h>
 
 namespace
 {
@@ -24,7 +26,7 @@ namespace
     }
 }
 
-GameplayManager::GameplayManager(Physics &physics, ObjectsManager &om)
+GameplayManager::GameplayManager(Physics &physics, ObjectsManager &om, PlayerShip* playerShip)
     : m_physics(physics)
     , m_objectManager(om)
     , m_currDifficulty(0)
@@ -32,8 +34,10 @@ GameplayManager::GameplayManager(Physics &physics, ObjectsManager &om)
     , m_lastEventSawnTime(0.0f)
     , m_rd()
     , m_rdGen(m_rd())
+    , m_playerShip(playerShip)
 {
     m_rdGen.seed(static_cast<uint32_t>(GetTime()));
+    SetRandomSeed(GetTime());
 }
 
 void GameplayManager::update(float dt)
@@ -126,7 +130,7 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             newShip->initialize();
             newShip->setPosition(pos);
             m_physics.createRectangularBody(pos, 100.0f, 50.0f, newShip.get());
-            newShip->setSpeed(Vector2 { 20, 0 });
+            newShip->setVelocity(Vector2 { 20, 0 });
 
             m_spawnedObjects.push_back(std::move(newShip));
             return true;
@@ -141,21 +145,19 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         }
         case EventType::SpawnDummyAsteroid:
         {
-            //Add speed logic
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
             newAsteroid->initialize();
             m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
-            newAsteroid->setVelocity(Vector2 { -30, 0 });
+            newAsteroid->setVelocity(calculateVelocityToPlayer(pos, true));
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
         case EventType::SpawnEvilAsteroid:
         {
-            //ADD speed logic
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
             newAsteroid->initialize();
             m_physics.createCircularBody(pos, 30.0f, newAsteroid.get());
-            newAsteroid->setVelocity(Vector2 { -30, 0 });
+            newAsteroid->setVelocity(calculateVelocityToPlayer(pos, false));
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
@@ -168,4 +170,23 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             return false;
         }
     }
+}
+
+Vector2 GameplayManager::calculateVelocityToPlayer(const Vector2& pos, bool withBigOffset)
+{
+    const auto velocityCoeff = helpers::randFlt(0.1f, 0.2f);
+
+    Vector2 offset = Vector2{ 0, 0 };
+    offset.x = helpers::randFlt(-40.0f, 40.0f);
+    offset.y = helpers::randFlt(-40.0f, 40.0f);
+
+    // For dummy asteroids
+    if (withBigOffset)
+    {
+        offset = Vector2Scale(offset, 7.0f);
+    }
+    
+    const auto dir = m_playerShip->getPos() - pos + offset;
+    const auto velocity = Vector2Scale(dir, velocityCoeff);
+    return velocity;
 }

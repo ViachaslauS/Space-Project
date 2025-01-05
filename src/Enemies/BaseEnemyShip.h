@@ -14,11 +14,5 @@ public:
     virtual void update(float dt) override;
     virtual void render() override;
 
-    void setSpeed(Vector2 speed)
-    {
-        m_speed = speed;
-    }
-
-protected:
-    Vector2 m_speed = Vector2{ 0, 0};
+    void setVelocity(const Vector2& velocity);
 };

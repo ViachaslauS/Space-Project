@@ -7,11 +7,12 @@
 #include "GameEventsSystem.h"
 
 struct Physics;
+class PlayerShip;
 
 class GameplayManager
 {
 public:
-    GameplayManager(Physics &p, ObjectsManager &om);
+    GameplayManager(Physics &p, ObjectsManager &om, PlayerShip* playerShip);
 
     Physics &m_physics;
     ObjectsManager &m_objectManager;
@@ -30,6 +31,8 @@ private:
 
     bool spawnNewObject(EventType type, Vector2 pos);
 
+    Vector2 calculateVelocityToPlayer(const Vector2& pos, bool withOffset);
+
 private:
     uint32_t m_currDifficulty;
     float m_difficultyProgress;
@@ -37,6 +40,7 @@ private:
     float m_lastEventSawnTime;
 
     std::vector<std::unique_ptr<GameObject>> m_spawnedObjects;
+    PlayerShip* m_playerShip;
 
     mutable std::random_device m_rd;
     mutable std::mt19937 m_rdGen;
