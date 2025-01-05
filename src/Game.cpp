@@ -10,7 +10,7 @@
 
 Game::Game(AppContext& ctx)
     : m_objectManager(m_physics)
-    , m_gameplayManager(m_physics, m_objectManager)
+    , m_gameplayManager(m_physics, m_objectManager, &m_playerShip)
     , m_gravityZones(m_physics, m_objectManager)
     , m_context(ctx)
     , m_playerShip(m_objectManager)

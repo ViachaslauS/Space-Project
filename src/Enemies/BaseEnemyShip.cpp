@@ -30,10 +30,14 @@ void BaseEnemyShip::initialize()
 void BaseEnemyShip::update(float dt)
 {
     BaseShip::update(dt);
-    m_pos += Vector2Scale(m_speed, dt);
 }
 
 void BaseEnemyShip::render()
 {
     BaseShip::render();
+}
+
+void BaseEnemyShip::setVelocity(const Vector2& velocity)
+{
+    m_physicsComp->physics->setVelocity(m_physicsComp, velocity);
 }

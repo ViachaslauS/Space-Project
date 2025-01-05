@@ -56,6 +56,11 @@ namespace helpers
         return static_cast<float>(std::rand()) / RAND_MAX;
     }
 
+    inline float randFlt(float min, float max)
+    {
+        return min + (static_cast<float>(std::rand()) / RAND_MAX) * (max - min);
+    }
+
     template <class T>
     T lerpWithDeviation(T base, T deviation, float progress)
     {

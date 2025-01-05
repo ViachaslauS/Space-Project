@@ -76,6 +76,11 @@ void GameObject::setPos(const Vector2 &pos)
     m_pos = pos;
 }
 
+const Vector2& GameObject::getPos() const
+{
+    return m_pos;
+}
+
 int GameObject::getTeamId() const
 {
     return m_teamId;
