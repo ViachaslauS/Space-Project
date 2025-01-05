@@ -133,6 +133,7 @@ PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, flo
     bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { pos.x, pos.y };
     bodyDef.fixedRotation = true;
+    bodyDef.enableSleep = false;
     bodyDef.isBullet = isBullet(object->m_objectType);
 
     auto comp = std::make_unique<PhysicsComp>();
@@ -156,6 +157,7 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { center.x, center.y };
     bodyDef.fixedRotation = true;
+    bodyDef.enableSleep = false;
     bodyDef.isBullet = isBullet(object->m_objectType);
 
     auto comp = std::make_unique<PhysicsComp>();
@@ -177,6 +179,10 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
 
 bool Physics::removeBody(PhysicsComp *comp)
 {
+    if (comp == nullptr) {
+        return true;
+    }
+
     size_t i = 0;
     while (i < comps.size())
     {
@@ -198,7 +204,7 @@ bool Physics::removeBody(PhysicsComp *comp)
 void Physics::update()
 {
     auto dt = GetFrameTime();
-    b2World_Step(b2d->worldId, dt, 4);
+    b2World_Step(b2d->worldId, dt > 0.016 ? 0.016 : dt, 4);
 
     b2SensorEvents sensorEvents = b2World_GetSensorEvents(b2d->worldId);
     for (int i = 0; i < sensorEvents.beginCount; ++i)

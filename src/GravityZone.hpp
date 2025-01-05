@@ -26,6 +26,9 @@ public:
                 float activeTime,
                 Direction dir);
 
+    ~GravityZone() override;
+    void applyForce(PhysicsComp *comp, bool exit);
+
     float force = 300000.0f;
     float remainingTime;
 
@@ -33,6 +36,8 @@ public:
     void update(float dt) override;
 
     void onSensorCollision(GameObject *other, bool exit) override;
+
+    std::vector<PhysicsComp *> affectedComps;
 
     class Particles
     {

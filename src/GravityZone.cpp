@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "raylib.h"
 #include "raymath.h"
 
@@ -32,6 +34,13 @@ GravityZone::GravityZone(ObjectsManager &om,
     m_size = size;
 }
 
+GravityZone::~GravityZone()
+{
+    for (auto a : affectedComps) {
+        applyForce(a, true);
+    }
+}
+
 void GravityZone::render()
 {
     rendering.render();
@@ -42,47 +51,52 @@ void GravityZone::update(float dt)
     rendering.update(dt);
 }
 
+void GravityZone::applyForce(PhysicsComp *comp, bool exit)
+{
+    Vector2 vec;
+    switch (dir) {
+    case Direction::Top:
+        vec.y = -force;
+        vec.x = 0.0f;
+        break;
+    case Direction::Right:
+        vec.y = 0.0f;
+        vec.x = force;
+        break;
+    case Direction::Down:
+        vec.y = force;
+        vec.x = 0.0f;
+        break;
+    case Direction::Left:
+        vec.y = 0.0f;
+        vec.x = -force;
+        break;
+    }
+
+    // TODO: damage if there's opposing force
+    Vector2 res;
+    if (exit) {
+        assert(std::find(affectedComps.begin(), affectedComps.end(), comp) != affectedComps.end());
+        affectedComps.erase(std::remove(affectedComps.begin(), affectedComps.end(), comp));
+        res = Vector2Subtract(comp->gravityZoneForce, vec);
+    } else {
+        affectedComps.push_back(comp);
+        res = Vector2Add(comp->gravityZoneForce, vec);
+    }
+
+    comp->gravityZoneForce = res;
+}
+
 void GravityZone::onSensorCollision(GameObject *other, bool exit) {
     auto move = false;
     switch (other->m_objectType) {
     case ObjectType::RocketProjectile:
     case ObjectType::Asteroid:
     case ObjectType::EnemyShip:
-        move = true;
+        applyForce(other->m_physicsComp, exit);
+    default:
+        break;
     }
-
-    if (move) {
-        Vector2 vec;
-        switch (dir) {
-        case Direction::Top:
-            vec.y = -force;
-            vec.x = 0.0f;
-            break;
-        case Direction::Right:
-            vec.y = 0.0f;
-            vec.x = force;
-            break;
-        case Direction::Down:
-            vec.y = force;
-            vec.x = 0.0f;
-            break;
-        case Direction::Left:
-            vec.y = 0.0f;
-            vec.x = -force;
-            break;
-        }
-
-        // TODO: damage if there's opposing force
-        Vector2 res;
-        if (exit) {
-            res = Vector2Subtract(other->m_physicsComp->gravityZoneForce, vec);
-        } else {
-            res = Vector2Add(other->m_physicsComp->gravityZoneForce, vec);
-        }
-
-        other->m_physicsComp->gravityZoneForce = res;
-    }
-
 }
 
 GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
