@@ -46,6 +46,10 @@ public:
 
     void setPos(const Vector2 &pos);
     const Vector2& getPos() const;
+
+    void setRotation(float rot);
+    float getRotation() const;
+
     void applyForce(const Vector2 &dir);
 
     int getTeamId() const;
@@ -78,6 +82,7 @@ protected:
     // temporary ?
     Vector2 m_pos = { 0.0f, 0.0f };
     Vector2 m_size = { 0.0f, 0.0f };
+    float m_rotation = 0.0f;
 
     float m_xpValue = 0.0f;
 };

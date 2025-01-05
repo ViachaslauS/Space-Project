@@ -87,6 +87,16 @@ const Vector2& GameObject::getPos() const
     return m_pos;
 }
 
+void GameObject::setRotation(float rot)
+{
+    m_rotation = rot;
+}
+
+float GameObject::getRotation() const
+{
+    return m_rotation;
+}
+
 int GameObject::getTeamId() const
 {
     return m_teamId;
