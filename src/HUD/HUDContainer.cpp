@@ -3,6 +3,8 @@
 HUDContainer::HUDContainer(Game& game)
     : HUDBase(game)
     , m_gameState(game)
+    , m_playerState(game)
+    , m_playerXp(game)
 {
 }
 
@@ -12,7 +14,9 @@ void HUDContainer::init(Vector2 /*relPos*/)
 
     // add all children here via registerChild()
 
-    registerChild(m_gameState, { 0.8f, 0.05f });
+    registerChild(m_gameState, { 0.85f, 0.05f });
+    registerChild(m_playerState, { 0.025f, 0.01f });
+    registerChild(m_playerXp, { 0.07f, 0.85f });
 }
 
 void HUDContainer::update(float dt)

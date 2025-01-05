@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GameObject.h"
 #include "Weapons/BaseWeapon.h"
 
@@ -25,13 +27,17 @@ public:
     virtual void render() override;
     virtual void onCollision(GameObject* obj) override;
 
+    void addWeapon(BaseWeapon* newWeapon);
+    int getMaxWeapons() const;
+
     void setPosition(Vector2 pos)
     {
         m_pos = pos;
     }
 
-    const std::vector<BaseWeapon*>& getWeapons() const;
+    const std::vector<std::unique_ptr<BaseWeapon>>& getWeapons() const;
 
 protected:
-    std::vector<BaseWeapon*> m_weapons;
+    int m_maxWeaponCount = 1;
+    std::vector<std::unique_ptr<BaseWeapon>> m_weapons;
 };

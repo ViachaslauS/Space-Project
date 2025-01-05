@@ -7,8 +7,8 @@
 
 namespace
 {
-    constexpr int ProgressWidth = 48;
-    constexpr int ProgressHeight = 16;
+    constexpr int ProgressWidth = 48 * 3.25f;
+    constexpr int ProgressHeight = 16 * 3.25f;
 
     constexpr int TextureColumns = 7;
     constexpr int TextureRows = 15;
@@ -17,7 +17,7 @@ namespace
     constexpr int ProgressImgNumFull = 8;
 
     constexpr float TextureSizeX = 200.0f;
-    constexpr float TextureScaleY = 2.5f;
+    constexpr float TextureScaleY = 0.5;
 }
 
 HUDGameState::HUDGameState(Game& game)
@@ -75,7 +75,7 @@ void HUDGameState::renderDifficulty()
     progressPos.x = pos.x + 5;
     progressPos.y = pos.y + 50;
 
-    Rectangle rectBack
+    constexpr Rectangle rectBack
     {
         ProgressWidth * (ProgressImgNumBack % TextureColumns),
         ProgressHeight * (ProgressImgNumBack / TextureColumns),

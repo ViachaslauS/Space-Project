@@ -19,11 +19,11 @@ void SmallEnemyShip::initialize()
     switch (weaponType)
     {
     case 0:
-        m_weapons.push_back(new LaserWeapon(m_om, getTeamId()));
+        addWeapon(new LaserWeapon(m_om, getTeamId()));
         break;
 
     case 1:
-        m_weapons.push_back(new RocketWeapon(m_om, getTeamId()));
+        addWeapon(new RocketWeapon(m_om, getTeamId()));
         break;
 
     default:

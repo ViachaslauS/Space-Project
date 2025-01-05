@@ -13,7 +13,7 @@ void BaseShip::initialize()
 void BaseShip::update(float dt)
 {
     GameObject::update(dt);
-    for (auto weapon : m_weapons)
+    for (auto& weapon : m_weapons)
     {
         weapon->setPos(m_pos);
         weapon->update(dt);
@@ -23,13 +23,26 @@ void BaseShip::update(float dt)
 void BaseShip::render()
 {
     GameObject::render();
-    for (auto weapon : m_weapons)
+    for (auto& weapon : m_weapons)
     {
         weapon->render();
     }
 }
 
-const std::vector<BaseWeapon*>& BaseShip::getWeapons() const
+void BaseShip::addWeapon(BaseWeapon* newWeapon)
+{
+    if (m_weapons.size() < m_maxWeaponCount)
+    {
+       m_weapons.push_back(std::unique_ptr<BaseWeapon>(newWeapon));
+    }
+}
+
+int BaseShip::getMaxWeapons() const
+{
+    return m_maxWeaponCount;
+}
+
+const std::vector<std::unique_ptr<BaseWeapon>>& BaseShip::getWeapons() const
 {
     return m_weapons;
 }
