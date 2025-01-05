@@ -50,6 +50,8 @@ public:
 
     int getTeamId() const;
 
+    float getCurrentHP() const;
+
     virtual void onCollision(GameObject *other);
     virtual void onSensorCollision(GameObject *other, bool exit);
 
@@ -70,4 +72,6 @@ protected:
     // temporary ?
     Vector2 m_pos = { 0.0f, 0.0f };
     Vector2 m_size = { 0.0f, 0.0f };
+
+    float m_xpValue = 0.0f;
 };

@@ -9,6 +9,7 @@ SmallEnemyShip::SmallEnemyShip(ObjectsManager &om)
     , m_om(om)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
+    m_xpValue = 200.0f;
 }
 
 void SmallEnemyShip::initialize()
