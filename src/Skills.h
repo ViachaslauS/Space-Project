@@ -42,10 +42,9 @@ public:
         SkillEnum skill;
         const char* desc;
     };
-   
-    const std::array<Mapping, (int)SkillEnum::Count> Mappings = {
-        Mapping(SkillEnum::XPGainMultiplier, "Increase\nXP Gain"),
 
+    static constexpr Mapping Mappings[] {
+        { SkillEnum::XPGainMultiplier, "Increase\nXP Gain" },
         { SkillEnum::GetGravigun, "Get additional\ngravigun" },
         { SkillEnum::GravigunPower, "Increase power\nof gravigun" },
         { SkillEnum::GravigunDamageSpeed, "Decrease\ngravigun cooldown" },

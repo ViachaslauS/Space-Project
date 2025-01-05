@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Popups/LevelUpPopup.h"
 
 #include "external/raygui.h"
@@ -12,7 +14,7 @@ namespace
 {
     const char* bgTextureName = "popups.png";
 
-    const Rectangle bgItemRect = 
+    const Rectangle bgItemRect =
     {
         36.0f, 45.0f,
         243.0f, 101.0f
