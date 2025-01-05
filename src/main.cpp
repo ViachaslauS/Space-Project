@@ -44,9 +44,15 @@ int main ()
     InitWindow(1920, 1080, "gravigun is gravifun");
     MaximizeWindow();
 
+
     // Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
     SearchAndSetResourceDir("resources");
 
+    //Music 
+    InitAudioDevice();
+
+    Music backMusic = LoadMusicStream("music.ogg");
+    PlayMusicStream(backMusic);
     // Load a texture from the resources directory
     Texture wabbit = LoadTexture("wabbit_alpha.png");
 
@@ -72,6 +78,7 @@ int main ()
     while (!WindowShouldClose())  // run the loop untill the user presses ESCAPE or presses the Close button on the window
     {
         //Update
+        UpdateMusicStream(backMusic);
         const auto dt = GetFrameTime();
         game.setActive(context.popups.isCoveredPopup() == false);
         game.update(dt);
@@ -94,7 +101,9 @@ int main ()
     // cleanup
     // unload our texture so it can be cleaned up
     UnloadTexture(wabbit);
+    UnloadMusicStream(backMusic);
 
+    CloseAudioDevice();
     // destroy the window and cleanup the OpenGL context
     CloseWindow();
     return 0;
