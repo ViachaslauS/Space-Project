@@ -115,7 +115,7 @@ Physics::Physics()
     b2d->dDraw.DrawSolidPolygon = &drawSolidPolygon;
     b2d->dDraw.DrawSolidCircle = &drawSolidCircle;
 
-    float lengthUnitsPerMeter = 128.0f;
+    float lengthUnitsPerMeter = 200.0f;
     b2SetLengthUnitsPerMeter(lengthUnitsPerMeter);
 
     b2WorldDef worldDef = b2DefaultWorldDef();
@@ -203,7 +203,15 @@ void Physics::update()
         b2SensorBeginTouchEvent* beginTouch = sensorEvents.beginEvents + i;
         auto obj1 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginTouch->sensorShapeId));
         auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginTouch->visitorShapeId));
-        obj1->onCollision(obj2);
+        obj1->onSensorCollision(obj2, false);
+    }
+
+    for (int i = 0; i < sensorEvents.endCount; ++i)
+    {
+        b2SensorEndTouchEvent* endTouch = sensorEvents.endEvents + i;
+        auto obj1 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(endTouch->sensorShapeId));
+        auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(endTouch->visitorShapeId));
+        obj1->onSensorCollision(obj2, true);
     }
 
     auto contactEvents = b2World_GetContactEvents(b2d->worldId);
@@ -216,8 +224,10 @@ void Physics::update()
     }
 
     for (auto &c : comps) {
-        auto body = b2Shape_GetBody(c->shapeId);
-        auto pos = b2Body_GetPosition(body);
+        b2Vec2 vec { c->gravityZoneForce.x, c->gravityZoneForce.y };
+        b2Body_ApplyForceToCenter(c->id, vec, true);
+
+        auto pos = b2Body_GetPosition(c->id);
         c->object->setPos({ pos.x, pos.y });
     }
 }
@@ -241,6 +251,5 @@ void Physics::setVelocity(PhysicsComp *comp, const Vector2 &velocity)
 void Physics::applyForce(PhysicsComp *comp, const Vector2 &dir)
 {
     b2Vec2 vec { dir.x, dir.y };
-    auto pos = b2Body_GetPosition(comp->id);
-    b2Body_ApplyForce(comp->id, vec, pos, true);
+    b2Body_ApplyForceToCenter(comp->id, vec, true);
 }

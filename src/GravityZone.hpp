@@ -31,7 +31,7 @@ public:
     void render() override;
     void update(float dt) override;
 
-    void onCollision(GameObject *other) override;
+    void onSensorCollision(GameObject *other, bool exit) override;
 
     Direction dir;
 };

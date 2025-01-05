@@ -5,12 +5,14 @@
 
 #include "box2d/box2d.h"
 
-struct Vector2;
+#include "raylib.h"
+
 class GameObject;
 struct Physics;
 
 struct PhysicsComp
 {
+    Vector2 gravityZoneForce;
     GameObject *object;
     b2ShapeId shapeId;
     b2BodyId id;
