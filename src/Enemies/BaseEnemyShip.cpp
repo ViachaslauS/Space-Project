@@ -16,7 +16,7 @@ namespace
         }
     };
 
-    constexpr float BaseAsteroidDamage = 200.0f;
+    constexpr float BaseAsteroidDamage = 20.0f;
 }
 
 BaseEnemyShip::BaseEnemyShip(ObjectsManager &om)
@@ -32,6 +32,23 @@ void BaseEnemyShip::initialize()
 void BaseEnemyShip::update(float dt)
 {
     BaseShip::update(dt);
+
+    auto phys = m_physicsComp->physics;
+    auto vel = phys->getVelocity(m_physicsComp);
+
+    if (vel.y > 0.5f) {
+        phys->applyForce(m_physicsComp, { 0.0f, -m_thrust });
+    } else if (vel.y < -0.5f) {
+        phys->applyForce(m_physicsComp, { 0.0f, m_thrust });
+    }
+
+    if (vel.x < 10.0f) {
+        phys->applyForce(m_physicsComp, { m_thrust, 0.0f });
+    }
+
+    if (vel.x > 40.0f) {
+        phys->applyForce(m_physicsComp, { -m_thrust, 0.0f });
+    }
 }
 
 void BaseEnemyShip::render()
@@ -48,7 +65,7 @@ void BaseEnemyShip::onCollision(GameObject* obj)
 {
     if (obj->m_objectType == ObjectType::Asteroid)
     {
-        obj->damage(obj->getCurrentHP());
+        //obj->damage(obj->getCurrentHP());
         damage(BaseAsteroidDamage);
     }
 }

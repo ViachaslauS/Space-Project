@@ -47,6 +47,7 @@ void GravityZone::onSensorCollision(GameObject *other, bool exit) {
     switch (other->m_objectType) {
     case ObjectType::RocketProjectile:
     case ObjectType::Asteroid:
+    case ObjectType::EnemyShip:
         move = true;
     }
 

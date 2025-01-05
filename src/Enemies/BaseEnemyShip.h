@@ -16,4 +16,6 @@ public:
     virtual void onCollision(GameObject* obj) override;
 
     void setVelocity(const Vector2& velocity);
+
+    float m_thrust = 200000.0f;
 };

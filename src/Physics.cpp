@@ -197,7 +197,8 @@ bool Physics::removeBody(PhysicsComp *comp)
 
 void Physics::update()
 {
-    b2World_Step(b2d->worldId, 0.016f, 4);
+    auto dt = GetFrameTime();
+    b2World_Step(b2d->worldId, dt, 4);
 
     b2SensorEvents sensorEvents = b2World_GetSensorEvents(b2d->worldId);
     for (int i = 0; i < sensorEvents.beginCount; ++i)
@@ -248,6 +249,13 @@ void Physics::setVelocity(PhysicsComp *comp, const Vector2 &velocity)
 {
     b2Vec2 vec { velocity.x, velocity.y };
     b2Body_SetLinearVelocity(comp->id, vec);
+}
+
+Vector2 Physics::getVelocity(PhysicsComp *comp)
+{
+    auto vel = b2Body_GetLinearVelocity(comp->id);
+    Vector2 ret { vel.x, vel.y };
+    return ret;
 }
 
 void Physics::applyForce(PhysicsComp *comp, const Vector2 &dir)

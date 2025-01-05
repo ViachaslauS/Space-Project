@@ -28,6 +28,7 @@ struct Physics
     PhysicsComp* createCircularBody(const Vector2 &center, float radius, GameObject *object);
 
     void setVelocity(PhysicsComp *comp, const Vector2 &velocity);
+    Vector2 getVelocity(PhysicsComp *comp);
     void applyForce(PhysicsComp *comp, const Vector2 &dir);
 
     bool removeBody(PhysicsComp *comp);
