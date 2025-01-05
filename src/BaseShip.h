@@ -23,6 +23,7 @@ public:
     virtual void update(float dt) override;
     virtual void reset() override;
     virtual void render() override;
+    virtual void onCollision(GameObject* obj) override;
 
     void setPosition(Vector2 pos)
     {

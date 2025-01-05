@@ -33,6 +33,8 @@ private:
 
     Vector2 calculateVelocityToPlayer(const Vector2& pos, bool withOffset);
 
+    void deleteSpawnedObject(GameObject* obj);
+
 private:
     uint32_t m_currDifficulty;
     float m_difficultyProgress;
@@ -40,6 +42,7 @@ private:
     float m_lastEventSawnTime;
 
     std::vector<std::unique_ptr<GameObject>> m_spawnedObjects;
+    std::vector<GameObject*> m_needToRemoveObjects;
     PlayerShip* m_playerShip;
 
     mutable std::random_device m_rd;

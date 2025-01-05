@@ -57,6 +57,8 @@ public:
 
     ObjectType getObjectType();
 
+    helpers::MulticastDelegate<> onDieSignal;
+
 protected:
     ObjectsManager &m_objectManager;
     VitalityParams m_vitality;

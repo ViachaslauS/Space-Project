@@ -13,6 +13,7 @@ public:
 
     virtual void update(float dt) override;
     virtual void render() override;
+    virtual void onCollision(GameObject* obj) override;
 
     void setVelocity(const Vector2& velocity);
 };

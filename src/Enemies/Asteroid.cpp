@@ -5,7 +5,7 @@
 
 namespace
 {
-     constexpr VitalityParams AsteroidBaseVitality =
+    constexpr VitalityParams AsteroidBaseVitality =
     {
         false,
         20.0f,
@@ -17,6 +17,7 @@ namespace
             0.0f
         }
     };
+    constexpr float AsteroidDamage = 20.0f;
 }
 
 Asteroid::Asteroid(ObjectsManager &om)
@@ -33,9 +34,22 @@ void Asteroid::initialize()
 void Asteroid::update(float dt)
 {
     GameObject::update(dt);
+    m_lifeTime -= dt;
+    if (m_lifeTime <= 0.0f)
+    {
+        OnDie();    
+    }
 }
 
 void Asteroid::setVelocity(const Vector2 &velocity)
 {
     m_physicsComp->physics->setVelocity(m_physicsComp, velocity);
+}
+
+void Asteroid::onCollision(GameObject* other)
+{
+    if (other->m_objectType == ObjectType::Asteroid)
+    {
+        return;
+    }
 }
