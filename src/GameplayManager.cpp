@@ -123,8 +123,8 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
         case EventType::SpawnSmallEnemyShip:
         {
             auto newShip = std::make_unique<SmallEnemyShip>(m_objectManager);
+            newShip->initialize();
             newShip->setPosition(pos);
-
             m_physics.createRectangularBody(pos, 100.0f, 50.0f, newShip.get());
             newShip->setSpeed(Vector2 { 20, 0 });
 
