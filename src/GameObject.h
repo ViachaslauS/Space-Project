@@ -63,6 +63,8 @@ public:
 
     ObjectType getObjectType();
 
+    const Vector2& getVelocity() const;
+
     helpers::MulticastDelegate<> onDieSignal;
     struct VitalityAll
     {

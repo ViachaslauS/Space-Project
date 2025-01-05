@@ -34,6 +34,8 @@ struct Physics
     float getRotation(PhysicsComp *comp);
 
     void applyForce(PhysicsComp *comp, const Vector2 &dir);
+    const Vector2& getVelocity() const;
+
 
     bool removeBody(PhysicsComp *comp);
     void update();
@@ -46,4 +48,6 @@ struct Physics
 
     struct B2d;
     std::unique_ptr<B2d> b2d;
+
+    Vector2 m_velocity = Vector2{ 0, 0 };
 };

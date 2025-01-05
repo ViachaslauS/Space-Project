@@ -12,7 +12,9 @@ public:
     void addObject(const GameObject* obj);
     void deleteObject(const GameObject* obj);
 
-    const std::vector<const GameObject*> getObjectsByTeamId(int teamId) const;
+    Physics& getPhysics();
+
+    const std::vector<const GameObject*> getEnemyObjects(int teamId) const;
 
 private:
     Physics &m_physics;

@@ -12,22 +12,16 @@ namespace
 }
 
 LaserWeapon::LaserWeapon(ObjectsManager& om, int teamId)
-    : BaseWeapon(om, teamId)
+    : BaseWeapon(om, teamId, Projectile(om, teamId, ObjectType::LaserProjectile))
 {
     auto laserTexture = LoadTexture("laser.png");
     laserTexture.height = 50;
     laserTexture.width = 50;
-    m_weaponCooldown = 2.0f;
+    m_weaponCooldown = 1.5f;
 
     //Configure bullet params
-    m_baseProjectile = {
-        laserTexture,
-        Vector2{0,0},
-        Vector2{0,0},
-        20.0f,
-        teamId,
-        Projectile::State::Unused,
-    };
+    m_baseProjectile.texture = laserTexture;
+    m_baseProjectile.damage = 50.0f;
 
     m_crosshair.crosshairTexture = LoadTexture("arrows.png");
     m_crosshair.textureRect = CrosshairTextureRect;

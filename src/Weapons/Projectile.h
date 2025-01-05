@@ -4,13 +4,30 @@
 #include "raymath.h"
 #include "Helpers.h"
 
-struct Projectile
+#include "GameObject.h"
+
+namespace
+{
+constexpr VitalityParams ProjectileBaseVitality =
+    {
+        false,
+        1.0f,
+        false,
+        ShieldParams
+        {
+            0.0f,
+            0.0f,
+            0.0f
+        }
+    };
+    constexpr float AsteroidDamage = 20.0f;
+}
+
+struct Projectile : public GameObject
 {
     Texture texture;
-    Vector2 pos;
-    Vector2 speed;
-    float damage;
-    int teamId;
+    Vector2 pos = Vector2{ 0, 0 };
+    float damage = 0.0f;
 
     enum class State
     {
@@ -18,7 +35,20 @@ struct Projectile
         Unused,
     };
 
-    State state;
+    State state = State::Unused;
+
+    Projectile(ObjectsManager &om, int teamId, ObjectType type)
+        :GameObject(om, ProjectileBaseVitality, teamId, type)
+    {
+        
+    }
+
+    Projectile(const Projectile& proj)
+        :GameObject(proj.m_objectManager, ProjectileBaseVitality, proj.m_teamId, proj.m_objectType)
+    {
+        texture = proj.texture;
+        damage = proj.damage;
+    }
     State getState()
     {
         return state;
@@ -28,25 +58,39 @@ struct Projectile
         state = newState;
     }
 
-    void update(float dt)
+    void update(float dt) override
     {
         if (state == State::Alive)
         {
-            pos += Vector2Scale(speed, dt);
-            if (helpers::isInWindow(pos) == false)
+            if (helpers::isInWindow(m_pos) == false)
             {
-                state = State::Unused;
+                OnDie();
             }
         }
     }
 
-    void render()
+    void render() override
     {
         if (state == State::Alive)
         {
-            auto drawPos = pos;
+            auto drawPos = m_pos;
             drawPos.y -= texture.height * 0.5f;
-            DrawTextureV(texture, drawPos, WHITE);
+            drawPos.x -= texture.width * 0.5f;
+            DrawTextureEx(texture, drawPos, m_rotation * (180/PI), 1.0f, WHITE);
+        }
+    }
+
+    void setVelocity(const Vector2& velocity)
+    {
+        m_physicsComp->physics->setVelocityWithRotation(m_physicsComp, velocity);
+    }
+
+    void onCollision(GameObject* obj) override
+    {
+        if (obj->getTeamId() != m_teamId)
+        {
+            obj->damage(damage);
+            OnDie();
         }
     }
 };

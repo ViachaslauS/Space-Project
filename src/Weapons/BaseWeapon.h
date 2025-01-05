@@ -16,7 +16,8 @@ struct CrosshairInfo
 class BaseWeapon : public GameObject
 {
 public:
-    BaseWeapon(ObjectsManager &om, int teamId);
+    BaseWeapon(ObjectsManager &om, int teamId, Projectile baseProjectile);
+    ~BaseWeapon();
 
     const Vector2& getPos() const;
     void setPos(const Vector2& pos);
@@ -36,7 +37,7 @@ public:
 
 protected:
     virtual void shoot();
-    virtual const Vector2& getNearestEnemyPosition() const;
+    virtual const Vector2& getSpeedToEnemy();
 
 protected:
     float m_weaponCooldown = 0.0f;
@@ -47,6 +48,7 @@ protected:
 
     Texture m_texture;
     std::vector<Projectile*> m_projectiles;
+    std::vector<Projectile*> m_deleteCandidateProjectiles;
 
     Projectile m_baseProjectile;
 };

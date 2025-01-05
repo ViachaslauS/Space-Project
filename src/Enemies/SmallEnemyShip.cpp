@@ -27,6 +27,7 @@ void SmallEnemyShip::initialize()
         break;
 
     default:
+        addWeapon(new LaserWeapon(m_om, getTeamId()));
         break;
     }
 }

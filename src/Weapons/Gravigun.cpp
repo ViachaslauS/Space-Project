@@ -2,7 +2,7 @@
 #include "GravityZone.hpp"
 
 Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
-    : BaseWeapon(om, teamId)
+    : BaseWeapon(om, teamId, Projectile(om, teamId, ObjectType::RocketProjectile))
     , m_gravityZones(gz)
     , m_crosshair({ 0.0f, 0.0f }, { 0.0f, 0.0f }, GravityZone::Direction::Right)
 {
@@ -14,14 +14,7 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     rocketTexture.width = 50;
     m_weaponCooldown = 4.0f;
     //Configure bullet params
-    m_baseProjectile = {
-        rocketTexture,
-        Vector2{0,0},
-        Vector2{0,0},
-        100.0f,
-        teamId,
-        Projectile::State::Unused,
-    };
+    m_baseProjectile.texture = rocketTexture;
 
     m_bounds.x = 0.0f;
     m_bounds.y = 0.0f;

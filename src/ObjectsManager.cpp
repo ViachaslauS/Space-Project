@@ -25,11 +25,16 @@ void ObjectsManager::deleteObject(const GameObject* obj)
     }
 }
 
-const std::vector<const GameObject*> ObjectsManager::getObjectsByTeamId(int teamId) const
+const std::vector<const GameObject*> ObjectsManager::getEnemyObjects(int teamId) const
 {
     std::vector<const GameObject*> result;
     std::copy_if(m_objects.begin(), m_objects.end(), std::back_inserter(result), [teamId](const auto object) {
-        return object->getTeamId() == teamId;
+        return object->getTeamId() != teamId;
     });
     return result;
+}
+
+Physics& ObjectsManager::getPhysics()
+{
+    return m_physics;
 }
