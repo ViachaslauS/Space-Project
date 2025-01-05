@@ -2,6 +2,9 @@
 
 #include "GameObject.h"
 #include "ObjectsManager.h"
+#include "PlayerStats.h"
+
+#include "utils.h"
 
 GameObject::GameObject(ObjectsManager &objectManager, const VitalityParams& vitality, int teamId, ObjectType type)
     : m_objectManager(objectManager)
@@ -41,6 +44,8 @@ void GameObject::damage(float damage)
 
         if (isDead())
         {
+            auto& stats = PlayerStats::get();
+            stats.addXP(m_xpValue);
             OnDie();
         }
     }
@@ -55,7 +60,7 @@ bool GameObject::isDead() const
         return false;
     }
 
-    return m_vitalityData.currentHP < 0.0f;
+    return m_vitalityData.currentHP <= 0.0f;
 }
 
 void GameObject::OnDie()
@@ -99,4 +104,9 @@ void GameObject::onCollision(GameObject *other)
 
 void GameObject::onSensorCollision(GameObject *other, bool exit)
 {
+}
+
+float GameObject::getCurrentHP() const
+{
+    return m_vitalityData.currentHP;
 }

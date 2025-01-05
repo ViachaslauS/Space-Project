@@ -24,6 +24,7 @@ Asteroid::Asteroid(ObjectsManager &om)
     : GameObject(om, AsteroidBaseVitality, 2, ObjectType::Asteroid)
 {
     m_texture = LoadTexture("Asteroid.png");
+    m_xpValue = 100.0f;
 }
 
 void Asteroid::initialize()

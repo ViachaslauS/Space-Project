@@ -52,6 +52,7 @@ void GameplayManager::update(float dt)
         });
         if (it != m_spawnedObjects.end())
         {
+            
             std::swap(*it, m_spawnedObjects.back());
             m_spawnedObjects.pop_back();
             std::swap(m_needToRemoveObjects[i], m_needToRemoveObjects.back());

@@ -48,7 +48,7 @@ void BaseEnemyShip::onCollision(GameObject* obj)
 {
     if (obj->m_objectType == ObjectType::Asteroid)
     {
-        obj->OnDie();
+        obj->damage(obj->getCurrentHP());
         damage(BaseAsteroidDamage);
     }
 }
