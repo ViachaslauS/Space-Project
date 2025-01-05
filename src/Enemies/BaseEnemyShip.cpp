@@ -36,18 +36,21 @@ void BaseEnemyShip::update(float dt)
     auto phys = m_physicsComp->physics;
     auto vel = phys->getVelocity(m_physicsComp);
 
+    Vector2 force { 0.0f, 0.0f };
     if (vel.y > 0.5f) {
-        phys->applyForce(m_physicsComp, { 0.0f, -m_thrust });
+        force.y = -m_thrust;
     } else if (vel.y < -0.5f) {
-        phys->applyForce(m_physicsComp, { 0.0f, m_thrust });
+        force.y = m_thrust;
     }
 
     if (vel.x < 10.0f) {
-        phys->applyForce(m_physicsComp, { m_thrust, 0.0f });
+        force.x = m_thrust;
+    } else if (vel.x > 60.0f) {
+        force.x = -m_thrust;
     }
 
-    if (vel.x > 40.0f) {
-        phys->applyForce(m_physicsComp, { -m_thrust, 0.0f });
+    if (force.x != 0.0f || force.y != 0.0f) {
+        phys->applyForce(m_physicsComp, force);
     }
 }
 
@@ -65,7 +68,7 @@ void BaseEnemyShip::onCollision(GameObject* obj)
 {
     if (obj->m_objectType == ObjectType::Asteroid)
     {
-        //obj->damage(obj->getCurrentHP());
+        obj->damage(5);
         damage(BaseAsteroidDamage);
     }
 }
