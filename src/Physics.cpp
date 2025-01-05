@@ -125,14 +125,14 @@ Physics::Physics()
     b2d->worldId = b2CreateWorld(&worldDef);
 }
 
-PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, float height, GameObject *object)
+PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, float height, GameObject *object, bool canRotate)
 {
     b2Vec2 extent = { width / 2.0f, height / 2.0f };
     b2Polygon poly = b2MakeBox(extent.x, extent.y);
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = { pos.x, pos.y };
-    bodyDef.fixedRotation = true;
+    bodyDef.fixedRotation = !canRotate;
     bodyDef.enableSleep = false;
     bodyDef.isBullet = isBullet(object->m_objectType);
 
