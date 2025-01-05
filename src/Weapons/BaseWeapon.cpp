@@ -1,5 +1,9 @@
 #include "Weapons/BaseWeapon.h"
 
+#include "ObjectsManager.h"
+
+#include <math.h>
+
 namespace
 {
     constexpr VitalityParams WeaponBaseVitality =
@@ -16,9 +20,20 @@ namespace
     };
 }
 
-BaseWeapon::BaseWeapon(ObjectsManager & om, int teamId)
+BaseWeapon::BaseWeapon(ObjectsManager & om, int teamId, Projectile baseProjectile)
     : GameObject(om, WeaponBaseVitality, teamId, ObjectType::Weapon)
+    , m_baseProjectile(baseProjectile)
 {
+}
+
+BaseWeapon::~BaseWeapon()
+{
+    for (auto& projectile : m_projectiles)
+    {
+        delete projectile;
+    }
+    m_projectiles.clear();
+    m_deleteCandidateProjectiles.clear();
 }
 
 const Vector2& BaseWeapon::getPos() const
@@ -45,7 +60,21 @@ void BaseWeapon::update(float dt)
         }
     }
 
-    for (auto projectile : m_projectiles)
+    for (auto i = 0; i < m_deleteCandidateProjectiles.size(); i++)
+    {
+        auto deleteProjectile = m_deleteCandidateProjectiles[i];
+        auto it = std::find(m_projectiles.begin(), m_projectiles.end(), deleteProjectile);
+        if (it != m_projectiles.end())
+        {
+            std::swap(m_deleteCandidateProjectiles[i], m_deleteCandidateProjectiles.back());
+            m_deleteCandidateProjectiles.pop_back();
+            std::swap(*it, m_projectiles.back());
+            delete m_projectiles.back();
+            m_projectiles.pop_back();
+            i--;
+        }
+    }
+    for (auto& projectile : m_projectiles)
     {
         projectile->update(dt);
     }
@@ -82,26 +111,43 @@ Texture BaseWeapon::getWeaponTexture() const
 
 void BaseWeapon::shoot()
 {
-    Projectile* projectile = nullptr;
+    auto projectile = new Projectile(m_baseProjectile);
+    auto pos = center();
+    projectile->setPos(pos);
 
-    auto it = std::find_if(m_projectiles.begin(), m_projectiles.end(), [](const auto projectile) {
-        return projectile->getState() == Projectile::State::Unused;
-    });
-    if (it == m_projectiles.end())
-    {
-        projectile = new Projectile(m_baseProjectile);
-        m_projectiles.push_back(projectile);
-    }
-    else
-    {
-        projectile = *it;
-    }
-    projectile->pos = center();
-    projectile->speed = Vector2{ 100, 0 };
+    m_objectManager.getPhysics().createRectangularBody(pos, projectile->texture.height, projectile->texture.width, projectile, true);
+    auto velocity = getSpeedToEnemy();
+    projectile->setVelocity(velocity);
     projectile->setState(Projectile::State::Alive);
+    projectile->onDieSignal.add([this, projectile]() {
+       m_deleteCandidateProjectiles.push_back(projectile);
+    });
+    m_projectiles.push_back(projectile);
 }
 
-const Vector2& BaseWeapon::getNearestEnemyPosition() const
+const Vector2& BaseWeapon::getSpeedToEnemy()
 {
-    return Vector2();
+    const auto enemies = m_objectManager.getEnemyObjects(m_teamId);
+    Vector2 nearestPos = Vector2{ 0,0 };
+    Vector2 enemyPos = Vector2{ 0,0 };
+    float nearest = MAXFLOAT;
+    for (auto& enemie : enemies)
+    {
+        if (enemie->m_objectType != ObjectType::GravityZone && enemie->m_objectType != ObjectType::LaserProjectile && enemie->m_objectType != ObjectType::RocketProjectile)
+        {
+            auto distanceVector = enemie->getPos() - m_pos;
+            float length = std::sqrt(std::pow(distanceVector.x, 2) + std::pow(distanceVector.y, 2));
+            if (length < nearest)
+            {
+                nearest = length;
+                nearestPos = distanceVector;
+                enemyPos = enemie->getPos();
+            }
+        }
+    }
+    if (nearestPos == Vector2{ 0, 0 })
+    {
+        return Vector2{ 100, 0};
+    }
+    return Vector2Scale(nearestPos, (1.0f / nearest) * 300.0f);
 }
