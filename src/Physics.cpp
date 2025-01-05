@@ -101,6 +101,27 @@ namespace
     bool isSensor(ObjectType type) {
         return type == ObjectType::GravityZone;
     }
+
+    uint32_t getCategory(int teamId) {
+        // 0 player
+        // 1 enemy
+        // 2 asteroids
+        if (teamId == 0) {
+            return 1;
+        } else if (teamId == 1) {
+            return 1 << 1;
+        }
+        return 1 << 2;
+    }
+
+    uint32_t getMask(int teamId) {
+        if (teamId == 0) {
+            return 1 << 1 | 1 << 2;
+        } else if (teamId == 1) {
+            return 1 | 1 << 2;
+        }
+        return 1 | 1 << 1 | 1 << 2;
+    }
 }
 
 Physics::~Physics()
@@ -144,6 +165,8 @@ PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, flo
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.userData = reinterpret_cast<void *>(object);
     shapeDef.isSensor = isSensor(object->m_objectType);
+    shapeDef.filter.categoryBits = getCategory(object->getTeamId());
+    shapeDef.filter.maskBits = getMask(object->getTeamId());
     comp->shapeId = b2CreatePolygonShape(comp->id, &shapeDef, &poly);
 
     object->setPhysicsComp(comp.get());
@@ -170,6 +193,8 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.userData = reinterpret_cast<void *>(object);
     shapeDef.isSensor = isSensor(object->m_objectType);
+    shapeDef.filter.categoryBits = getCategory(object->getTeamId());
+    shapeDef.filter.maskBits = getMask(object->getTeamId());
     comp->shapeId = b2CreateCircleShape(comp->id, &shapeDef, &circle);
 
     object->setPhysicsComp(comp.get());

@@ -25,7 +25,7 @@ GravityZone::GravityZone(ObjectsManager &om,
                          const Vector2 &size,
                          float activeTime,
                          GravityZone::Direction dir)
-    : GameObject(om, vp, -1, ObjectType::GravityZone)
+    : GameObject(om, vp, 0, ObjectType::GravityZone)
     , remainingTime(activeTime)
     , dir(dir)
     , rendering(pos, size, dir)
