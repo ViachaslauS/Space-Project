@@ -149,5 +149,8 @@ const Vector2& BaseWeapon::getSpeedToEnemy()
     {
         return Vector2{ 100, 0};
     }
+
+    nearestPos.x += helpers::randFlt(-150.0f, 150.0f);
+    nearestPos.y += helpers::randFlt(-150.0f, 150.0f);
     return Vector2Scale(nearestPos, (1.0f / nearest) * 300.0f);
 }
