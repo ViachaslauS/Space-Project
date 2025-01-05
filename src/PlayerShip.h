@@ -4,11 +4,12 @@
 #include "BaseShip.h"
 
 class ObjectsManager;
+struct GravityZoneSystem;
 
 class PlayerShip : public BaseShip
 {
 public:
-    PlayerShip(ObjectsManager &om);
+    PlayerShip(ObjectsManager &om, GravityZoneSystem &gz);
 
     virtual void initialize() override;
     virtual void update(float dt) override;
@@ -16,5 +17,6 @@ public:
     virtual void render() override;
 
 protected:
+    GravityZoneSystem &m_gravityZones;
     float m_offsetProgress = 0.0f;
 };

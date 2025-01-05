@@ -28,11 +28,12 @@ namespace
     }
 }
 
-PlayerShip::PlayerShip(ObjectsManager &om)
+PlayerShip::PlayerShip(ObjectsManager &om, GravityZoneSystem &gz)
     : BaseShip(om, PlayerBaseVitality, 0, ObjectType::PlayerShip)
+    , m_gravityZones(gz)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
-    m_weapons.push_back(new Gravigun(om, getTeamId()));
+    m_weapons.push_back(new Gravigun(om, getTeamId(), m_gravityZones));
 }
 
 void PlayerShip::initialize()

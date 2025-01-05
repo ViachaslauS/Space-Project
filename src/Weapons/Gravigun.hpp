@@ -3,10 +3,12 @@
 #include "Weapons/BaseWeapon.h"
 #include "Weapons/GravizoneParticles.hpp"
 
+struct GravityZoneSystem;
+
 class Gravigun : public BaseWeapon
 {
 public:
-    Gravigun(ObjectsManager& om, int teamId);
+    Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz);
 
 public:
     struct Params
@@ -31,6 +33,7 @@ protected:
     void setDirection(GravityZone::Direction newDirection);
 
 protected:
+    GravityZoneSystem &m_gravityZones;
     Texture m_gravizoneBG;
     Params m_params;
 
