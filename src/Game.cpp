@@ -13,7 +13,7 @@ Game::Game(AppContext& ctx)
     , m_gameplayManager(m_physics, m_objectManager, &m_playerShip)
     , m_gravityZones(m_physics, m_objectManager)
     , m_context(ctx)
-    , m_playerShip(m_objectManager)
+    , m_playerShip(m_objectManager, m_gravityZones)
     , m_hud(*this)
 {
     m_playerShip.initialize();
@@ -52,25 +52,7 @@ void Game::update(float dt)
             pausePopup->show(true);
         } else if (IsKeyReleased(KEY_BACKSLASH)) {
             m_physics.toggleDebugRender();
-        } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            TRACELOG(LOG_ERROR, "MOUSE BUTTON RELEASED");
-            GravityZone::Direction dir;
-            if (IsKeyPressed(KEY_W)) {
-                dir = GravityZone::Direction::Top;
-            } else if (IsKeyPressed(KEY_D)) {
-                dir = GravityZone::Direction::Right;
-            } else if (IsKeyPressed(KEY_S)) {
-                dir = GravityZone::Direction::Down;
-            } else if (IsKeyPressed(KEY_A)) {
-                dir = GravityZone::Direction::Left;
-            } else {
-                goto noZoneDirection;
-            }
-
-            auto pos = GetMousePosition();
-            m_gravityZones.addZone(pos, dir, 3.0f, 150.0f, 150.0f);
         }
-        noZoneDirection:
         m_playerShip.update(dt);
         m_playerController.update(dt);
         m_gameplayManager.update(dt);

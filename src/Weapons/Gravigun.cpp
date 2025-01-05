@@ -1,10 +1,10 @@
-#include "Weapons/RocketWeapon.h"
-#include "Gravigun.hpp"
+#include "Weapons/Gravigun.hpp"
+#include "GravityZone.hpp"
 
 namespace
 {
     const char* GravizoneBGNPPath = "gravizone_bg_np.png";
-    const NPatchInfo GravizoneNPatch = 
+    const NPatchInfo GravizoneNPatch =
     {
         .source{ 0, 0, 5, 1 },
         .left{0},
@@ -15,8 +15,9 @@ namespace
     };
 }
 
-Gravigun::Gravigun(ObjectsManager& om, int teamId)
+Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     : BaseWeapon(om, teamId)
+    , m_gravityZones(gz)
 {
     m_autoFire = false;
     m_isActive = false;
@@ -99,6 +100,12 @@ void Gravigun::handleInput()
     {
         setDirection(GravityZone::Direction::Down);
     }
+
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    {
+        auto pos = GetMousePosition();
+        m_gravityZones.addZone(pos, m_currDirection, 3.0f, m_bounds.width, m_bounds.height);
+    }
 }
 
 void Gravigun::setDirection(GravityZone::Direction newDirection)
@@ -129,4 +136,3 @@ void Gravigun::setDirection(GravityZone::Direction newDirection)
 
     m_particles.changeDirection(newDirection);
 }
-

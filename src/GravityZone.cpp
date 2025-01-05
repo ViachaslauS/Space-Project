@@ -48,20 +48,20 @@ void GravityZone::onSensorCollision(GameObject *other, bool exit) {
         Vector2 vec;
         switch (dir) {
         case Direction::Top:
-            vec.y = 200000.0f;
+            vec.y = -force;
             vec.x = 0.0f;
             break;
         case Direction::Right:
             vec.y = 0.0f;
-            vec.x = 200000.0f;
+            vec.x = force;
             break;
         case Direction::Down:
-            vec.y = -200000.0f;
+            vec.y = force;
             vec.x = 0.0f;
             break;
         case Direction::Left:
             vec.y = 0.0f;
-            vec.x = -200000.0f;
+            vec.x = -force;
             break;
         }
 

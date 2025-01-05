@@ -25,6 +25,7 @@ public:
                 float activeTime,
                 Direction dir);
 
+    float force = 300000.0f;
     float remainingTime;
     float phase = 0.0f; // for rendering, maybe unneeded
 
