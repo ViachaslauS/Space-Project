@@ -263,6 +263,9 @@ void Physics::update()
 
         auto pos = b2Body_GetPosition(c->id);
         c->object->setPos({ pos.x, pos.y });
+
+        auto rot = b2Body_GetRotation(c->id);
+        c->object->setRotation(b2Rot_GetAngle(rot));
     }
 }
 

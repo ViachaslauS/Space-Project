@@ -28,6 +28,7 @@ public:
                 Direction dir);
 
     ~GravityZone() override;
+
     void applyForce(PhysicsComp *comp, bool exit);
 
     float force = 300000.0f;
