@@ -13,4 +13,9 @@ public:
     virtual void initialize() override;
 
     void setVelocity(const Vector2 &velocity);
+
+    void onCollision(GameObject* other) override;
+
+private:
+    float m_lifeTime = 15.0f;
 };

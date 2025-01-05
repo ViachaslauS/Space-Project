@@ -39,6 +39,11 @@ namespace helpers
             m_delegates.empty();
         }
 
+        void clear()
+        {
+            m_delegates.clear();
+        }
+
         void remove(DelegateHandle handle)
         {
             m_delegates.erase(handle);

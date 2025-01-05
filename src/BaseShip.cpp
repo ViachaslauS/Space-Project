@@ -38,3 +38,8 @@ void BaseShip::reset()
 {
     GameObject::reset();
 }
+
+void BaseShip::onCollision(GameObject* obj)
+{
+    GameObject::onCollision(obj);
+}

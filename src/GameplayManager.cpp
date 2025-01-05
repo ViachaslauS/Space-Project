@@ -44,6 +44,21 @@ void GameplayManager::update(float dt)
 {
     updateDifficulty(dt);
     updateEvents(dt);
+    for (auto i = 0; i < m_needToRemoveObjects.size(); i++)
+    {
+        auto objToDelete = m_needToRemoveObjects[i];
+        auto it = std::find_if(m_spawnedObjects.begin(), m_spawnedObjects.end(), [objToDelete](const auto& spawnedObj) {
+            return spawnedObj.get() == objToDelete;
+        });
+        if (it != m_spawnedObjects.end())
+        {
+            std::swap(*it, m_spawnedObjects.back());
+            m_spawnedObjects.pop_back();
+            std::swap(m_needToRemoveObjects[i], m_needToRemoveObjects.back());
+            m_needToRemoveObjects.pop_back();
+            i--;
+        }
+    }
     for (auto &obj : m_spawnedObjects)
     {
         obj->update(dt);
@@ -131,7 +146,9 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             newShip->setPosition(pos);
             m_physics.createRectangularBody(pos, 100.0f, 50.0f, newShip.get());
             newShip->setVelocity(Vector2 { 20, 0 });
-
+            newShip->onDieSignal.add([this, obj = newShip.get()]() {
+                deleteSpawnedObject(obj);
+            });
             m_spawnedObjects.push_back(std::move(newShip));
             return true;
         }
@@ -149,6 +166,9 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             newAsteroid->initialize();
             m_physics.createCircularBody(pos, 20.0f, newAsteroid.get());
             newAsteroid->setVelocity(calculateVelocityToPlayer(pos, true));
+            newAsteroid->onDieSignal.add([this, obj = newAsteroid.get()]() {
+                deleteSpawnedObject(obj);
+            });
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
@@ -158,6 +178,9 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             newAsteroid->initialize();
             m_physics.createCircularBody(pos, 20.0f, newAsteroid.get());
             newAsteroid->setVelocity(calculateVelocityToPlayer(pos, false));
+            newAsteroid->onDieSignal.add([this, obj = newAsteroid.get()]() {
+                deleteSpawnedObject(obj);
+            });
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
@@ -189,4 +212,15 @@ Vector2 GameplayManager::calculateVelocityToPlayer(const Vector2& pos, bool with
     const auto dir = m_playerShip->getPos() - pos + offset;
     const auto velocity = Vector2Scale(dir, velocityCoeff);
     return velocity;
+}
+
+void GameplayManager::deleteSpawnedObject(GameObject* obj)
+{
+    auto it = std::find_if(m_spawnedObjects.begin(), m_spawnedObjects.end(), [obj](const auto& spawnedObj) {
+        return spawnedObj.get() == obj;
+    });
+    if (it != m_spawnedObjects.end())
+    {
+        m_needToRemoveObjects.push_back((*it).get());
+    }
 }

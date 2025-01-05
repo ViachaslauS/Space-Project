@@ -15,6 +15,8 @@ namespace
             10.0f
         }
     };
+
+    constexpr float BaseAsteroidDamage = 200.0f;
 }
 
 BaseEnemyShip::BaseEnemyShip(ObjectsManager &om)
@@ -40,4 +42,13 @@ void BaseEnemyShip::render()
 void BaseEnemyShip::setVelocity(const Vector2& velocity)
 {
     m_physicsComp->physics->setVelocity(m_physicsComp, velocity);
+}
+
+void BaseEnemyShip::onCollision(GameObject* obj)
+{
+    if (obj->m_objectType == ObjectType::Asteroid)
+    {
+        obj->OnDie();
+        damage(BaseAsteroidDamage);
+    }
 }

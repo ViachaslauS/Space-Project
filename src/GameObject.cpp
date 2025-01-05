@@ -55,11 +55,12 @@ bool GameObject::isDead() const
         return false;
     }
 
-    return m_vitalityData.currentHP > 0.0f;
+    return m_vitalityData.currentHP < 0.0f;
 }
 
 void GameObject::OnDie()
 {
+    onDieSignal.broadcast();
 }
 
 void GameObject::reset()
