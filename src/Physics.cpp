@@ -93,21 +93,29 @@ namespace
                    (uint8_t)(color & 0x0000ff),
                    0xff);
 
-        // NOTE: Circle outline is drawn pixel by pixel every degree (0 to 360)
-        for (int i = 1; i < 10; i += 2)
+        int i = 0;
+        for (; i < 10; i += 1)
         {
-            rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2 + step * (i - 1)) * radius,
-                             p1.y + sinf(angle + M_PI_2 + (i - 1) * step) * radius);
             rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2 + step * i) * radius,
                              p1.y + sinf(angle + M_PI_2 + i * step) * radius);
+            rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2 + step * (i + 1)) * radius,
+                             p1.y + sinf(angle + M_PI_2 + (i + 1) * step) * radius);
         }
-        for (int i = 1; i < 10; i += 2)
+        rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2 + step * i) * radius,
+                         p1.y + sinf(angle + M_PI_2 + i * step) * radius);
+        rlgl::rlVertex2f(p2.x + cosf(angle + M_PI_2 - step * i) * radius,
+                         p2.y + sinf(angle + M_PI_2 - i * step) * radius);
+        for (i = 0; i < 10; i += 1)
         {
-            rlgl::rlVertex2f(p2.x + cosf(angle - M_PI_2 + step * (i - 1)) * radius,
-                             p2.y + sinf(angle - M_PI_2 + (i - 1) * step) * radius);
-            rlgl::rlVertex2f(p2.x + cosf(angle + M_PI_2 + step * i) * radius,
-                             p2.y + sinf(angle + M_PI_2 + i * step) * radius);
+            rlgl::rlVertex2f(p2.x + cosf(angle + M_PI_2 - step * i) * radius,
+                             p2.y + sinf(angle + M_PI_2 - i * step) * radius);
+            rlgl::rlVertex2f(p2.x + cosf(angle + M_PI_2 - step * (i + 1)) * radius,
+                             p2.y + sinf(angle + M_PI_2 - (i + 1) * step) * radius);
         }
+        rlgl::rlVertex2f(p2.x + cosf(angle + M_PI_2) * radius,
+                         p2.y + sinf(angle + M_PI_2) * radius);
+        rlgl::rlVertex2f(p1.x + cosf(angle + M_PI_2) * radius,
+                         p1.y + sinf(angle + M_PI_2) * radius);
         rlgl::rlEnd();
     }
 
