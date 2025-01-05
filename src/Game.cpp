@@ -75,11 +75,10 @@ void Game::render()
     if (m_isActive)
     {
         m_playerController.render();
+        m_hud.render();
     }
 
     m_physics.debugRender();
-
-    m_hud.render();
 }
 
 void Game::setActive(bool active)
@@ -92,4 +91,14 @@ void Game::setActive(bool active)
 const GameplayManager& Game::getGameplayManager() const
 {
     return m_gameplayManager;
+}
+
+const PlayerShip& Game::getPlayerShip() const
+{
+    return m_playerShip;
+}
+
+const PlayerController& Game::getPlayerController() const
+{
+    return m_playerController;
 }

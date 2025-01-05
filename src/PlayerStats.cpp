@@ -37,7 +37,7 @@ void PlayerStats::addXP(float XP)
 {
     m_xp.currentXP += XP;
 
-    if (m_xp.currentXP >= XPPerLvl)
+    if (m_xp.currentXP >= getLevelUpXpCost())
     {
         m_xp.currentXP -= XPPerLvl;
         ++m_xp.currentLvl;
@@ -45,6 +45,16 @@ void PlayerStats::addXP(float XP)
     }
 
     onXPChanged.broadcast(m_xp);
+}
+
+PlayerStats::XPInfo PlayerStats::getXPInfo() const
+{
+    return m_xp;
+}
+
+float PlayerStats::getLevelUpXpCost() const
+{
+    return XPPerLvl * m_xp.currentLvl;
 }
 
 std::vector<PlayerStats::SkillProp>& PlayerStats::getSkills()

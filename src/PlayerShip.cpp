@@ -33,7 +33,9 @@ PlayerShip::PlayerShip(ObjectsManager &om, GravityZoneSystem &gz)
     , m_gravityZones(gz)
 {
     m_texture = LoadTexture("temp-spaceships/klaed_base.png");
-    m_weapons.push_back(new Gravigun(om, getTeamId(), m_gravityZones));
+    m_maxWeaponCount = 5;
+
+    addWeapon(new Gravigun(om, getTeamId(), m_gravityZones));
 }
 
 void PlayerShip::initialize()

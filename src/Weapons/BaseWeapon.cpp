@@ -75,6 +75,11 @@ bool BaseWeapon::isActiveWeapon() const
     return m_isActive;
 }
 
+Texture BaseWeapon::getWeaponTexture() const
+{
+    return m_texture;
+}
+
 void BaseWeapon::shoot()
 {
     Projectile* projectile = nullptr;

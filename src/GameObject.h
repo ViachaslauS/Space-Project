@@ -60,6 +60,12 @@ public:
     ObjectType getObjectType();
 
     helpers::MulticastDelegate<> onDieSignal;
+    struct VitalityAll
+    {
+        VitalityParams params;
+        VitalityData data;
+    };
+    VitalityAll getVitality() const { return { m_vitality, m_vitalityData }; }
 
 protected:
     ObjectsManager &m_objectManager;

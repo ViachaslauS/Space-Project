@@ -13,7 +13,7 @@ void PlayerController::update(float dt)
 
     handleInput();
 
-    const std::vector<BaseWeapon*>& weapons = m_ship->getWeapons();
+    const auto& weapons = m_ship->getWeapons();
     if (m_selectedWeaponIdx < weapons.size())
     {
         bool isCursorShouldBeHidden = weapons[m_selectedWeaponIdx]->hasCustomCrosshair();
@@ -26,7 +26,7 @@ void PlayerController::update(float dt)
 
 void PlayerController::render()
 {
-    const std::vector<BaseWeapon*>& weapons = m_ship->getWeapons();
+    const auto& weapons = m_ship->getWeapons();
     if (m_selectedWeaponIdx < weapons.size())
     {
         weapons[m_selectedWeaponIdx]->renderCrosshair(GetMousePosition());
@@ -70,7 +70,7 @@ void PlayerController::selectActiveWeapon(int idx)
         return;
     }
 
-    const std::vector<BaseWeapon*>& weapons = m_ship->getWeapons();
+    const auto& weapons = m_ship->getWeapons();
     if (helpers::isValidIdx(weapons, idx))
     {
         if (helpers::isValidIdx(weapons, m_selectedWeaponIdx))

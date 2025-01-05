@@ -27,6 +27,8 @@ public:
     void reset();
     
     void addXP(float XP);
+    XPInfo getXPInfo() const;
+    float getLevelUpXpCost() const;
 
     struct SkillProp
     {

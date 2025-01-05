@@ -24,6 +24,8 @@ public:
     void setActive(bool active);
 
     const GameplayManager& getGameplayManager() const;
+    const PlayerShip& getPlayerShip() const;
+    const PlayerController& getPlayerController() const;
 
 private:
     Background m_background;

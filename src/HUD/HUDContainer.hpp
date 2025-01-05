@@ -1,6 +1,8 @@
 #pragma once
 
 #include "HUD/HUDGameState.hpp"
+#include "HUD/HUDPlayerState.hpp"
+#include "HUD/HUDPlayerXP.hpp"
 
 #include <vector>
 
@@ -23,4 +25,6 @@ private:
     std::vector<HUDBase*> m_children;
 
     HUDGameState m_gameState;
+    HUDPlayerState m_playerState;
+    HUDPlayerXP m_playerXp;
 };

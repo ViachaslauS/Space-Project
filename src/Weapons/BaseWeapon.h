@@ -32,6 +32,8 @@ public:
     void setActive(bool newActive);
     bool isActiveWeapon() const;
 
+    Texture getWeaponTexture() const;
+
 protected:
     virtual void shoot();
     virtual const Vector2& getNearestEnemyPosition() const;
