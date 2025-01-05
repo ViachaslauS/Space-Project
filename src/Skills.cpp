@@ -162,14 +162,14 @@ void Skills::learnPlayerSkill(Game& game, SkillEnum skill, int newLevel)
         break;
     case Skills::SkillEnum::HPCapacity:
     {
-        game.m_playerShip.m_vitality.maxHp = VitalityParams{}.maxHp + 0.1f * prop.level;
+        game.m_playerShip.m_vitality.maxHp = VitalityParams{}.maxHp + 10.0f * prop.level;
         game.m_playerShip.m_vitalityData.currentHP = game.m_playerShip.m_vitality.maxHp;
 
         break; 
     }
     case Skills::SkillEnum::ShieldCapacity:
     {
-        game.m_playerShip.m_vitality.shieldParams.maxShield = ShieldParams{}.maxShield + 0.2f * prop.level;
+        game.m_playerShip.m_vitality.shieldParams.maxShield = ShieldParams{}.maxShield + 15.0f * prop.level;
         game.m_playerShip.m_vitalityData.currentShield = game.m_playerShip.m_vitality.shieldParams.maxShield;
         break;
     }

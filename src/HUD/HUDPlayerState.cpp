@@ -25,7 +25,7 @@ namespace
     constexpr int ProgressImgNumFullHP = 7 * 4 + 1;
     constexpr int ProgressImgNumFullShield = 7 * 6 + 1;
 
-    constexpr float TextureSizeX = 420.0f;
+    constexpr float TextureSizeX = 150.0f;
     constexpr float TextureScaleY = 1.0f;
 
     constexpr Rectangle rectBack
@@ -132,11 +132,14 @@ void HUDPlayerState::renderVitality()
 
     const Vector2 SizeBack
     {
-       TextureSizeX, ProgressHeight * TextureScaleY
+       TextureSizeX, ProgressHeight* TextureScaleY
     };
 
-    Rectangle rectHpBackDest{ hpBarPos.x, hpBarPos.y, SizeBack.x, SizeBack.y };
-    Rectangle rectShieldBackDest{ shieldBarPos.x, shieldBarPos.y, SizeBack.x, SizeBack.y };
+    const float HpWidth = SizeBack.x * (vitality.params.maxHp / VitalityParams{}.maxHp);
+    const float ShieldWidth = SizeBack.x * (vitality.params.shieldParams.maxShield / ShieldParams{}.maxShield);
+
+    Rectangle rectHpBackDest{ hpBarPos.x, hpBarPos.y, HpWidth, SizeBack.y };
+    Rectangle rectShieldBackDest{ shieldBarPos.x, shieldBarPos.y, ShieldWidth, SizeBack.y };
 
     const Rectangle rectProgressHp
     {
@@ -178,12 +181,12 @@ void HUDPlayerState::renderVitality()
 
     const Rectangle rectProgressHpDest
     {
-        hpBarPos.x, hpBarPos.y, TextureSizeX * hpProgress, ProgressHeight * TextureScaleY
+        hpBarPos.x, hpBarPos.y, HpWidth * hpProgress, ProgressHeight * TextureScaleY
     };
 
     const Rectangle rectProgressShieldDest
     {
-        shieldBarPos.x, shieldBarPos.y, TextureSizeX * shieldProgress, ProgressHeight * TextureScaleY
+        shieldBarPos.x, shieldBarPos.y, ShieldWidth * shieldProgress, ProgressHeight * TextureScaleY
     };
 
     DrawTextureNPatch(m_progressTexture, BackNpatch, rectHpBackDest, {}, 0.0f, WHITE);
