@@ -1,7 +1,7 @@
 #include "utils.h"
 
 #include "Game.h"
-
+#include "Helpers.h"
 #include "Popups/Popups.h"
 #include "Popups/Popup.h"
 #include "Popups/PausePopup.h"
@@ -16,6 +16,7 @@ Game::Game(AppContext& ctx)
     , m_playerShip(m_objectManager, m_gravityZones)
     , m_hud(*this)
 {
+    m_physics.createRectangularBody(helpers::windowCenter(), 100.0f, 50.0f, &m_playerShip);
     m_playerShip.initialize();
     m_playerController.setShip(&m_playerShip);
 

@@ -13,10 +13,11 @@ class PlayerShip : public BaseShip
 public:
     PlayerShip(ObjectsManager &om, GravityZoneSystem &gz);
 
-    virtual void initialize() override;
-    virtual void update(float dt) override;
-    virtual void reset() override;
-    virtual void render() override;
+    void initialize() override;
+    void update(float dt) override;
+    void reset() override;
+    void render() override;
+    void onCollision(GameObject *other) override;
 
 protected:
     GravityZoneSystem &m_gravityZones;

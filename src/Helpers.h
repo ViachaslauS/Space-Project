@@ -9,6 +9,8 @@
 
 namespace helpers
 {
+    Vector2 windowCenter();
+
     using DelegateHandle = uint32_t;
 
     template <class... Args>
@@ -54,7 +56,7 @@ namespace helpers
 
         std::map<DelegateHandle, std::function<void(Args...)>> m_delegates;
     };
-    
+
 
     inline float randFlt()
     {

@@ -21,11 +21,6 @@ namespace
 
     constexpr float ShakeSpeed = 0.6f;
     constexpr float ShakeRadius = 4.0f;
-
-    Vector2 screenCenter()
-    {
-        return { GetScreenWidth() * 0.5f, GetScreenHeight() * 0.5f };
-    }
 }
 
 PlayerShip::PlayerShip(ObjectsManager &om, GravityZoneSystem &gz)
@@ -57,18 +52,29 @@ void PlayerShip::update(float dt)
 
     const float progressToCalculate = m_offsetProgress < 1.0f ? m_offsetProgress : 2.0f - m_offsetProgress;
 
-    m_pos.y = screenCenter().y + EaseSineInOut(progressToCalculate, 1.0f, 1.0f, 1.0f) * ShakeRadius;
+    m_pos.y = helpers::windowCenter().y + EaseSineInOut(progressToCalculate, 1.0f, 1.0f, 1.0f) * ShakeRadius;
 }
 
 void PlayerShip::reset()
 {
     BaseShip::reset();
 
-    m_pos = screenCenter();
+    m_pos = helpers::windowCenter();
     m_offsetProgress = 0.0f;
 }
 
 void PlayerShip::render()
 {
     BaseShip::render();
+}
+
+void PlayerShip::onCollision(GameObject *other)
+{
+    switch (other->m_objectType)
+    case ObjectType::Asteroid: {
+        other->damage(other->getCurrentHP());
+        damage(5);
+        break;
+    }
+    }
 }
