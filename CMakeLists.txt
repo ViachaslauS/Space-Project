@@ -38,7 +38,6 @@ add_executable(gravigun
     "src/BaseShip.cpp"
     "src/PlayerController.cpp"
     "src/Weapons/Gravigun.cpp"
-    "src/Weapons/GravizoneParticles.cpp"
 
     "include/resource_dir.h"
     "src/AppContext.h"
@@ -70,7 +69,6 @@ add_executable(gravigun
     "src/BaseShip.h"
     "src/PlayerController.hpp"
     "src/Weapons/Gravigun.hpp"
-    "src/Weapons/GravizoneParticles.hpp"
 )
 
 option(BOX2D_SAMPLES "Build the Box2D samples" OFF)

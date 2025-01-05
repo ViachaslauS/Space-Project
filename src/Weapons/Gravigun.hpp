@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Weapons/BaseWeapon.h"
-#include "Weapons/GravizoneParticles.hpp"
+#include "GravityZone.hpp"
 
 struct GravityZoneSystem;
 
@@ -33,12 +33,12 @@ protected:
     void setDirection(GravityZone::Direction newDirection);
 
 protected:
+    GravityZone::Rendering m_crosshair;
     GravityZoneSystem &m_gravityZones;
     Texture m_gravizoneBG;
     Params m_params;
 
     Rectangle m_bounds{ 0.0f, 0.0f, 0.0f, 0.0f };
 
-    GravizoneParticles m_particles;
     GravityZone::Direction m_currDirection = GravityZone::Direction::Right;
 };

@@ -1,23 +1,10 @@
 #include "Weapons/Gravigun.hpp"
 #include "GravityZone.hpp"
 
-namespace
-{
-    const char* GravizoneBGNPPath = "gravizone_bg_np.png";
-    const NPatchInfo GravizoneNPatch =
-    {
-        .source{ 0, 0, 5, 1 },
-        .left{0},
-        .top{0},
-        .right{0},
-        .bottom{0},
-        .layout{NPATCH_NINE_PATCH}
-    };
-}
-
 Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     : BaseWeapon(om, teamId)
     , m_gravityZones(gz)
+    , m_crosshair({ 0.0f, 0.0f }, { 0.0f, 0.0f }, GravityZone::Direction::Right)
 {
     m_autoFire = false;
     m_isActive = false;
@@ -36,8 +23,6 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
         Projectile::State::Unused,
     };
 
-    m_gravizoneBG = LoadTexture(GravizoneBGNPPath);
-
     m_bounds.x = 0.0f;
     m_bounds.y = 0.0f;
 
@@ -55,10 +40,10 @@ void Gravigun::update(float dt)
         m_bounds.x = GetMousePosition().x - m_bounds.width * 0.5f;
         m_bounds.y = GetMousePosition().y - m_bounds.height * 0.5f;
 
-        m_particles.setBounds(m_bounds);
-        m_particles.update(dt);
+        m_crosshair.bounds = m_bounds;
+        m_crosshair.particles.setBounds(m_bounds);
+        m_crosshair.update(dt);
     }
-
 }
 
 void Gravigun::renderCrosshair(Vector2 pos) const
@@ -68,8 +53,7 @@ void Gravigun::renderCrosshair(Vector2 pos) const
         return;
     }
 
-    m_particles.render();
-    DrawTextureNPatch(m_gravizoneBG, GravizoneNPatch, m_bounds, {}, 0, WHITE);
+    m_crosshair.render();
 }
 
 void Gravigun::setParams(Params params)
@@ -134,5 +118,5 @@ void Gravigun::setDirection(GravityZone::Direction newDirection)
         break;
     }
 
-    m_particles.changeDirection(newDirection);
+    m_crosshair.particles.setDirection(m_currDirection);
 }
