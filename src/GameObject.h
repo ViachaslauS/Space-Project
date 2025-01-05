@@ -63,8 +63,6 @@ public:
 
     ObjectType getObjectType();
 
-    const Vector2& getVelocity() const;
-
     helpers::MulticastDelegate<> onDieSignal;
     struct VitalityAll
     {
@@ -87,4 +85,6 @@ protected:
     float m_rotation = 0.0f;
 
     float m_xpValue = 0.0f;
+
+    float m_noDamageTime = 0.0f;
 };

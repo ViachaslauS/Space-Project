@@ -281,7 +281,6 @@ void Physics::toggleDebugRender()
 
 void Physics::setVelocity(PhysicsComp *comp, const Vector2 &velocity)
 {
-    m_velocity = velocity;
     b2Vec2 vec { velocity.x, velocity.y };
     b2Body_SetLinearVelocity(comp->id, vec);
 }
@@ -314,9 +313,4 @@ void Physics::applyForce(PhysicsComp *comp, const Vector2 &dir)
 {
     b2Vec2 vec { dir.x, dir.y };
     b2Body_ApplyForceToCenter(comp->id, vec, true);
-}
-
-const Vector2& Physics::getVelocity() const
-{
-    return m_velocity;
 }

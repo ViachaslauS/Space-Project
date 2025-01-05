@@ -125,23 +125,21 @@ void BaseWeapon::shoot()
     m_projectiles.push_back(projectile);
 }
 
-const Vector2& BaseWeapon::getSpeedToEnemy()
+const Vector2 BaseWeapon::getSpeedToEnemy()
 {
     const auto enemies = m_objectManager.getEnemyObjects(m_teamId);
     Vector2 nearestPos = Vector2{ 0,0 };
-    Vector2 enemyPos = Vector2{ 0,0 };
     float nearest = MAXFLOAT;
-    for (auto& enemie : enemies)
+    for (auto& enemy : enemies)
     {
-        if (enemie->m_objectType != ObjectType::GravityZone && enemie->m_objectType != ObjectType::LaserProjectile && enemie->m_objectType != ObjectType::RocketProjectile)
+        if (enemy->m_objectType != ObjectType::GravityZone && enemy->m_objectType != ObjectType::LaserProjectile && enemy->m_objectType != ObjectType::RocketProjectile)
         {
-            auto distanceVector = enemie->getPos() - m_pos;
+            auto distanceVector = enemy->getPos() - m_pos;
             float length = std::sqrt(std::pow(distanceVector.x, 2) + std::pow(distanceVector.y, 2));
             if (length < nearest)
             {
                 nearest = length;
                 nearestPos = distanceVector;
-                enemyPos = enemie->getPos();
             }
         }
     }
