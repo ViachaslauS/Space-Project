@@ -32,7 +32,7 @@ Background::Background()
 {
     SetRandomSeed(GetTime());
 
-    m_backgroundTexture = LoadTexture("stars_background.jpg");
+    m_backgroundTexture = LoadTexture("background_2.png");
     m_planetsTexture = LoadTexture(PlanetSpriteSheetName);
 
     for (size_t i = 0u; i < m_planets.size(); ++i)

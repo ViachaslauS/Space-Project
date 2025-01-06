@@ -43,6 +43,7 @@ public:
     virtual void render();
 
     virtual void renderCrosshair(Vector2 Pos) const;
+
     virtual bool hasCustomCrosshair() const {
         return false;
     }
@@ -50,7 +51,10 @@ public:
     void setActive(bool newActive);
     bool isActiveWeapon() const;
 
+    bool isManualControlAvailable() const;
+
     Texture getWeaponTexture() const;
+    Texture getWeaponIcon() const;
 
     WeaponType getWeaponType() const;
 
@@ -67,10 +71,13 @@ protected:
 
     WeaponParam m_params;
 
+    bool m_isManualControlAvailable = false;
     bool m_autoFire = true;
-    bool m_isActive = true;
+    bool m_isActive = false;
 
     Texture m_texture;
+    Texture m_iconTexture;
+
     std::vector<Projectile*> m_projectiles;
     std::vector<Projectile*> m_deleteCandidateProjectiles;
 

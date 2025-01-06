@@ -15,6 +15,8 @@ LaserWeapon::LaserWeapon(ObjectsManager& om, int teamId)
 {
     m_weaponType = WeaponType::Laser;
 
+    m_iconTexture = LoadTexture("hud/blaster_ic.png");
+
     auto laserTexture = LoadTexture("laser.png");
     laserTexture.width = 50;
     laserTexture.height = 50;

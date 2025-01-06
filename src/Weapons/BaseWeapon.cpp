@@ -146,9 +146,19 @@ bool BaseWeapon::isActiveWeapon() const
     return m_isActive;
 }
 
+bool BaseWeapon::isManualControlAvailable() const
+{
+    return m_isManualControlAvailable;
+}
+
 Texture BaseWeapon::getWeaponTexture() const
 {
     return m_texture;
+}
+
+Texture BaseWeapon::getWeaponIcon() const
+{
+    return m_iconTexture;
 }
 
 WeaponType BaseWeapon::getWeaponType() const

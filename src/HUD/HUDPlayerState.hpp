@@ -23,6 +23,7 @@ protected:
     {
         bool isEmpty = true;
         bool isActive = false;
+        bool isSelectable = false;
 
         Texture weaponTexture;
     };
@@ -30,4 +31,8 @@ protected:
     std::vector<WeaponInfo> m_weapons;
 
     Texture m_progressTexture;
+
+    Texture m_weaponEmpty;
+    Texture m_weaponFull;
+    Texture m_weaponSelected;
 };

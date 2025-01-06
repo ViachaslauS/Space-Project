@@ -5,6 +5,8 @@ RocketWeapon::RocketWeapon(ObjectsManager &om, int teamId)
 {
     m_weaponType = WeaponType::RocketLauncher;
 
+    m_iconTexture = LoadTexture("hud/rocket_launcher_ic_1.png");
+
     auto rocketTexture = LoadTexture("rocket.png");
     rocketTexture.height = 50;
     rocketTexture.width = 50;
