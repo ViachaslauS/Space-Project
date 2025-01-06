@@ -94,7 +94,9 @@ void GravityZone::applyDamage(PhysicsComp *comp, bool exit)
 {
     if (exit) {
         comp->gravityZoneDamage -= damage;
-        assert(comp->gravityZoneDamage >= 0.0f);
+        if (comp->gravityZoneDamage < 0.0f) {
+            comp->gravityZoneDamage = 0.0f;
+        }
     } else {
         comp->gravityZoneDamage += damage;
     }

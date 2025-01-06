@@ -352,6 +352,10 @@ void Physics::update()
 
         auto rot = b2Body_GetRotation(c->id);
         c->object->setRotation(b2Rot_GetAngle(rot));
+
+        if (c->gravityZoneDamage > 0.0f) {
+            c->object->damage(c->gravityZoneDamage);
+        }
     }
 }
 
