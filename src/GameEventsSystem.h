@@ -8,10 +8,10 @@ enum class EventType : uint32_t
 {
     SpawnDummyAsteroid, // fly near player ship
     SpawnSmallEnemyShip, // have small amount of hp
-    SpawnLoot,
+    // SpawnLoot,
     SpawnEvilAsteroid, // fly directly to player ship
-    SpawnBigEnemyShip,
-    Boss,
+    // SpawnBigEnemyShip,
+    // Boss,
 
     Count
 };

@@ -156,8 +156,8 @@ void Skills::learnPlayerSkill(Game& game, SkillEnum skill, int newLevel)
 
         break;
     case Skills::SkillEnum::GravizoneSize:
-        game.m_gravityZones.params.width = GravityZoneSystem::GZParams{}.width + prop.level * 0.25f;
-        game.m_gravityZones.params.height = GravityZoneSystem::GZParams{}.height + prop.level * 0.25f;
+        game.m_gravityZones.params.width = GravityZoneSystem::GZParams{}.width + GravityZoneSystem::GZParams{}.width * prop.level * 0.25f;
+        game.m_gravityZones.params.height = GravityZoneSystem::GZParams{}.height + GravityZoneSystem::GZParams{}.height * prop.level * 0.25f;
 
         break;
     case Skills::SkillEnum::HPCapacity:

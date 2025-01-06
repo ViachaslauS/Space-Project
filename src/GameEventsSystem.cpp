@@ -55,14 +55,14 @@ Vector2 events_helper::getEventSpawnPos(EventType eventType)
         return RandomRightWindowCorner();
     case EventType::SpawnSmallEnemyShip:
         return RandomLeftWindowCorner();
-    case EventType::SpawnLoot:
-        return RandomRightGameCorner();
+   /* case EventType::SpawnLoot:
+        return RandomRightGameCorner();*/
     case EventType::SpawnEvilAsteroid:
         return RandomRightWindowCorner();
-    case EventType::SpawnBigEnemyShip:
+  /*  case EventType::SpawnBigEnemyShip:
         return RandomLeftWindowCorner();
     case EventType::Boss:
-        return RandomLeftWindowCorner();
+        return RandomLeftWindowCorner();*/
     case EventType::Count:
     default:
         TraceLog(LOG_ERROR, "%s: invalid event type!", __FUNCTION__);

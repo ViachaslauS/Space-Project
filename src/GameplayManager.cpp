@@ -166,14 +166,14 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             m_spawnedObjects.push_back(std::move(newShip));
             return true;
         }
-        case EventType::Boss:
+      /*  case EventType::Boss:
         {
             return true;
         }
         case EventType::SpawnBigEnemyShip:
         {
             return false;
-        }
+        }*/
         case EventType::SpawnDummyAsteroid:
         {
             auto newAsteroid = std::make_unique<Asteroid>(m_objectManager);
@@ -198,10 +198,10 @@ bool GameplayManager::spawnNewObject(EventType type, Vector2 pos)
             m_spawnedObjects.push_back(std::move(newAsteroid));
             return true;
         }
-        case EventType::SpawnLoot:
+       /* case EventType::SpawnLoot:
         {
             return false;
-        }
+        }*/
         default:
         {
             return false;

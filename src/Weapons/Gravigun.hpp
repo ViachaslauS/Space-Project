@@ -42,6 +42,7 @@ protected:
 
     Texture m_crosshairGravi;
     Texture m_crosshairGraviBack;
+    Texture m_arrowTexture;
 
     Rectangle m_bounds{ 0.0f, 0.0f, 0.0f, 0.0f };
 
