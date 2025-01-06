@@ -218,6 +218,12 @@ PhysicsComp* Physics::createRectangularBody(const Vector2 &pos, float width, flo
     shapeDef.filter.maskBits = getMask(object->getTeamId());
     comp->shapeId = b2CreatePolygonShape(comp->id, &shapeDef, &poly);
 
+    if (bodyDef.isBullet) {
+        auto massData = b2Body_GetMassData(comp->id);
+        massData.mass = 0.1f;
+        b2Body_SetMassData(comp->id, massData);
+    }
+
     object->setPhysicsComp(comp.get());
     comps.push_back(std::move(comp));
     return comps.back().get();
