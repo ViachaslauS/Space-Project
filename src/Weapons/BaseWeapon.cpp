@@ -98,6 +98,33 @@ void BaseWeapon::render()
     }
 }
 
+void BaseWeapon::shoot()
+{
+    auto projectile = new Projectile(m_baseProjectile);
+    auto w = projectile->texture.width;
+    auto h = projectile->texture.height;
+    auto w2 = projectile->texture.width * 0.5f;
+    auto h2 = projectile->texture.height * 0.5f;
+    auto pos = center() + Vector2 { 0.0f, -m_texture.height * 0.5f };
+    auto r = projectile->texture.height * 0.15f;
+    Vector2 c1 { r + 0.25f * w, 3.0f * r };
+    Vector2 c2 { r + w2, 3.0f * r };
+
+    projectile->setPos(pos);
+
+    m_objectManager.getPhysics().createCapsuleBody(pos, c1, c2, r, projectile, true);
+    auto velocity = getSpeedToEnemy();
+    projectile->setVelocity(velocity);
+    projectile->setState(Projectile::State::Alive);
+    projectile->onDieSignal.add([this, projectile]() {
+       m_deleteCandidateProjectiles.push_back(projectile);
+    });
+
+    float angle = helpers::vecToAngle(velocity);
+    projectile->setRotation(angle);
+    m_projectiles.push_back(projectile);
+}
+
 void BaseWeapon::renderCrosshair(Vector2 Pos) const
 {
 
@@ -121,10 +148,6 @@ Texture BaseWeapon::getWeaponTexture() const
 WeaponType BaseWeapon::getWeaponType() const
 {
     return m_weaponType;
-}
-
-void BaseWeapon::shoot()
-{
 }
 
 const Vector2 BaseWeapon::getSpeedToEnemy()
