@@ -185,7 +185,7 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
     {
         nearest = 1;
         auto dir = Vector2Rotate({ 1.0f, 0.0f }, RAD2DEG * m_weaponAngle);
-        return Vector2Scale(dir, 3.0);
+        return Vector2Scale(dir, 300.0);
     }
 
     dirToEnemy.x += helpers::randFlt(-150.0f, 150.0f);
