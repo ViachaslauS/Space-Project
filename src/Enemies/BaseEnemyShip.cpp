@@ -78,4 +78,11 @@ void BaseEnemyShip::onCollision(GameObject* obj)
         damage(lp->damage);
         lp->GameObject::damage(lp->getCurrentHP());
     }
+
+    if (obj->m_objectType == ObjectType::RocketProjectile)
+    {
+        auto lp = static_cast<Projectile *>(obj);
+        damage(lp->damage);
+        lp->GameObject::damage(lp->getCurrentHP());
+    }
 }

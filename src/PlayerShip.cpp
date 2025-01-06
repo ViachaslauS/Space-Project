@@ -103,5 +103,10 @@ void PlayerShip::onCollision(GameObject *other)
         damage(lp->damage);
         lp->GameObject::damage(lp->getCurrentHP());
     }
+    case ObjectType::RocketProjectile: {
+        auto lp = static_cast<Projectile *>(other);
+        damage(lp->damage);
+        lp->GameObject::damage(lp->getCurrentHP());
+    }
     }
 }
