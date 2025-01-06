@@ -34,7 +34,7 @@ namespace
 
     const char* textureBackPath = "bars/bar_bg.png";
 
-    const Rectangle bgRect
+    const Rectangle bgRectPopup
     {
         0.0f, 0.0f,
         114.0f, 24.0f
@@ -42,7 +42,7 @@ namespace
 
     const NPatchInfo NPatch
     {
-       .source = bgRect,
+       .source = bgRectPopup,
        .left = 6,
        .top = 6,
        .right = 6,

@@ -118,7 +118,7 @@ bool Skills::isSkillAvailabeToUpgrade(Game& game, SkillEnum skill)
 
 void Skills::learnPlayerSkill(Game& game, SkillEnum skill, int newLevel)
 {
-    assert(isSkillAvailabeToUpgrade(game, skill));
+    assert(isSkillAvailabeToUpgrade(game, skill) || newLevel == 0);
 
     auto& prop = getSkillProp(skill);
     prop.level = newLevel;

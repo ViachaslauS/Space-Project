@@ -140,4 +140,6 @@ void Gravigun::shoot()
 
     auto pos = GetMousePosition();
     m_gravityZones.addZone(pos, m_currDirection, m_params.power);
+
+    m_currCooldown = 0.0f;
 }

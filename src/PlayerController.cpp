@@ -40,6 +40,11 @@ void PlayerController::setShip(PlayerShip* ship)
     selectActiveWeapon(0);
 }
 
+void PlayerController::reset()
+{
+    selectActiveWeapon(0);
+}
+
 void PlayerController::handleInput()
 {
     if (std::abs(GetMouseWheelMove()) > 0.0f && m_ship)

@@ -20,7 +20,7 @@ namespace
         243.0f, 101.0f
     };
 
-    NPatchInfo bgNpatch = {
+    NPatchInfo bgNpatchPopup = {
         .source = bgItemRect,
         .left = 34,
         .top = 34,
@@ -108,7 +108,7 @@ void LevelUpPopup::render()
     for (int i = 0; i < m_infos.size(); i++)
     {
         const auto& panel = m_infos[i];
-        NPatchInfo targetNPatch = panel.bSelected ? bgNpatchSelected : bgNpatch;
+        NPatchInfo targetNPatch = panel.bSelected ? bgNpatchSelected : bgNpatchPopup;
 
         DrawTextureNPatch(m_bgTexture, targetNPatch, panel.rectData, { 0.0f, 0.0f }, 0.0f, WHITE);
         DrawText(panel.prop.desc, panel.rectData.x + panel.rectData.width * 0.05f, panel.rectData.y + panel.rectData.height * 0.3f, 30, WHITE);
