@@ -71,4 +71,11 @@ void BaseEnemyShip::onCollision(GameObject* obj)
         obj->damage(obj->getCurrentHP());
         damage(BaseAsteroidDamage);
     }
+
+    if (obj->m_objectType == ObjectType::LaserProjectile)
+    {
+        auto lp = static_cast<Projectile *>(obj);
+        damage(lp->damage);
+        lp->GameObject::damage(lp->getCurrentHP());
+    }
 }

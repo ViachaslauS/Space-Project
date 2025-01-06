@@ -84,10 +84,20 @@ void PlayerShip::render()
 
 void PlayerShip::onCollision(GameObject *other)
 {
-    switch (other->m_objectType)
+    switch (other->m_objectType) {
     case ObjectType::Asteroid: {
         other->damage(other->getCurrentHP());
         damage(5);
         break;
+    }
+    case ObjectType::EnemyShip: {
+        other->damage(20.0f);
+        damage(30.0f);
+    }
+    case ObjectType::LaserProjectile: {
+        auto lp = static_cast<Projectile *>(other);
+        damage(lp->damage);
+        lp->GameObject::damage(lp->getCurrentHP());
+    }
     }
 }
