@@ -323,7 +323,7 @@ GravityZone::Rendering::Rendering(const Vector2 &pos, const Vector2 &size, Gravi
 
 void GravityZone::Rendering::render() const {
     particles.render();
-    DrawTextureNPatch(bg, GravityZoneNPatch, bounds, {}, 0, WHITE);
+    // DrawTextureNPatch(bg, GravityZoneNPatch, bounds, {}, 0, WHITE);
 }
 
 void GravityZone::Rendering::update(float dt) {

@@ -1,6 +1,14 @@
 #include "Weapons/Gravigun.hpp"
 #include "GravityZone.hpp"
 
+#include <external/reasings.h.>
+
+namespace
+{
+    const char* crosshairPath = "crosshair.png";
+    const char* crosshairEdgePath = "crosshair_border.png";
+}
+
 Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     : BaseWeapon(om, teamId, Projectile(om, teamId, ObjectType::RocketProjectile))
     , m_gravityZones(gz)
@@ -26,6 +34,9 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     m_texture = LoadTexture("gravigunWeapon.png");
 
     setDirection(GravityZone::Direction::Right);
+
+    m_crosshairGravi = LoadTexture(crosshairPath);
+    m_crosshairGraviBack = LoadTexture(crosshairEdgePath);
 }
 
 void Gravigun::update(float dt)
@@ -59,11 +70,83 @@ void Gravigun::renderCrosshair(Vector2 pos) const
         return;
     }
 
-    m_crosshair.render();
+    // todo: ?
+    // m_crosshair.render();
 
-    if (!canShoot())
+    pos.x -= m_crosshairGravi.width * 0.5f;
+    pos.y -= m_crosshairGravi.height * 0.5f;
+
+    DrawTextureV(m_crosshairGravi, pos, WHITE);
+
+    if (canShoot())
     {
-        /// 
+        DrawTextureV(m_crosshairGraviBack, pos, WHITE);
+    }
+    else
+    {
+        auto reloadProgress = getReloadProgress();
+
+        constexpr float step1_Duration = 0.1f;
+        constexpr float step2_Duration = 0.8f;
+        constexpr float step3_Duration = 0.1f;
+
+        static_assert(step1_Duration + step2_Duration + step3_Duration == 1.0f);
+
+        const Rectangle bordersRect
+        {
+            0.0f, 0.0f, m_crosshairGraviBack.width, m_crosshairGraviBack.height
+        };
+
+        // first step - decrease scale
+        if (reloadProgress < step1_Duration)
+        {
+            const float internalProgress = reloadProgress / step1_Duration;
+
+            const float converterdProgress = 1.0f - EaseBackIn(internalProgress, 0.0f, 1.0f, 1.0f);
+
+            const Rectangle borderPos
+            {
+                pos.x + m_crosshairGravi.width * 0.5f,
+                pos.y + m_crosshairGravi.height * 0.5f,
+                bordersRect.width * converterdProgress,
+                bordersRect.height * converterdProgress
+            };
+
+            DrawTexturePro(m_crosshairGraviBack, bordersRect, borderPos, { borderPos.width * 0.5f, borderPos.height * 0.5f }, 0.0f, WHITE);
+        }
+        // second step - rotate and increase scale
+        else if (reloadProgress < step1_Duration + step2_Duration)
+        {
+            const float internalProgress = (reloadProgress - step1_Duration) / step2_Duration;
+
+            const float converterdProgress = EaseCircOut(internalProgress, 0.0f, 1.0f, 1.0f);
+
+            const Rectangle borderPos
+            {
+                pos.x + m_crosshairGravi.width * 0.5f,
+                pos.y + m_crosshairGravi.height * 0.5f,
+                bordersRect.width * converterdProgress,
+                bordersRect.height * converterdProgress
+            };
+
+            DrawTexturePro(m_crosshairGraviBack, bordersRect, borderPos, { borderPos.width * 0.5f, borderPos.height * 0.5f }, converterdProgress * (360.0f * 4.0f), WHITE);
+        }
+        // third step - show end
+        else
+        {
+            const float internalProgress = (reloadProgress - step1_Duration - step2_Duration) / step3_Duration;  
+            const float converterdProgress = 1.0f + helpers::lerpTudaSuda(internalProgress) * 0.1f;
+
+            const Rectangle borderPos
+            {
+                pos.x + m_crosshairGravi.width * 0.5f,
+                pos.y + m_crosshairGravi.height * 0.5f,
+                bordersRect.width * converterdProgress,
+                bordersRect.height * converterdProgress
+            };
+
+            DrawTexturePro(m_crosshairGraviBack, bordersRect, borderPos, { borderPos.width * 0.5f, borderPos.height * 0.5f }, 0.0f, WHITE);
+        }
     }
 }
 

@@ -25,6 +25,8 @@ protected:
         bool isActive = false;
         bool isSelectable = false;
 
+        float reloadProgress = 1.0f;
+
         Texture weaponTexture;
     };
 
@@ -35,4 +37,6 @@ protected:
     Texture m_weaponEmpty;
     Texture m_weaponFull;
     Texture m_weaponSelected;
+
+    Texture m_weaponReload;
 };

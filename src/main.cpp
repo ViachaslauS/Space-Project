@@ -52,7 +52,7 @@ int main ()
     InitAudioDevice();
 
     Music backMusic = LoadMusicStream("music.ogg");
-    SetMusicVolume(backMusic, 1.0f);
+    SetMusicVolume(backMusic, 0.3f);
     PlayMusicStream(backMusic);
     // Load a texture from the resources directory
     Texture wabbit = LoadTexture("wabbit_alpha.png");

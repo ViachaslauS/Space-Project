@@ -58,6 +58,7 @@ public:
 
     WeaponType getWeaponType() const;
 
+    float getReloadProgress() const;
 
 protected:
     virtual void shoot();
