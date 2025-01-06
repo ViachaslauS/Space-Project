@@ -62,7 +62,8 @@ namespace
 
 Popup::Popup()
 {
-    Vector2 screenSize = { GetScreenWidth(), GetScreenHeight() };
+    Vector2 screenSize = { static_cast<float>(GetScreenWidth()),
+                           static_cast<float>(GetScreenHeight()) };
 
     m_rect.width = screenSize.x * 0.6f;
     m_rect.height = screenSize.y * 0.6f;
@@ -137,7 +138,7 @@ void CustomButton::render(Vector2 origin)
     rectDraw.x += origin.x;
     rectDraw.y += origin.y;
 
-    DrawTextureNPatch(bgTexture, bgNpatchButton, 
+    DrawTextureNPatch(bgTexture, bgNpatchButton,
         rectDraw, { anchor.x * rectDraw.width, anchor.y * rectDraw.height }, 0.0f, WHITE);
 
     const Vector2 textPos = helpers::getDrawPosInRectCenter(rectDraw, text, font);
@@ -156,7 +157,7 @@ void CustomButton::render(Vector2 origin)
 
         };
 
-        DrawTextureNPatch(bgTextureSelected, bgNpatchButtonSelected, 
+        DrawTextureNPatch(bgTextureSelected, bgNpatchButtonSelected,
             selectedRect, { anchor.x * selectedRect.width, anchor.y * selectedRect.height }, 0.0f, WHITE);
     }
 }
