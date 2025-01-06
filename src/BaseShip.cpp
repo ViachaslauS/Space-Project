@@ -1,4 +1,6 @@
 #include "BaseShip.h"
+
+#include "PlayerStats.h"
 #include <cassert>
 
 BaseShip::BaseShip(ObjectsManager &om, const VitalityParams& vitality, int teamId, ObjectType type)
@@ -62,6 +64,9 @@ void BaseShip::applyWeaponParam(WeaponType weaponType, BaseWeapon::WeaponParam n
         if (item.weaponType == weaponType)
         {
             item.params = newParam;
+
+            item.params.weaponDamage += m_stageMultipliers.damageMultiplier * PlayerStats::get().m_currDifficulty;
+
             break;
         }
     }

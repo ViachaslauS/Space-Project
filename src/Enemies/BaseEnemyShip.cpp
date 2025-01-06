@@ -1,26 +1,45 @@
 #include "Enemies/BaseEnemyShip.h"
 
 #include "raymath.h"
+#include <PlayerStats.h>
 namespace
 {
      constexpr VitalityParams EnemyBaseVitality =
-    {
-        false,
-        100.0f,
-        true,
-        ShieldParams
         {
-            100.0f,
-            2.0f,
-            10.0f
-        }
-    };
+            false,
+            5.0f,
+            true,
+            ShieldParams
+            {
+                2.0f,
+                0.0f,
+                0.0f
+            }
+        };
+
+     constexpr StageMultipliers Multipliers
+     {
+         .hpMultiplier = 2.0f,
+         .shieldMultiplier = 3.0f,
+         .damageMultiplier = 2.5f
+     };
+
+     VitalityParams calculateEnemyBaseVitality(const VitalityParams& originParams, const StageMultipliers& multipliers)
+     {
+         auto outVitality = originParams;
+         auto currDiff = PlayerStats::get().m_currDifficulty;
+
+         outVitality.maxHp += Multipliers.hpMultiplier * currDiff;
+         outVitality.shieldParams.maxShield += Multipliers.shieldMultiplier * currDiff;
+
+         return outVitality;
+     }
 
     constexpr float BaseAsteroidDamage = 20.0f;
 }
 
-BaseEnemyShip::BaseEnemyShip(ObjectsManager &om)
-    : BaseShip(om, EnemyBaseVitality, 1, ObjectType::EnemyShip)
+BaseEnemyShip::BaseEnemyShip(ObjectsManager &om, const VitalityParams& baseVitality, const StageMultipliers& multipliers)
+    : BaseShip(om, calculateEnemyBaseVitality(baseVitality, multipliers), 1, ObjectType::EnemyShip)
 {
 }
 
