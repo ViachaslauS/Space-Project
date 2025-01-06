@@ -40,6 +40,9 @@ protected:
     Texture m_gravizoneBG;
     Params m_params;
 
+    Texture m_crosshairGravi;
+    Texture m_crosshairGraviBack;
+
     Rectangle m_bounds{ 0.0f, 0.0f, 0.0f, 0.0f };
 
     GravityZone::Direction m_currDirection = GravityZone::Direction::Right;

@@ -172,6 +172,11 @@ WeaponType BaseWeapon::getWeaponType() const
     return m_weaponType;
 }
 
+float BaseWeapon::getReloadProgress() const
+{
+    return std::clamp(m_currCooldown / m_params.weaponCooldown, 0.0f, 1.0f);
+}
+
 bool BaseWeapon::canShoot() const
 {
     return m_currCooldown >= m_params.weaponCooldown;

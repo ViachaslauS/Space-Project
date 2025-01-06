@@ -13,6 +13,7 @@ namespace
     const char* bgWeaponEmptyPath = "hud/weapon_empty.png";
     const char* bgWeaponFullPath = "hud/weapon_full.png";
     const char* weaponSelectedPath = "hud/select.png";
+    const char* weaponReloadPath = "bars/weapon_reload.png";
 
     const Vector2 DebugRectWeapon = { 92.0f, 106.0f };
     const float DistanceBetweenWeapon = 16.0f;
@@ -53,6 +54,18 @@ namespace
         156, 9, 41,
         255
     };
+
+    const Rectangle WeaponReloadFillRect
+    {
+        6, 4,
+        80, 2
+    };
+
+    const Color WeaponReloadColor
+    {
+       40, 230, 167,
+       255
+    };
 }
 
 HUDPlayerState::HUDPlayerState(Game& game)
@@ -64,6 +77,7 @@ HUDPlayerState::HUDPlayerState(Game& game)
     m_weaponFull = LoadTexture(bgWeaponFullPath);
 
     m_weaponSelected = LoadTexture(weaponSelectedPath);
+    m_weaponReload = LoadTexture(weaponReloadPath);
 }
 
 void HUDPlayerState::update(float dt)
@@ -81,6 +95,7 @@ void HUDPlayerState::update(float dt)
         info.isEmpty = false;
         info.weaponTexture = weapon->getWeaponIcon();
         info.isSelectable = weapon->isManualControlAvailable();
+        info.reloadProgress = weapon->getReloadProgress();
 
         m_weapons.push_back(info);
     }
@@ -109,6 +124,7 @@ void HUDPlayerState::renderWeapons()
 
     for (int idx = 0; idx < m_weapons.size(); idx++)
     {
+        auto& weapon = m_weapons[idx];
         const Vector2 offset =
         {
             startPos.x + (DebugRectWeapon.x + DistanceBetweenWeapon) * idx,
@@ -117,9 +133,9 @@ void HUDPlayerState::renderWeapons()
 
         Texture bgToRender;
 
-        if (m_weapons[idx].isActive || (!m_weapons[idx].isEmpty && m_weapons[idx].isSelectable))
+        if (weapon.isActive || (!weapon.isEmpty && weapon.isSelectable))
         {
-            assert(m_weapons[idx].isSelectable);
+            assert(weapon.isSelectable);
             bgToRender = m_weaponFull;
         }
         else
@@ -130,12 +146,12 @@ void HUDPlayerState::renderWeapons()
         DrawTexture(bgToRender, offset.x, offset.y, WHITE);
 
         const Vector2 weaponPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height }, 
-            { (float)-m_weapons[idx].weaponTexture.width, (float)-m_weapons[idx].weaponTexture.height }), 0.5f);
+            { (float)-weapon.weaponTexture.width, (float)-weapon.weaponTexture.height }), 0.5f);
 
 
-        DrawTexture(m_weapons[idx].weaponTexture, offset.x + weaponPos.x, offset.y + weaponPos.y, WHITE);
+        DrawTexture(weapon.weaponTexture, offset.x + weaponPos.x, offset.y + weaponPos.y, WHITE);
     
-        if (m_weapons[idx].isActive)
+        if (weapon.isActive)
         {
             const Vector2 selectorPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height },
                 { (float)-m_weaponSelected.width, (float)-m_weaponSelected.height }), 0.5f);
@@ -143,12 +159,24 @@ void HUDPlayerState::renderWeapons()
             DrawTexture(m_weaponSelected, offset.x + selectorPos.x, offset.y + selectorPos.y, WHITE);
         }
     
-        if (m_weapons[idx].isSelectable)
+        if (weapon.isSelectable)
         {
             char num[3] = {};
             sprintf(num, "%d", selectableNums++);
             DrawText(num, offset.x + DebugRectWeapon.x - FontSize * 0.1f, offset.y + DebugRectWeapon.y - FontSize * 0.5f, FontSize, WHITE);
         }
+
+        const Vector2 reloadPos
+        {
+            offset.x, offset.y + DebugRectWeapon.y
+        };
+
+        DrawTexture(m_weaponReload, reloadPos.x, reloadPos.y, WHITE);
+        DrawRectangle(reloadPos.x + WeaponReloadFillRect.x,
+            reloadPos.y + WeaponReloadFillRect.y,
+            WeaponReloadFillRect.width * weapon.reloadProgress,
+            WeaponReloadFillRect.height, WeaponReloadColor
+            );
     }
 }
 
@@ -162,8 +190,8 @@ void HUDPlayerState::renderVitality()
     const float hpProgress = vitality.data.currentHP / vitality.params.maxHp;
     const float shieldProgress = vitality.data.currentShield / vitality.params.shieldParams.maxShield;
 
-    Vector2 shieldBarPos = { pos.x, pos.y + DebugRectWeapon.y + 10.f };
-    Vector2 hpBarPos = { pos.x, pos.y + TargetSize.y + DebugRectWeapon.y + 15.0f };
+    Vector2 shieldBarPos = { pos.x, pos.y + DebugRectWeapon.y + 20.f };
+    Vector2 hpBarPos = { pos.x, pos.y + TargetSize.y + DebugRectWeapon.y + 25.0f };
 
     const Vector2 SizeBack = TargetSize;
 
