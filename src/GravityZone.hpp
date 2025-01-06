@@ -105,7 +105,7 @@ struct GravityZoneSystem
 
     struct GZParams
     {
-        float gzLifetime = 0.2f;
+        float gzLifetime = 1.0f;
         float width = 80.0f;
         float height = 100.0f;
     };
