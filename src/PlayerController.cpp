@@ -42,6 +42,24 @@ void PlayerController::setShip(PlayerShip* ship)
 
 void PlayerController::handleInput()
 {
+    if (std::abs(GetMouseWheelMove()) > 0.0f && m_ship)
+    {
+        int selectedCounter = 0;
+
+        for (int i = 0; i < m_ship->getWeapons().size(); i++)
+        {
+            if (m_ship->getWeapons()[i]->isManualControlAvailable())
+            {
+                if (i == m_selectedWeaponIdx)
+                {
+                    break;
+                }
+
+                selectedCounter++;
+            }
+        }
+        selectActiveWeapon((selectedCounter - (int)GetMouseWheelMove()) % 5);
+    }
     if (IsKeyPressed(KEY_ONE))
     {
         selectActiveWeapon(0);
@@ -62,6 +80,10 @@ void PlayerController::handleInput()
     {
         selectActiveWeapon(4);
     }
+    //else if (IsKeyPressed(KEY_Q))
+    //{
+    //    PlayerStats::get().addXP(PlayerStats::get().getLevelUpXpCost());
+    //}
 }
 
 void PlayerController::selectActiveWeapon(int idx)
@@ -72,14 +94,36 @@ void PlayerController::selectActiveWeapon(int idx)
     }
 
     const auto& weapons = m_ship->getWeapons();
-    if (helpers::isValidIdx(weapons, idx))
-    {
-        if (helpers::isValidIdx(weapons, m_selectedWeaponIdx))
-        {
-            weapons[m_selectedWeaponIdx]->setActive(false);
-        }
 
-        m_selectedWeaponIdx = idx;
-        weapons[m_selectedWeaponIdx]->setActive(true);
+    int selectedCounter = 0;
+
+    for (int i = 0; i < weapons.size(); i++)
+    {
+        if (weapons[i]->isManualControlAvailable())
+        {
+            if (i == m_selectedWeaponIdx)
+            {
+                break;
+            }
+
+            selectedCounter++;
+        }
+    }
+
+    int counter = 0;
+    for (int i = 0; i < weapons.size(); i++)
+    {
+        if (weapons[i]->isManualControlAvailable())
+        {
+            if (counter == idx)
+            {
+                weapons[m_selectedWeaponIdx]->setActive(false);
+                m_selectedWeaponIdx = i;
+                weapons[i]->setActive(true);
+                break;
+            }
+
+            counter++;
+        }
     }
 }

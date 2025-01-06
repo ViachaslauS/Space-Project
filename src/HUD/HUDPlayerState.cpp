@@ -10,7 +10,11 @@
 
 namespace
 {
-    const Vector2 DebugRectWeapon = { 64.0f, 64.0f };
+    const char* bgWeaponEmptyPath = "hud/weapon_empty.png";
+    const char* bgWeaponFullPath = "hud/weapon_full.png";
+    const char* weaponSelectedPath = "hud/select.png";
+
+    const Vector2 DebugRectWeapon = { 92.0f, 106.0f };
     const float DistanceBetweenWeapon = 16.0f;
 
     const int FontSize = 28;
@@ -51,6 +55,11 @@ HUDPlayerState::HUDPlayerState(Game& game)
     : HUDBase(game)
 {
     m_progressTexture = LoadTexture("progress.png");
+
+    m_weaponEmpty = LoadTexture(bgWeaponEmptyPath);
+    m_weaponFull = LoadTexture(bgWeaponFullPath);
+
+    m_weaponSelected = LoadTexture(weaponSelectedPath);
 }
 
 void HUDPlayerState::update(float dt)
@@ -63,9 +72,11 @@ void HUDPlayerState::update(float dt)
     for (const auto& weapon : shipWeapons)
     {
         WeaponInfo info;
+
         info.isActive = weapon->isActiveWeapon();
         info.isEmpty = false;
-        info.weaponTexture = weapon->getWeaponTexture();
+        info.weaponTexture = weapon->getWeaponIcon();
+        info.isSelectable = weapon->isManualControlAvailable();
 
         m_weapons.push_back(info);
     }
@@ -90,6 +101,8 @@ void HUDPlayerState::renderWeapons()
 {
     const Vector2 startPos = getConvertedPos();
 
+    int selectableNums = 1;
+
     for (int idx = 0; idx < m_weapons.size(); idx++)
     {
         const Vector2 offset =
@@ -98,22 +111,40 @@ void HUDPlayerState::renderWeapons()
             startPos.y
         };
 
-        if (m_weapons[idx].isActive)
-        {
-            Color activeColor = GREEN;
-            activeColor.a = 200;
+        Texture bgToRender;
 
-            DrawRectangle(offset.x, offset.y, DebugRectWeapon.x, DebugRectWeapon.y, activeColor);
+        if (m_weapons[idx].isActive || (!m_weapons[idx].isEmpty && m_weapons[idx].isSelectable))
+        {
+            assert(m_weapons[idx].isSelectable);
+            bgToRender = m_weaponFull;
+        }
+        else
+        {
+            bgToRender = m_weaponEmpty;
         }
 
-        // draw bg
-        Color bgColor = RED;
-        bgColor.a = 150;
-        DrawRectangle(offset.x, offset.y, DebugRectWeapon.x, DebugRectWeapon.y, bgColor);
+        DrawTexture(bgToRender, offset.x, offset.y, WHITE);
 
-        char num[3] = {};
-        sprintf(num, "%d", idx + 1);
-        DrawText(num, offset.x + DebugRectWeapon.x - FontSize * 0.1f, offset.y + DebugRectWeapon.y - FontSize * 0.5f, FontSize, WHITE);
+        const Vector2 weaponPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height }, 
+            { (float)-m_weapons[idx].weaponTexture.width, (float)-m_weapons[idx].weaponTexture.height }), 0.5f);
+
+
+        DrawTexture(m_weapons[idx].weaponTexture, offset.x + weaponPos.x, offset.y + weaponPos.y, WHITE);
+    
+        if (m_weapons[idx].isActive)
+        {
+            const Vector2 selectorPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height },
+                { (float)-m_weaponSelected.width, (float)-m_weaponSelected.height }), 0.5f);
+
+            DrawTexture(m_weaponSelected, offset.x + selectorPos.x, offset.y + selectorPos.y, WHITE);
+        }
+    
+        if (m_weapons[idx].isSelectable)
+        {
+            char num[3] = {};
+            sprintf(num, "%d", selectableNums++);
+            DrawText(num, offset.x + DebugRectWeapon.x - FontSize * 0.1f, offset.y + DebugRectWeapon.y - FontSize * 0.5f, FontSize, WHITE);
+        }
     }
 }
 

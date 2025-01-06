@@ -9,6 +9,9 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
     m_autoFire = false;
     m_isActive = false;
     m_weaponType = WeaponType::Gravigun;
+    m_isManualControlAvailable = true;
+
+    m_iconTexture = LoadTexture("hud/gravigun_ic.png");
 
     auto rocketTexture = LoadTexture("rocket.png");
     rocketTexture.height = 50;
