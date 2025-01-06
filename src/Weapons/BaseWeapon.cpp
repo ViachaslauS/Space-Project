@@ -4,6 +4,9 @@
 
 #include "rlgl.h"
 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 
 namespace
@@ -57,9 +60,10 @@ void BaseWeapon::update(float dt)
 {
     GameObject::update(dt);
 
+    m_currCooldown += dt;
+
     if (m_autoFire)
     {
-        m_currCooldown += dt;
         if (m_currCooldown >= m_params.weaponCooldown)
         {
             shoot();
@@ -164,6 +168,11 @@ Texture BaseWeapon::getWeaponIcon() const
 WeaponType BaseWeapon::getWeaponType() const
 {
     return m_weaponType;
+}
+
+bool BaseWeapon::canShoot() const
+{
+    return m_currCooldown >= m_params.weaponCooldown;
 }
 
 const Vector2 BaseWeapon::getSpeedToEnemy()

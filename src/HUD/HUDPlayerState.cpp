@@ -19,42 +19,46 @@ namespace
 
     const int FontSize = 28;
 
-    constexpr int ProgressWidth = 48 * 3.25;
-    constexpr int ProgressHeight = 16 * 3.25;
+    const char* textureBackPath = "bars/bar_bg.png";
 
-    constexpr int TextureColumns = 7;
-    constexpr int TextureRows = 15;
-
-    constexpr int ProgressImgNumBack = 7 * 4;
-    constexpr int ProgressImgNumFullHP = 7 * 4 + 1;
-    constexpr int ProgressImgNumFullShield = 7 * 6 + 1;
-
-    constexpr float TextureSizeX = 150.0f;
-    constexpr float TextureScaleY = 1.0f;
-
-    constexpr Rectangle rectBack
+    const Rectangle bgRect
     {
-        ProgressWidth * (ProgressImgNumBack % TextureColumns),
-        ProgressHeight * (ProgressImgNumBack / TextureColumns),
-        ProgressWidth,
-        ProgressHeight
+        0.0f, 0.0f,
+        114.0f, 24.0f
     };
 
-    constexpr NPatchInfo BackNpatch
+    const NPatchInfo NPatch
     {
-        .source = rectBack,
-        .left = 32,
-        .top = 0,
-        .right = 32,
-        .bottom = 0,
-        .layout = NPATCH_NINE_PATCH
+       .source = bgRect,
+       .left = 6,
+       .top = 6,
+       .right = 6,
+       .bottom = 6,
+       .layout = NPATCH_NINE_PATCH
+    };
+
+    const Vector2 TargetSize
+    {
+        200.0f, 24.0f
+    };
+
+    const Color ShieldColor
+    {
+        64, 144, 168,
+        255
+    };
+
+    const Color HpColor
+    {
+        156, 9, 41,
+        255
     };
 }
 
 HUDPlayerState::HUDPlayerState(Game& game)
     : HUDBase(game)
 {
-    m_progressTexture = LoadTexture("progress.png");
+    m_progressTexture = LoadTexture(textureBackPath);
 
     m_weaponEmpty = LoadTexture(bgWeaponEmptyPath);
     m_weaponFull = LoadTexture(bgWeaponFullPath);
@@ -158,72 +162,35 @@ void HUDPlayerState::renderVitality()
     const float hpProgress = vitality.data.currentHP / vitality.params.maxHp;
     const float shieldProgress = vitality.data.currentShield / vitality.params.shieldParams.maxShield;
 
-    Vector2 shieldBarPos = { pos.x - 15.0f, pos.y + DebugRectWeapon.y + 10.f };
-    Vector2 hpBarPos = { pos.x - 15.0f, pos.y + DebugRectWeapon.y + ProgressHeight * TextureScaleY + 2.0f };
+    Vector2 shieldBarPos = { pos.x, pos.y + DebugRectWeapon.y + 10.f };
+    Vector2 hpBarPos = { pos.x, pos.y + TargetSize.y + DebugRectWeapon.y + 15.0f };
 
-    const Vector2 SizeBack
-    {
-       TextureSizeX, ProgressHeight* TextureScaleY
-    };
+    const Vector2 SizeBack = TargetSize;
 
     const float HpWidth = SizeBack.x * (vitality.params.maxHp / VitalityParams{}.maxHp);
     const float ShieldWidth = SizeBack.x * (vitality.params.shieldParams.maxShield / ShieldParams{}.maxShield);
 
-    Rectangle rectHpBackDest{ hpBarPos.x, hpBarPos.y, HpWidth, SizeBack.y };
-    Rectangle rectShieldBackDest{ shieldBarPos.x, shieldBarPos.y, ShieldWidth, SizeBack.y };
-
-    const Rectangle rectProgressHp
+    Rectangle rectShield
     {
-        ProgressWidth * (ProgressImgNumFullHP % TextureColumns),
-        ProgressHeight * (ProgressImgNumFullHP / TextureColumns),
-
-        ProgressWidth * hpProgress,
-        ProgressHeight
+        shieldBarPos.x, shieldBarPos.y,
+        ShieldWidth, TargetSize.y
     };
+    // draw shield
+    DrawRectangle(shieldBarPos.x + NPatch.left, shieldBarPos.y + NPatch.top, 
+        (ShieldWidth * shieldProgress - NPatch.right * 2),
+        TargetSize.y - NPatch.top * 2, ShieldColor);
+    DrawTextureNPatch(m_progressTexture, NPatch, rectShield, {}, 0.0f, WHITE);
 
-    NPatchInfo HpNpatch
-    { 
-        .source = rectProgressHp,
-        .left = 32,
-        .top = 0,
-        .right = 32,
-        .bottom = 0,
-        .layout = NPATCH_NINE_PATCH
-    };
-
-    const Rectangle rectProgressShield
+    Rectangle rectHp
     {
-        ProgressWidth * (ProgressImgNumFullShield % TextureColumns),
-        ProgressHeight * (ProgressImgNumFullShield / TextureColumns),
+        hpBarPos.x, hpBarPos.y,
+        HpWidth, TargetSize.y
+    }; 
+    
+    // draw hp
+    DrawRectangle(hpBarPos.x + NPatch.left, hpBarPos.y + NPatch.top,
+        (HpWidth * hpProgress - NPatch.right * 2),
+        TargetSize.y - NPatch.top * 2, HpColor);
 
-        ProgressWidth * shieldProgress,
-        ProgressHeight
-    };
-
-    NPatchInfo ShieldNPatch
-    {
-        .source = rectProgressShield,
-        .left = 32,
-        .top = 0,
-        .right = 32,
-        .bottom = 0,
-        .layout = NPATCH_NINE_PATCH
-    };
-
-    const Rectangle rectProgressHpDest
-    {
-        hpBarPos.x, hpBarPos.y, HpWidth * hpProgress, ProgressHeight * TextureScaleY
-    };
-
-    const Rectangle rectProgressShieldDest
-    {
-        shieldBarPos.x, shieldBarPos.y, ShieldWidth * shieldProgress, ProgressHeight * TextureScaleY
-    };
-
-    DrawTextureNPatch(m_progressTexture, BackNpatch, rectHpBackDest, {}, 0.0f, WHITE);
-    DrawTextureNPatch(m_progressTexture, HpNpatch, rectHpBackDest, {}, 0.0f, WHITE);
-
-    DrawTextureNPatch(m_progressTexture, BackNpatch, rectProgressShieldDest, {}, 0.0f, WHITE);
-    DrawTextureNPatch(m_progressTexture, ShieldNPatch, rectProgressShieldDest, {}, 0.0f, WHITE);
-
+    DrawTextureNPatch(m_progressTexture, NPatch, rectHp, {}, 0.0f, WHITE);
 }
