@@ -9,6 +9,7 @@
 
 class GameObject;
 struct Physics;
+struct GravityZoneSystem;
 
 struct PhysicsComp
 {
@@ -47,4 +48,6 @@ struct Physics
 
     struct B2d;
     std::unique_ptr<B2d> b2d;
+
+    GravityZoneSystem *gravityZones = nullptr;
 };

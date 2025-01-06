@@ -102,7 +102,9 @@ void GravityZone::onSensorCollision(GameObject *other, bool exit) {
 GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
     : physics(p)
     , objManager(om)
-    {}
+{
+    physics.gravityZones = this;
+}
 
 void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir)
 {
@@ -142,6 +144,20 @@ void GravityZoneSystem::render()
     for (auto &z : activeZones)
     {
         z->render();
+    }
+}
+
+void GravityZoneSystem::removeFromAffectedComps(PhysicsComp *comp)
+{
+    for (auto &z : activeZones) {
+        if (z == nullptr) {
+            //removing the zone itself, skipping...
+            continue;
+        }
+        if (auto it = std::find(z->affectedComps.begin(), z->affectedComps.end(), comp);
+            it != z->affectedComps.end()) {
+            z->affectedComps.erase(it);
+        }
     }
 }
 

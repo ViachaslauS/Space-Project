@@ -4,6 +4,7 @@
 #include "utils.h"
 
 #include "GameObject.h"
+#include "GravityZone.hpp"
 #include "Physics.hpp"
 
 namespace rlgl {
@@ -286,6 +287,7 @@ bool Physics::removeBody(PhysicsComp *comp)
     {
         if (B2_ID_EQUALS(comps[i]->id, comp->id))
         {
+            gravityZones->removeFromAffectedComps(comp);
             b2DestroyBody(comp->id);
             comps[i] = std::move(comps.back());
             comps.pop_back();

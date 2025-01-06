@@ -8,7 +8,6 @@
 
 class ObjectsManager;
 
-
 class GravityZone : public GameObject
 {
 public:
@@ -112,6 +111,7 @@ struct GravityZoneSystem
     GZParams params;
 
     void addZone(const Vector2 &pos, GravityZone::Direction dir);
+    void removeFromAffectedComps(PhysicsComp *comp);
 
     void update(float dt);
     void render();
