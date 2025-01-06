@@ -24,13 +24,15 @@ public:
                 const Vector2 &pos,
                 const Vector2 &size,
                 float activeTime,
-                Direction dir);
+                Direction dir,
+                float damage);
 
     ~GravityZone() override;
 
     void applyForce(PhysicsComp *comp, bool exit);
 
     float force = 300000.0f;
+    float damage;
     float remainingTime;
 
     void render() override;
@@ -110,7 +112,7 @@ struct GravityZoneSystem
 
     GZParams params;
 
-    void addZone(const Vector2 &pos, GravityZone::Direction dir);
+    void addZone(const Vector2 &pos, GravityZone::Direction dir, float damage);
     void removeFromAffectedComps(PhysicsComp *comp);
 
     void update(float dt);

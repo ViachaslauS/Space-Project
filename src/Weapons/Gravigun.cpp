@@ -84,7 +84,7 @@ void Gravigun::handleInput()
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_SPACE))
     {
         auto pos = GetMousePosition();
-        m_gravityZones.addZone(pos, m_currDirection);
+        m_gravityZones.addZone(pos, m_currDirection, m_params.power);
     }
 }
 
