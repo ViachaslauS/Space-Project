@@ -2,6 +2,8 @@
 
 #include "ObjectsManager.h"
 
+#include "rlgl.h"
+
 #include <math.h>
 
 namespace
@@ -86,12 +88,16 @@ void BaseWeapon::update(float dt)
 
 void BaseWeapon::render()
 {
-    auto rot = m_weaponAngle * (180/PI);
-    if (rot < 0)
-    {
-        rot+= 360;
-    }
-    DrawTextureEx(m_texture, center(), rot, 1.0f, WHITE);
+    auto rot = m_weaponAngle * (180.0f / M_PI);
+    auto pos = center() + m_renderOffset;
+
+    Rectangle source = { 0.0f, 0.0f, (float)m_texture.width, (float)m_texture.height };
+    Rectangle dest = { pos.x, pos.y, (float)m_texture.width, (float)m_texture.height };
+
+    Vector2 origin = { 15.0f, m_texture.height * 0.5f };
+
+    DrawTexturePro(m_texture, source, dest, origin, rot, WHITE);
+
     for (auto projectile : m_projectiles)
     {
         projectile->render();
@@ -154,33 +160,43 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
 {
     const auto enemies = m_objectManager.getEnemyObjects(m_teamId);
     Vector2 nearestPos = Vector2{ 0,0 };
+    Vector2 dirToEnemy = Vector2{ 0,0 };
     float nearest = std::numeric_limits<float>::max();
+    bool nearestFound = false;
     for (auto& enemy : enemies)
     {
-        if (enemy->m_objectType != ObjectType::GravityZone && enemy->m_objectType != ObjectType::LaserProjectile && enemy->m_objectType != ObjectType::RocketProjectile)
+        if (enemy->m_objectType != ObjectType::GravityZone
+            && enemy->m_objectType != ObjectType::LaserProjectile
+            && enemy->m_objectType != ObjectType::RocketProjectile)
         {
-            auto distanceVector = enemy->center() - m_pos;
-            float length = std::sqrt(std::pow(distanceVector.x, 2) + std::pow(distanceVector.y, 2));
+            auto dir = enemy->center() - m_pos;
+            float length = Vector2Length(dir);
             if (length < nearest)
             {
+                nearestFound = true;
                 nearest = length;
-                nearestPos = distanceVector;
+                nearestPos = enemy->center();
+                dirToEnemy = dir;
             }
         }
     }
-    if (nearestPos == Vector2{ 0, 0 })
+
+    if (!nearestFound)
     {
         nearest = 1;
+        auto dir = Vector2Rotate({ 1.0f, 0.0f }, RAD2DEG * m_weaponAngle);
+        return Vector2Scale(dir, 3.0);
     }
-    nearestPos.x += helpers::randFlt(-150.0f, 150.0f);
-    nearestPos.y += helpers::randFlt(-150.0f, 150.0f);
-    calculateDirAngle(nearestPos + m_pos);
-    return Vector2Scale(nearestPos, (1.0f / nearest) * 300.0f);
+
+    dirToEnemy.x += helpers::randFlt(-150.0f, 150.0f);
+    dirToEnemy.y += helpers::randFlt(-150.0f, 150.0f);
+
+    calculateDirAngle(Vector2Subtract(m_pos + dirToEnemy, m_pos));
+
+    return Vector2Scale(dirToEnemy, (1.0f / nearest) * 300.0f);
 }
 
 void BaseWeapon::calculateDirAngle(const Vector2 dir)
 {
-    auto normDir = Vector2Normalize(dir);
-    auto base = Vector2{ 1, 0 };
-    m_weaponAngle = Vector2Angle(normDir, base);
+    m_weaponAngle = helpers::vecToAngle(dir);
 }

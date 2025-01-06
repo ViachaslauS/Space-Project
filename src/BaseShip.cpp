@@ -21,7 +21,7 @@ void BaseShip::update(float dt)
     {
         auto pos = Vector2{ m_pos.x + m_weaponPositions[i].first, m_pos.y + m_weaponPositions[i].second};
 
-        m_weapons[i]->setPos(pos);
+        m_weapons[i]->setPos({ pos.x + 10.0f, pos.y + 7.0f });
         m_weapons[i]->update(dt);
     }
 }

@@ -66,7 +66,11 @@ void PlayerShip::update(float dt)
 
     const float progressToCalculate = m_offsetProgress < 1.0f ? m_offsetProgress : 2.0f - m_offsetProgress;
 
-    m_pos.y = helpers::windowCenter().y + EaseSineInOut(progressToCalculate, 1.0f, 1.0f, 1.0f) * ShakeRadius;
+    auto dy = EaseSineInOut(progressToCalculate, 1.0f, 1.0f, 1.0f) * ShakeRadius;
+    m_pos.y = helpers::windowCenter().y + dy;
+    for (auto &w : m_weapons) {
+        w->setRenderOffset({ 0.0f, dy });
+    }
 }
 
 void PlayerShip::reset()
