@@ -124,7 +124,10 @@ void PlayerController::selectActiveWeapon(int idx)
         {
             if (counter == idx)
             {
-                weapons[m_selectedWeaponIdx]->setActive(false);
+                if (helpers::isValidIdx(weapons, m_selectedWeaponIdx))
+                {
+                    weapons[m_selectedWeaponIdx]->setActive(false);
+                }
                 m_selectedWeaponIdx = i;
                 weapons[i]->setActive(true);
                 break;

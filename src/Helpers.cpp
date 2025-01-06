@@ -17,7 +17,7 @@ namespace helpers
         return b2Rot_GetAngle(rot);
     }
 
-    Vector2 getDrawPosInRectCenter(Rectangle rect, std::string text, float fontSize)
+    Vector2 getDrawPosInRectCenter(const Rectangle &rect, const std::string &text, float fontSize)
     {
         const float xCenter = text.size() * fontSize * 0.5f;
 

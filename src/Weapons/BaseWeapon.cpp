@@ -44,6 +44,8 @@ BaseWeapon::~BaseWeapon()
 void BaseWeapon::applyParams(WeaponParam newParams)
 {
     m_params = newParams;
+
+    m_baseProjectile.damage = newParams.weaponDamage;
 }
 
 const Vector2& BaseWeapon::getPos() const

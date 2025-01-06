@@ -39,6 +39,8 @@ public:
     helpers::MulticastDelegate<const XPInfo&> onXPChanged;
     helpers::MulticastDelegate<> onLevelUp;
 
+    int m_currDifficulty = 0;
+
 private:
     PlayerStats();
 

@@ -23,7 +23,7 @@ LaserWeapon::LaserWeapon(ObjectsManager& om, int teamId)
 
     //Configure bullet params
     m_baseProjectile.texture = laserTexture;
-    m_baseProjectile.damage = 50.0f;
+    m_baseProjectile.damage = m_params.weaponDamage;
 
     m_crosshair.crosshairTexture = LoadTexture("arrows.png");
     m_crosshair.textureRect = CrosshairTextureRect;

@@ -7,7 +7,7 @@ class ObjectsManager;
 class BaseEnemyShip : public BaseShip
 {
 public:
-    BaseEnemyShip(ObjectsManager &om);
+    BaseEnemyShip(ObjectsManager& om, const VitalityParams& baseVitality, const StageMultipliers& multipliers);
 
     virtual void initialize() override;
 

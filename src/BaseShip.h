@@ -9,6 +9,14 @@
 #include <utility>
 class ObjectsManager;
 
+// for enemies
+struct StageMultipliers
+{
+    float hpMultiplier = 0.0f;
+    float shieldMultiplier = 0.0f;
+    float damageMultiplier = 0.0f;
+};
+
 struct WeaponParamMap
 {
     WeaponType weaponType;
@@ -72,4 +80,6 @@ protected:
     std::vector<WeaponParamMap> m_weaponParams = DefaultWeaponParamsMap;
     std::vector<std::pair<int,int>> m_weaponPositions;
     Texture m_weaponPlaceTexture;
+
+    StageMultipliers m_stageMultipliers;
 };

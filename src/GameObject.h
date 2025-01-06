@@ -89,7 +89,7 @@ protected:
     Vector2 m_size = { 0.0f, 0.0f };
     float m_rotation = 0.0f;
 
-    float m_xpValue = 0.0f;
+    float m_xpValue = 1.0f;
 
     float m_noDamageTime = 0.0f;
 };

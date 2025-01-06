@@ -4,7 +4,7 @@
 
 namespace
 {
-    constexpr float XPPerLvl = 500.0f;
+    constexpr float XPPerLvl = 5.0f;
 }
 
 PlayerStats::PlayerStats()
@@ -46,7 +46,7 @@ PlayerStats::XPInfo PlayerStats::getXPInfo() const
 
 float PlayerStats::getLevelUpXpCost() const
 {
-    return XPPerLvl * m_xp.currentLvl;
+    return XPPerLvl + (XPPerLvl * m_xp.currentLvl) * 1.2f;
 }
 
 int PlayerStats::getSkillsToUpgradeMax() const

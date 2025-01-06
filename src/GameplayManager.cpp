@@ -4,6 +4,7 @@
 #include "Enemies/SmallEnemyShip.h"
 #include "Enemies/Asteroid.h"
 #include "PlayerShip.h"
+#include "PlayerStats.h"
 
 #include <algorithm>
 #include <array>
@@ -15,7 +16,7 @@
 
 namespace
 {
-    constexpr float DifficultyUpgradeTime = 30.0f;
+    constexpr float DifficultyUpgradeTime = 45.0f;
 
     constexpr uint32_t MaxEventsCount = static_cast<uint32_t>(EventType::Count);
 
@@ -89,7 +90,9 @@ void GameplayManager::reset()
     m_currDifficulty = 0;
     m_difficultyProgress = 0.0f;
     m_lastEventSawnTime = 0.0f;
-    
+
+    PlayerStats::get().m_currDifficulty = m_currDifficulty;
+
     m_spawnedObjects.clear();
 }
 void GameplayManager::updateDifficulty(float dt)
@@ -99,6 +102,8 @@ void GameplayManager::updateDifficulty(float dt)
     {
         m_currDifficulty++;
         m_difficultyProgress -= DifficultyUpgradeTime;
+
+        PlayerStats::get().m_currDifficulty = m_currDifficulty;
     }
 }
 
