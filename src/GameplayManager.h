@@ -23,6 +23,8 @@ public:
     uint32_t getCurrDifficulty() const;
     float getDifficultyProgress() const;
 
+    void reset();
+
 private:
     void updateDifficulty(float dt);
 

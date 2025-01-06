@@ -4,6 +4,7 @@
 #include <functional>
 #include <random>
 #include <cmath>
+#include <string>
 
 #include "raylib.h"
 
@@ -11,6 +12,8 @@ namespace helpers
 {
     Vector2 windowCenter();
     float vecToAngle(const Vector2 &vec);
+
+    Vector2 getDrawPosInRectCenter(Rectangle rect, std::string text, float fontSize);
 
     using DelegateHandle = uint32_t;
 

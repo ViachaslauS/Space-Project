@@ -22,7 +22,6 @@ PlayerStats& PlayerStats::get()
 
 void PlayerStats::reset()
 {
-    onXPChanged.empty();
     m_xp.reset();
 }
 

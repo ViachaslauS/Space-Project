@@ -12,6 +12,8 @@ public:
 
     void setShip(PlayerShip* ship);
 
+    void reset();
+
 protected:
     void handleInput();
     void selectActiveWeapon(int idx);

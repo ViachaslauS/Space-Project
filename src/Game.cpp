@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Helpers.h"
+#include "Popups/DeathPopup.hpp"
 #include "Popups/Popups.h"
 #include "Popups/Popup.h"
 #include "Popups/PausePopup.h"
@@ -31,6 +32,18 @@ Game::Game(AppContext& ctx)
         }
         popup->show(true);
     });
+
+    m_playerShip.onDieSignal.add([this]() 
+        {
+            auto popup = m_context.popups.getPopup(PopupType::DefeatPopup);
+            if (!popup)
+            {
+                popup = new DeathPopup();
+                m_context.popups.addPopup(popup);
+            }
+
+            popup->show(true);
+        });
 
     m_hud.init({});
 }
@@ -106,7 +119,14 @@ const PlayerController& Game::getPlayerController() const
 
 void Game::reset()
 {
+    PlayerStats::get().reset();
+
     m_skills.resetSkills(*this);
+    m_playerShip.reset();
+
+    m_gameplayManager.reset();
+
+    m_playerController.reset();
 }
 
 Skills& Game::getSkills()

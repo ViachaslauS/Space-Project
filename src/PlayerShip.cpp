@@ -79,6 +79,9 @@ void PlayerShip::reset()
 
     m_pos = helpers::windowCenter();
     m_offsetProgress = 0.0f;
+
+    m_weapons.clear();
+    addWeapon(new Gravigun(m_objectManager, getTeamId(), m_gravityZones));
 }
 
 void PlayerShip::render()

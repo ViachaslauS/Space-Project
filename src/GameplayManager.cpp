@@ -84,6 +84,14 @@ float GameplayManager::getDifficultyProgress() const
     return m_difficultyProgress / DifficultyUpgradeTime;
 }
 
+void GameplayManager::reset()
+{
+    m_currDifficulty = 0;
+    m_difficultyProgress = 0.0f;
+    m_lastEventSawnTime = 0.0f;
+    
+    m_spawnedObjects.clear();
+}
 void GameplayManager::updateDifficulty(float dt)
 {
     m_difficultyProgress += dt;

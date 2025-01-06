@@ -16,4 +16,16 @@ namespace helpers
         b2Rot rot { norm.x, norm.y };
         return b2Rot_GetAngle(rot);
     }
+
+    Vector2 getDrawPosInRectCenter(Rectangle rect, std::string text, float fontSize)
+    {
+        const float xCenter = text.size() * fontSize * 0.5f;
+
+        Vector2 outPos;
+
+        outPos.x = rect.x + rect.width * 0.5f - xCenter * 0.5f;
+        outPos.y = rect.y + rect.height * 0.5f - fontSize * 0.5f;
+
+        return outPos;
+    }
 }
