@@ -209,8 +209,8 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
         return Vector2Scale(dir, 300.0);
     }
 
-    dirToEnemy.x += helpers::randFlt(-150.0f, 150.0f);
-    dirToEnemy.y += helpers::randFlt(-150.0f, 150.0f);
+    dirToEnemy.x += helpers::randFlt(-10.0f, 10.0f);
+    dirToEnemy.y += helpers::randFlt(-10.0f, 10.0f);
 
     calculateDirAngle(Vector2Subtract(m_pos + dirToEnemy, m_pos));
 
