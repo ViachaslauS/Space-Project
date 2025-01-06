@@ -36,11 +36,37 @@ namespace
      }
 
     constexpr float BaseAsteroidDamage = 20.0f;
+
+    const char* BarsName = "bars/enemy_bars.png";
+
+    const Rectangle ShieldBarRect
+    {
+        8, 7, 221, 7
+    };
+
+    const Rectangle HpBarRect
+    {
+        8, 21, 221, 7
+    };
+
+    const Color ShieldColor
+    {
+        64, 144, 168,
+        255
+    };
+
+    const Color HpColor
+    {
+        156, 9, 41,
+        255
+    };
+
 }
 
 BaseEnemyShip::BaseEnemyShip(ObjectsManager &om, const VitalityParams& baseVitality, const StageMultipliers& multipliers)
     : BaseShip(om, calculateEnemyBaseVitality(baseVitality, multipliers), 1, ObjectType::EnemyShip)
 {
+    m_bars = LoadTexture(BarsName);
 }
 
 void BaseEnemyShip::initialize()
@@ -76,6 +102,22 @@ void BaseEnemyShip::update(float dt)
 void BaseEnemyShip::render()
 {
     BaseShip::render();
+
+    // render hp/shield if any aren't not full
+    if (m_vitalityData.currentHP < m_vitality.maxHp || m_vitalityData.currentShield < m_vitality.shieldParams.maxShield)
+    {
+        Vector2 pos = m_pos;
+        pos.x -= m_bars.width * 0.5f;
+        pos.y -= m_bars.height + m_texture.height;
+
+        DrawTexture(m_bars, pos.x, pos.y, WHITE);
+
+        const float shieldWidthMul = m_vitalityData.currentShield / m_vitality.shieldParams.maxShield;
+        const float hpWidthMul = m_vitalityData.currentHP / m_vitality.maxHp;
+
+        DrawRectangle(pos.x + ShieldBarRect.x, pos.y + ShieldBarRect.y, ShieldBarRect.width * shieldWidthMul, ShieldBarRect.height, ShieldColor);
+        DrawRectangle(pos.x + HpBarRect.x, pos.y + HpBarRect.y, HpBarRect.width * hpWidthMul, HpBarRect.height, HpColor);
+    }
 }
 
 void BaseEnemyShip::setVelocity(const Vector2& velocity)
