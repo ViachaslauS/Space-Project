@@ -24,11 +24,13 @@ GravityZone::GravityZone(ObjectsManager &om,
                          const Vector2 &pos,
                          const Vector2 &size,
                          float activeTime,
-                         GravityZone::Direction dir)
+                         GravityZone::Direction dir,
+                         float damage)
     : GameObject(om, vp, 0, ObjectType::GravityZone)
     , remainingTime(activeTime)
     , dir(dir)
     , rendering(pos, size, dir)
+    , damage(damage)
 {
     m_pos = pos;
     m_size = size;
@@ -93,6 +95,7 @@ void GravityZone::onSensorCollision(GameObject *other, bool exit) {
     case ObjectType::RocketProjectile:
     case ObjectType::Asteroid:
     case ObjectType::EnemyShip:
+        other->damage(damage);
         applyForce(other->m_physicsComp, exit);
     default:
         break;
@@ -106,7 +109,7 @@ GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
     physics.gravityZones = this;
 }
 
-void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir)
+void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, float damage)
 {
     VitalityParams vp;
     Vector2 size { params.width, params.height };
@@ -117,7 +120,8 @@ void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir)
                                                  pos,
                                                  size,
                                                  params.gzLifetime,
-                                                 dir));
+                                                 dir,
+                                                 damage));
 
     physics.createRectangularBody(pos, params.width, params.height, newZone.get());
 }
