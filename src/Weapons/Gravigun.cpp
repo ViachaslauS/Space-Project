@@ -60,6 +60,11 @@ void Gravigun::renderCrosshair(Vector2 pos) const
     }
 
     m_crosshair.render();
+
+    if (!canShoot())
+    {
+        /// 
+    }
 }
 
 void Gravigun::setParams(Params params)
@@ -93,8 +98,7 @@ void Gravigun::handleInput()
 
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_SPACE))
     {
-        auto pos = GetMousePosition();
-        m_gravityZones.addZone(pos, m_currDirection, m_params.power);
+        shoot();
     }
 }
 
@@ -125,4 +129,15 @@ void Gravigun::setDirection(GravityZone::Direction newDirection)
     }
 
     m_crosshair.particles.setDirection(m_currDirection);
+}
+
+void Gravigun::shoot()
+{
+    if (!canShoot())
+    {
+        return;
+    }
+
+    auto pos = GetMousePosition();
+    m_gravityZones.addZone(pos, m_currDirection, m_params.power);
 }

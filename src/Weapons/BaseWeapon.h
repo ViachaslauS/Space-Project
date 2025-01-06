@@ -61,6 +61,8 @@ public:
 
 protected:
     virtual void shoot();
+    bool canShoot() const;
+
     virtual const Vector2 getSpeedToEnemy();
     void calculateDirAngle(const Vector2 dir);
 

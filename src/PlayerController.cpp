@@ -80,10 +80,12 @@ void PlayerController::handleInput()
     {
         selectActiveWeapon(4);
     }
-    //else if (IsKeyPressed(KEY_Q))
-    //{
-    //    PlayerStats::get().addXP(PlayerStats::get().getLevelUpXpCost());
-    //}
+    else if (IsKeyPressed(KEY_Q))
+    {
+#ifdef DEBUG
+        PlayerStats::get().addXP(PlayerStats::get().getLevelUpXpCost());
+#endif
+    }
 }
 
 void PlayerController::selectActiveWeapon(int idx)

@@ -32,6 +32,8 @@ protected:
     void handleInput();
     void setDirection(GravityZone::Direction newDirection);
 
+    virtual void shoot() override;
+
 protected:
     GravityZone::Rendering m_crosshair;
     GravityZoneSystem &m_gravityZones;

@@ -112,7 +112,16 @@ GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
 void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, float damage)
 {
     VitalityParams vp;
-    Vector2 size { params.width, params.height };
+
+    Vector2 size;
+    if (dir == GravityZone::Direction::Left || dir == GravityZone::Direction::Right)
+    {
+        size = { params.height, params.width };
+    }
+    else
+    {
+        size = { params.width, params.height };
+    }
 
     auto &newZone = activeZones.emplace_back(std::make_unique<GravityZone>(
                                                  objManager,

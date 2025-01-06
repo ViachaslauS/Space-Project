@@ -7,23 +7,40 @@
 
 namespace
 {
-    constexpr int ProgressWidth = 48 * 3.25f;
-    constexpr int ProgressHeight = 16 * 3.25f;
+    const char* textureBackPath = "bars/bar_bg.png";
 
-    constexpr int TextureColumns = 7;
-    constexpr int TextureRows = 15;
+    const Rectangle bgRect
+    {
+        0.0f, 0.0f,
+        114.0f, 24.0f
+    };
 
-    constexpr int ProgressImgNumBack = 0;
-    constexpr int ProgressImgNumFull = 8;
+    const NPatchInfo NPatch
+    {
+       .source = bgRect,
+       .left = 6,
+       .top = 6,
+       .right = 6,
+       .bottom = 6,
+       .layout = NPATCH_NINE_PATCH
+    };
 
-    constexpr float TextureSizeX = 200.0f;
-    constexpr float TextureScaleY = 0.5;
+    const Vector2 TargetSize
+    {
+        200.0f, 24.0f
+    };
+
+    const Color ProgressColor
+    {
+        173, 65, 3,
+        255
+    };
 }
 
 HUDGameState::HUDGameState(Game& game)
     : HUDBase(game)
 {
-    m_texture = LoadTexture("progress.png");
+    m_texture = LoadTexture(textureBackPath);
 }
 
 void HUDGameState::update(float dt)
@@ -72,43 +89,15 @@ void HUDGameState::renderDifficulty()
     DrawText(stageNum, pos.x + 20, pos.y + 20, 20, WHITE);
 
     Vector2 progressPos;
-    progressPos.x = pos.x + 5;
+    progressPos.x = pos.x + 2;
     progressPos.y = pos.y + 50;
 
-    constexpr Rectangle rectBack
+    Rectangle rect
     {
-        ProgressWidth * (ProgressImgNumBack % TextureColumns),
-        ProgressHeight * (ProgressImgNumBack / TextureColumns),
-
-        ProgressWidth,
-        ProgressHeight
+        progressPos.x, progressPos.y,
+        TargetSize.x, TargetSize.y
     };
 
-    Rectangle RectDestBack
-    {
-        progressPos.x,
-        progressPos.y,
-        TextureSizeX,
-        ProgressHeight * TextureScaleY
-    };
-
-    Rectangle rectProgress
-    {
-        ProgressWidth * (ProgressImgNumFull % TextureColumns),
-        ProgressHeight * (ProgressImgNumFull / TextureColumns),
-
-        ProgressWidth * diffProgress,
-        ProgressHeight
-    };
-
-    Rectangle RectDestProgress
-    {
-        progressPos.x,
-        progressPos.y,
-        TextureSizeX * diffProgress,
-        ProgressHeight * TextureScaleY
-    };
-
-    DrawTexturePro(m_texture, rectBack, RectDestBack, {}, 0.0f, WHITE);
-    DrawTexturePro(m_texture, rectProgress, RectDestProgress, {}, 0.0f, WHITE);
+    DrawRectangle(progressPos.x + NPatch.left, progressPos.y + NPatch.top, TargetSize.x * diffProgress - NPatch.right * 2, TargetSize.y - NPatch.top * 2, ProgressColor);
+    DrawTextureNPatch(m_texture, NPatch, rect, {}, 0.0f, WHITE);
 }
