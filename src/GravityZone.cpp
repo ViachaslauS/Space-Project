@@ -39,6 +39,7 @@ GravityZone::GravityZone(ObjectsManager &om,
 GravityZone::~GravityZone()
 {
     for (auto a : affectedComps) {
+        applyDamage(a, true);
         applyForce(a, true);
     }
 }
@@ -89,13 +90,23 @@ void GravityZone::applyForce(PhysicsComp *comp, bool exit)
     comp->gravityZoneForce = res;
 }
 
+void GravityZone::applyDamage(PhysicsComp *comp, bool exit)
+{
+    if (exit) {
+        comp->gravityZoneDamage -= damage;
+        assert(comp->gravityZoneDamage >= 0.0f);
+    } else {
+        comp->gravityZoneDamage += damage;
+    }
+}
+
 void GravityZone::onSensorCollision(GameObject *other, bool exit) {
     auto move = false;
     switch (other->m_objectType) {
     case ObjectType::RocketProjectile:
     case ObjectType::Asteroid:
     case ObjectType::EnemyShip:
-        other->damage(damage);
+        applyDamage(other->m_physicsComp, exit);
         applyForce(other->m_physicsComp, exit);
     default:
         break;

@@ -13,6 +13,7 @@ struct GravityZoneSystem;
 
 struct PhysicsComp
 {
+    float gravityZoneDamage = 0.0f;
     Vector2 gravityZoneForce;
     GameObject *object;
     b2ShapeId shapeId;
