@@ -245,10 +245,10 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     return comps.back().get();
 }
 
-PhysicsComp* Physics::createCapsuleBody(const Vector2 &center1, const Vector2 &center2, float thickness, GameObject *object, bool canRotate)
+PhysicsComp* Physics::createCapsuleBody(const Vector2& pos, const Vector2 &center1, const Vector2 &center2, float radius, GameObject *object, bool canRotate)
 {
     b2BodyDef bodyDef = b2DefaultBodyDef();
-    b2Vec2 center { (center1.x + center2.x) * 0.5f , (center1.y + center2.y) * 0.5f };
+    b2Vec2 center { pos.x, pos.y };
     bodyDef.type = objectTypeToBodyType(object->m_objectType);
     bodyDef.position = center;
     bodyDef.fixedRotation = !canRotate;
@@ -260,9 +260,9 @@ PhysicsComp* Physics::createCapsuleBody(const Vector2 &center1, const Vector2 &c
     comp->object = object;
     comp->id = b2CreateBody(b2d->worldId, &bodyDef);
 
-    b2Vec2 c1 = b2Sub(center, { center1.x, center1.y });
-    b2Vec2 c2 = b2Sub(center, { center2.x, center2.y });
-    b2Capsule capsule { c1, c2, thickness };
+    b2Vec2 c1 { center1.x, center1.y };
+    b2Vec2 c2 { center2.x, center2.y };
+    b2Capsule capsule { c1, c2, radius };
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.userData = reinterpret_cast<void *>(object);
     shapeDef.isSensor = isSensor(object->m_objectType);

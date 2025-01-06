@@ -8,6 +8,7 @@ class LaserWeapon : public BaseWeapon
 {
 public:
     LaserWeapon(ObjectsManager& om, int teamId);
+    void shoot() override;
 
 public:
     void update(float dt) override;
