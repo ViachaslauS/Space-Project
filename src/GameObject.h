@@ -52,6 +52,8 @@ public:
     void setRotation(float rot);
     float getRotation() const;
 
+    void setRenderOffset(const Vector2 &offset);
+
     void applyForce(const Vector2 &dir);
 
     int getTeamId() const;
@@ -83,6 +85,7 @@ protected:
 
     // temporary ?
     Vector2 m_pos = { 0.0f, 0.0f };
+    Vector2 m_renderOffset = { 0.0f, 0.0f };
     Vector2 m_size = { 0.0f, 0.0f };
     float m_rotation = 0.0f;
 

@@ -10,6 +10,7 @@
 namespace helpers
 {
     Vector2 windowCenter();
+    float vecToAngle(const Vector2 &vec);
 
     using DelegateHandle = uint32_t;
 

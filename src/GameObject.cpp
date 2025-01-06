@@ -38,7 +38,7 @@ void GameObject::update(float dt)
 
 void GameObject::render()
 {
-    DrawTextureV(m_texture, center(), WHITE);
+    DrawTextureV(m_texture, center() + m_renderOffset, WHITE);
 }
 
 void GameObject::damage(float damage)
@@ -108,6 +108,11 @@ void GameObject::setRotation(float rot)
 float GameObject::getRotation() const
 {
     return m_rotation;
+}
+
+void GameObject::setRenderOffset(const Vector2 &offset)
+{
+    m_renderOffset = offset;
 }
 
 int GameObject::getTeamId() const

@@ -33,8 +33,15 @@ void Gravigun::update(float dt)
     {
         handleInput();
 
-        m_bounds.x = GetMousePosition().x - m_bounds.width * 0.5f;
-        m_bounds.y = GetMousePosition().y - m_bounds.height * 0.5f;
+        Vector2 mouse = GetMousePosition();
+
+        m_bounds.x = mouse.x - m_bounds.width * 0.5f;
+        m_bounds.y = mouse.y - m_bounds.height * 0.5f;
+
+        auto center = helpers::windowCenter();
+        auto dir = Vector2Subtract(mouse, center);
+
+        m_weaponAngle = helpers::vecToAngle(dir);
 
         m_crosshair.bounds = m_bounds;
         m_crosshair.particles.setBounds(m_bounds);
