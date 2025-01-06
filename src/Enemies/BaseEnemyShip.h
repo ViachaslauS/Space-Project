@@ -18,4 +18,7 @@ public:
     void setVelocity(const Vector2& velocity);
 
     float m_thrust = 200000.0f;
+
+protected:
+    Texture m_bars;
 };
