@@ -186,10 +186,19 @@ const Vector2 BaseWeapon::getSpeedToEnemy()
     bool nearestFound = false;
     for (auto& enemy : enemies)
     {
-        if (enemy->m_objectType != ObjectType::GravityZone
-            && enemy->m_objectType != ObjectType::LaserProjectile
-            && enemy->m_objectType != ObjectType::RocketProjectile)
-        {
+        bool eligible = false;
+        if (m_teamId == 0) { // player
+            if (enemy->m_objectType == ObjectType::Asteroid
+                || enemy->m_objectType == ObjectType::EnemyShip) {
+                eligible = true;
+            }
+        } else if (m_teamId == 1) {
+            if (enemy->m_objectType == ObjectType::PlayerShip) {
+                eligible = true;
+            }
+        }
+
+        if (eligible) {
             auto dir = enemy->center() - m_pos;
             float length = Vector2Length(dir);
             if (length < nearest)
