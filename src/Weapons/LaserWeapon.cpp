@@ -50,6 +50,7 @@ void LaserWeapon::shoot() {
     projectile->onDieSignal.add([this, projectile]() {
        m_deleteCandidateProjectiles.push_back(projectile);
     });
+    projectile->update(0.01f); // sync with physical position and rotation
     m_projectiles.push_back(projectile);
 }
 
