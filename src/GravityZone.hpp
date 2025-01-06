@@ -30,6 +30,7 @@ public:
     ~GravityZone() override;
 
     void applyForce(PhysicsComp *comp, bool exit);
+    void applyDamage(PhysicsComp *comp, bool exit);
 
     float force = 300000.0f;
     float damage;
