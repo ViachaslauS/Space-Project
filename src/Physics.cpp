@@ -354,7 +354,7 @@ void Physics::update()
         c->object->setRotation(b2Rot_GetAngle(rot));
 
         if (c->gravityZoneDamage > 0.0f) {
-            c->object->damage(c->gravityZoneDamage);
+            c->object->damage(c->gravityZoneDamage * 0.016f);
         }
     }
 }
