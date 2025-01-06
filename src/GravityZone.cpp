@@ -275,7 +275,7 @@ void GravityZone::Particles::resetParticle(Particle& particle)
     particle.progress = 0.0f;
     particle.widthOffset = std::lerp(0.1f, 0.9f, helpers::randFlt());
 
-    particle.spawnDelay = helpers::randFlt() * 2.0f;
+    particle.spawnDelay = helpers::randFlt() * 0.3f;
     particle.speed = 0.1f + helpers::randFlt() * 4.0f;
 }
 
@@ -323,7 +323,6 @@ GravityZone::Rendering::Rendering(const Vector2 &pos, const Vector2 &size, Gravi
 
 void GravityZone::Rendering::render() const {
     particles.render();
-    // DrawTextureNPatch(bg, GravityZoneNPatch, bounds, {}, 0, WHITE);
 }
 
 void GravityZone::Rendering::update(float dt) {

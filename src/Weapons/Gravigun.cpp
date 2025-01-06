@@ -1,12 +1,15 @@
 #include "Weapons/Gravigun.hpp"
 #include "GravityZone.hpp"
 
+#include <string>
+
 #include <external/reasings.h.>
 
 namespace
 {
     const char* crosshairPath = "crosshair.png";
     const char* crosshairEdgePath = "crosshair_border.png";
+    const char* arrowPath = "arrow.png";
 }
 
 Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
@@ -37,6 +40,7 @@ Gravigun::Gravigun(ObjectsManager& om, int teamId, GravityZoneSystem &gz)
 
     m_crosshairGravi = LoadTexture(crosshairPath);
     m_crosshairGraviBack = LoadTexture(crosshairEdgePath);
+    m_arrowTexture = LoadTexture(arrowPath);
 }
 
 void Gravigun::update(float dt)
@@ -147,6 +151,47 @@ void Gravigun::renderCrosshair(Vector2 pos) const
 
             DrawTexturePro(m_crosshairGraviBack, bordersRect, borderPos, { borderPos.width * 0.5f, borderPos.height * 0.5f }, 0.0f, WHITE);
         }
+    }
+
+    // draw arrow info
+    {
+        const Vector2 ScreenSize{ GetScreenWidth(), GetScreenHeight() };
+
+        const std::string textInfo = std::string("wasd / arrows to\nselect gravizone direction");
+        const float fontSize = 25.0f;
+
+        const Rectangle arrowRectBase
+        {
+            0.0f, 0.0f,
+            m_arrowTexture.width, m_arrowTexture.height
+        };
+
+        const Rectangle arrowRectDest
+        {
+            ScreenSize.x - std::max(m_arrowTexture.width, m_arrowTexture.height) * 0.7f,
+            ScreenSize.y - std::max(m_arrowTexture.width, m_arrowTexture.height) * 0.7f,
+
+            arrowRectBase.width, arrowRectBase.height
+        };
+
+        const Vector2 textPos
+        {
+            arrowRectDest.x - 16.0f * fontSize,
+            ScreenSize.y - fontSize * 2.0f - 25.0f
+        };
+
+        float angle = 0.0f;
+        switch (m_currDirection)
+        {
+        case GravityZone::Direction::Left: angle = 90.0f; break;
+        case GravityZone::Direction::Top: angle = 180.0f; break;
+        case GravityZone::Direction::Right: angle = -90.0f; break;
+        case GravityZone::Direction::Down: angle = 0.0f; break;
+        }
+
+        DrawText(textInfo.c_str(), textPos.x, textPos.y, fontSize, WHITE);
+
+        DrawTexturePro(m_arrowTexture, arrowRectBase, arrowRectDest, { m_arrowTexture.width * 0.5f, m_arrowTexture.height * 0.5f }, angle, WHITE);
     }
 }
 
