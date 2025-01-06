@@ -252,6 +252,12 @@ PhysicsComp* Physics::createCircularBody(const Vector2 &center, float radius, Ga
     shapeDef.filter.maskBits = getMask(object->getTeamId());
     comp->shapeId = b2CreateCircleShape(comp->id, &shapeDef, &circle);
 
+    if (bodyDef.isBullet) {
+        auto massData = b2Body_GetMassData(comp->id);
+        massData.mass = 0.1f;
+        b2Body_SetMassData(comp->id, massData);
+    }
+
     object->setPhysicsComp(comp.get());
     comps.push_back(std::move(comp));
     return comps.back().get();
@@ -281,6 +287,12 @@ PhysicsComp* Physics::createCapsuleBody(const Vector2& pos, const Vector2 &cente
     shapeDef.filter.categoryBits = getCategory(object->getTeamId());
     shapeDef.filter.maskBits = getMask(object->getTeamId());
     comp->shapeId = b2CreateCapsuleShape(comp->id, &shapeDef, &capsule);
+
+    if (bodyDef.isBullet) {
+        auto massData = b2Body_GetMassData(comp->id);
+        massData.mass = 0.1f;
+        b2Body_SetMassData(comp->id, massData);
+    }
 
     object->setPhysicsComp(comp.get());
     comps.push_back(std::move(comp));
