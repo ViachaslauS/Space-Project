@@ -76,7 +76,6 @@ public:
         std::array<Particle, MaxParticles> m_particles;
 
         Rectangle m_rect;
-        Texture m_particleTexture;
     };
 
     struct Rendering {

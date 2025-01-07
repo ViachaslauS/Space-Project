@@ -6,7 +6,6 @@
 #include "GravityZone.hpp"
 
 namespace {
-    const char* ParticleTexturePath = "gravizone_particle.png";
     const char* GravizoneBGNPPath = "gravizone_bg_np.png";
     const NPatchInfo GravityZoneNPatch =
     {
@@ -189,7 +188,6 @@ void GravityZoneSystem::removeFromAffectedComps(PhysicsComp *comp)
 
 GravityZone::Particles::Particles()
 {
-    m_particleTexture = LoadTexture(ParticleTexturePath);
     reset();
 }
 
@@ -219,37 +217,35 @@ void GravityZone::Particles::update(float dt)
 
 void GravityZone::Particles::render() const
 {
-    float rotation = 0.0f;
+    Vector2 size;
+
+    constexpr float width = 3;
+    constexpr float height = 10;
+
     switch (m_currDirection)
     {
     case GravityZone::Direction::Top:
-        rotation = 270.0f;
+    case GravityZone::Direction::Down:
+        size.x = width;
+        size.y = height;
         break;
     case GravityZone::Direction::Right:
-        rotation = 0.0f;
-        break;
-    case GravityZone::Direction::Down:
-        rotation = 90.0f;
-        break;
     case GravityZone::Direction::Left:
-        rotation = 180.0f;
+        size.x = height;
+        size.y = width;
         break;
     default: break;
     }
 
     for (const auto& particle : m_particles)
     {
-        Color color = WHITE;
+        Color color = BLUE;
 
         color.a = helpers::lerpTudaSuda(particle.progress) * 255;
 
         const Vector2 pos = calculatePos(particle);
 
-        Rectangle source = { 0.0f, 0.0f, (float)m_particleTexture.width, (float)m_particleTexture.height };
-        Rectangle dest = { pos.x, pos.y, (float)m_particleTexture.width, (float)m_particleTexture.height };
-        Vector2 origin = { m_particleTexture.width * 0.5f, m_particleTexture.height * 0.5f };
-
-        DrawTexturePro(m_particleTexture, source, dest, origin, rotation, color);
+        DrawRectangleV(pos, size, color);
     }
 }
 
