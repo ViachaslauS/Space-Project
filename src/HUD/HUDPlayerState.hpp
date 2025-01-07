@@ -37,6 +37,7 @@ protected:
     Texture m_weaponEmpty;
     Texture m_weaponFull;
     Texture m_weaponSelected;
+    Texture m_numBack;
 
     Texture m_weaponReload;
 };

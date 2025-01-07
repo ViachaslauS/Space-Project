@@ -14,11 +14,12 @@ namespace
     const char* bgWeaponFullPath = "hud/weapon_full.png";
     const char* weaponSelectedPath = "hud/select.png";
     const char* weaponReloadPath = "bars/weapon_reload.png";
+    const char* numBackPath = "hud/back_for_num.png";
 
     const Vector2 DebugRectWeapon = { 92.0f, 106.0f };
     const float DistanceBetweenWeapon = 16.0f;
 
-    const int FontSize = 28;
+    const int FontSize = 20;
 
     const char* textureBackPath = "bars/bar_bg.png";
 
@@ -78,6 +79,8 @@ HUDPlayerState::HUDPlayerState(Game& game)
 
     m_weaponSelected = LoadTexture(weaponSelectedPath);
     m_weaponReload = LoadTexture(weaponReloadPath);
+
+    m_numBack = LoadTexture(numBackPath);
 }
 
 void HUDPlayerState::update(float dt)
@@ -158,13 +161,6 @@ void HUDPlayerState::renderWeapons()
 
             DrawTexture(m_weaponSelected, offset.x + selectorPos.x, offset.y + selectorPos.y, WHITE);
         }
-    
-        if (weapon.isSelectable)
-        {
-            char num[3] = {};
-            sprintf(num, "%d", selectableNums++);
-            DrawText(num, offset.x + DebugRectWeapon.x - FontSize * 0.1f, offset.y + DebugRectWeapon.y - FontSize * 0.5f, FontSize, WHITE);
-        }
 
         const Vector2 reloadPos
         {
@@ -174,9 +170,25 @@ void HUDPlayerState::renderWeapons()
         DrawTexture(m_weaponReload, reloadPos.x, reloadPos.y, WHITE);
         DrawRectangle(reloadPos.x + WeaponReloadFillRect.x,
             reloadPos.y + WeaponReloadFillRect.y,
-            WeaponReloadFillRect.width * weapon.reloadProgress,
+            WeaponReloadFillRect.width* weapon.reloadProgress,
             WeaponReloadFillRect.height, WeaponReloadColor
-            );
+        );
+    
+        if (weapon.isSelectable)
+        {
+            const Rectangle backRect = {
+                offset.x - m_numBack.width * 0.5f + bgToRender.width,
+                offset.y - m_numBack.height * 0.9f + bgToRender.height,
+                m_numBack.width, m_numBack.height
+            };
+
+            DrawTexture(m_numBack, backRect.x, backRect.y, WHITE);
+
+            std::string num = std::to_string(selectableNums++);
+
+            const Vector2 textPos = helpers::getDrawPosInRectCenter(backRect, num, FontSize);
+            DrawText(num.c_str(), textPos.x, textPos.y, FontSize, WHITE);
+        }
     }
 }
 
