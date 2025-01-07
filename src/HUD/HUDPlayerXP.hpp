@@ -13,10 +13,10 @@ public:
     virtual void reset() override;
 
 protected:
-    void DrawBack(Vector2 pos, Rectangle rect);
+    Vector2 DrawBack(Vector2 pos);
     void DrawLevelProgress(Vector2 pos, float progress);
 
 protected:
     Texture m_progressTexture;
-    Texture m_levelTexture;
+    Texture m_emblemTexture;
 };

@@ -14,25 +14,10 @@ namespace
 
     constexpr float NumScale = 3.0f;
 
-    const Rectangle BackWingsRect
-    {
-        0.0f, 8.0f,
-        80.0f, 18.0f
-    };
-
-    const Rectangle BackBorderRect
-    {
-        224.0f, 4.0f, 
-        44.0f, 40.0f
-    };
-
-    const Rectangle BackShieldRect
-    {
-        228.0f, 56.0f, 
-        36.0f, 32.0f
-    };
-
     const char* textureBackPath = "bars/bar_bg.png";
+    const char* textureEmblem = "hud/level_emblem.png";
+
+    const float EmblemScale = 0.8f;
 
     const Rectangle bgRectPopup
     {
@@ -66,7 +51,7 @@ HUDPlayerXP::HUDPlayerXP(Game& game)
     : HUDBase(game)
 {
     m_progressTexture = LoadTexture(textureBackPath);
-    m_levelTexture = LoadTexture("level.png");
+    m_emblemTexture = LoadTexture(textureEmblem);
 }
 
 void HUDPlayerXP::update(float dt)
@@ -79,47 +64,59 @@ void HUDPlayerXP::render()
     const Vector2 pos = getConvertedPos();
 
     const PlayerStats::XPInfo xpInfo = PlayerStats::get().getXPInfo();
-    DrawLevelProgress({ pos.x - TargetSize.x * 0.5f + NPatch.left, pos.y + 70 }, xpInfo.currentXP / PlayerStats::get().getLevelUpXpCost());
+    DrawLevelProgress({ pos.x + NPatch.left, pos.y + 70 }, xpInfo.currentXP / PlayerStats::get().getLevelUpXpCost());
 
-    DrawBack({ pos.x + 4, pos.y }, BackWingsRect);
-    DrawBack(pos, BackShieldRect);
-    DrawBack(pos, BackBorderRect);
-
+    const Vector2 backPos = DrawBack(pos);
 
     char lvlNum[10]{};
     sprintf(lvlNum, "%02i", xpInfo.currentLvl);
 
+    Rectangle imgRect{
+        backPos.x,
+        backPos.y,
+
+        m_emblemTexture.width * EmblemScale, 
+        m_emblemTexture.height * EmblemScale + 20.0f
+    };
+    const Vector2 textPos = helpers::getDrawPosInRectCenter(imgRect,lvlNum,FontSize);
+   
     Color textColor;
     textColor.a = 255;
     textColor.r = 103;
     textColor.g = 30;
     textColor.b = 50;
 
-    DrawText(lvlNum, pos.x - 20, pos.y - FontSize * 0.35f, FontSize, textColor);
+    DrawText(lvlNum, textPos.x, textPos.y, FontSize, textColor);
 }
 
 void HUDPlayerXP::reset()
 {
 }
 
-void HUDPlayerXP::DrawBack(Vector2 pos, Rectangle rect)
+Vector2 HUDPlayerXP::DrawBack(Vector2 pos)
 {
-    DrawTexturePro(m_levelTexture, rect
-        , { pos.x, pos.y, rect.width * NumScale, rect.height * NumScale }
-        , { rect.width * 1.5f, rect.height * 1.5f }, 0.0f, WHITE);
+    Vector2 resPos = 
+    {
+        pos.x - m_emblemTexture.width * 0.5f * EmblemScale,
+        pos.y - m_emblemTexture.height * 0.6f * EmblemScale
+    };
+    DrawTextureEx(m_emblemTexture, resPos, 
+        0.0f, EmblemScale, WHITE);
+
+    return resPos;
 }
 
 void HUDPlayerXP::DrawLevelProgress(Vector2 pos, float progress)
 {
     const Rectangle rectDestBack
     {
-        pos.x, pos.y,
+        pos.x - TargetSize.x * 0.5f - 5, pos.y,
         TargetSize.x, TargetSize.y
     };
 
     const Rectangle progressBackDest
     {
-        pos.x, pos.y,
+         pos.x - TargetSize.x * 0.5f - 5, pos.y,
         rectDestBack.width, rectDestBack.height
     };
 
