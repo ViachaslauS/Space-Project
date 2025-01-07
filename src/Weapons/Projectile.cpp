@@ -53,8 +53,10 @@ void Projectile::render()
 {
     if (state == State::Alive)
     {
-        auto drawPos = m_pos;
+        Vector2 drawPos = m_pos;
+
         DrawTextureEx(texture, drawPos, m_rotation * (180 / PI), 1.0f, WHITE);
+
     }
 }
 

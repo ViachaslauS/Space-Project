@@ -8,8 +8,7 @@ RocketWeapon::RocketWeapon(ObjectsManager &om, int teamId)
     m_iconTexture = LoadTexture("hud/rocket_launcher_ic_1.png");
 
     auto rocketTexture = LoadTexture("rocket.png");
-    rocketTexture.height = 30;
-    rocketTexture.width = 30;
+
     //Configure bullet params
     m_baseProjectile.texture = rocketTexture;
     m_baseProjectile.damage = 200.0f;

@@ -18,8 +18,6 @@ LaserWeapon::LaserWeapon(ObjectsManager& om, int teamId)
     m_iconTexture = LoadTexture("hud/blaster_ic.png");
 
     auto laserTexture = LoadTexture("laser.png");
-    laserTexture.width = 30;
-    laserTexture.height = 30;
 
     //Configure bullet params
     m_baseProjectile.texture = laserTexture;
