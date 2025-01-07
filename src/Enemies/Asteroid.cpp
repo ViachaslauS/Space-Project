@@ -25,6 +25,8 @@ Asteroid::Asteroid(ObjectsManager &om)
 {
     m_texture = LoadTexture("Asteroid.png");
     m_xpValue = 1.0f;
+    m_texture.width = 35;
+    m_texture.height = 35;
 }
 
 void Asteroid::initialize()
