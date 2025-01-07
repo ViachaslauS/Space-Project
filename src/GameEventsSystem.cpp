@@ -52,13 +52,13 @@ Vector2 events_helper::getEventSpawnPos(EventType eventType)
     switch (eventType)
     {
     case EventType::SpawnDummyAsteroid:
-        return RandomRightWindowCorner();
+        return RandomRightWindowCorner(0.1f);
     case EventType::SpawnSmallEnemyShip:
-        return RandomLeftWindowCorner();
+        return RandomLeftWindowCorner(0.1f);
    /* case EventType::SpawnLoot:
         return RandomRightGameCorner();*/
     case EventType::SpawnEvilAsteroid:
-        return RandomRightWindowCorner();
+        return RandomRightWindowCorner(0.1f);
   /*  case EventType::SpawnBigEnemyShip:
         return RandomLeftWindowCorner();
     case EventType::Boss:
