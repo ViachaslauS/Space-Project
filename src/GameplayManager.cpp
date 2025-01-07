@@ -123,9 +123,9 @@ bool GameplayManager::spawnEvent()
 {
     const int32_t clampedEvent = std::clamp(m_currDifficulty, 0u, static_cast<int32_t>(EventType::Count) - 1u);
 
-    std::normal_distribution<float> normDist(clampedEvent, static_cast<float>(EventType::Count) * 0.5f);
+   /* std::normal_distribution<float> normDist(clampedEvent, static_cast<float>(EventType::Count));*/
 
-    int32_t eventToSpawn = static_cast<int32_t>(std::abs(normDist(m_rdGen)));
+    int32_t eventToSpawn = std::rand() % (MaxEventsCount - 1);
 
     int iterations = 0;
     while (eventToSpawn > MaxEventsCount)

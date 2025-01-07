@@ -3,10 +3,11 @@
 #include "raylib.h"
 
 #include <array>
+#include <vector>
 
 class Background final
 {
-    static constexpr uint32_t MaxPlanetsOnScreen = 6u;
+    static constexpr uint32_t MaxPlanetsOnScreen = 3u;
 
     struct Planet
     {
@@ -16,6 +17,7 @@ class Background final
         uint32_t planetTextureNum{};
 
         float scale{};
+        float rotation{};
 
         float startDelay{};
     };
@@ -31,7 +33,7 @@ private:
 
 private:
     Texture m_backgroundTexture;
-    Texture m_planetsTexture;
+    std::vector<Texture> m_planetsTexture;
 
     std::array<Planet, MaxPlanetsOnScreen> m_planets;
 };

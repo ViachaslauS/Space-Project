@@ -11,21 +11,19 @@ namespace
 
     static_assert(MoveSpeed < 0.0f && InitialSpeedSpread > 0.0f && MoveSpeed + InitialSpeedSpread < 0.0f);
 
-    const char* PlanetSpriteSheetName = "CelestialObjects.png";
-
-    constexpr uint32_t PlanetSpriteSize = 64u;
-
-    constexpr uint32_t PlanetRows = 3u;
-    constexpr uint32_t PlanetColumns = 4u;
-
+    const std::array<const char*, 2> PlanetPaths = {
+        "planet_1.png", 
+        "planet_2.png"
+    }; 
+    
     constexpr float StartXOffset = 100.0f;
     constexpr float StartXOfssetSpread = 50.0f;
 
-    constexpr float BaseScale = 1.5f;
-    constexpr float ScaleSpread = 1.0f;
+    constexpr float BaseScale = 0.3f;
+    constexpr float ScaleSpread = 0.2f;
 
-    constexpr float SpawnPlanetDelay = 20.0f;
-    constexpr float SpawnPlanetDelaySpread = 19.0f;
+    constexpr float SpawnPlanetDelay = 10.0f;
+    constexpr float SpawnPlanetDelaySpread = 7.0f;
 }
 
 Background::Background()
@@ -33,7 +31,13 @@ Background::Background()
     SetRandomSeed(GetTime());
 
     m_backgroundTexture = LoadTexture("background_2.png");
-    m_planetsTexture = LoadTexture(PlanetSpriteSheetName);
+
+    m_planetsTexture.reserve(PlanetPaths.size());
+    for (int i = 0; i < PlanetPaths.size(); i++)
+    {
+        Texture planetTexture = LoadTexture(PlanetPaths[i]);
+        m_planetsTexture.push_back(planetTexture);
+    }
 
     for (size_t i = 0u; i < m_planets.size(); ++i)
     {
@@ -67,26 +71,17 @@ void Background::render()
 
     for (size_t i = 0u; i < m_planets.size(); ++i)
     {
-        Rectangle rect;
-        rect.x = (m_planets[i].planetTextureNum % PlanetColumns) * PlanetSpriteSize;
-        rect.y = (m_planets[i].planetTextureNum / PlanetColumns) * PlanetSpriteSize;
-
-        rect.width = PlanetSpriteSize;
-        rect.height = PlanetSpriteSize;
-
+        const auto& planet = m_planets[i];
         const Vector2 pos = {
             m_planets[i].relativePos.x * GetScreenWidth(),
             m_planets[i].relativePos.y * GetScreenHeight(),
         };
 
-        Rectangle rectScaled = rect;
-        rectScaled.width = rect.width * m_planets[i].scale;
-        rectScaled.height = rect.height * m_planets[i].scale;
-        rectScaled.x = pos.x - rectScaled.width * 0.5f;
-        rectScaled.y = pos.y - rectScaled.height * 0.5f;
-
-
-        DrawTexturePro(m_planetsTexture, rect, rectScaled, {}, 0.0f, GRAY);
+        if (helpers::isValidIdx(m_planetsTexture, planet.planetTextureNum))
+        {
+            DrawTextureEx(m_planetsTexture[planet.planetTextureNum],
+                pos, planet.rotation, planet.scale, WHITE);
+        }
     }
 }
 
@@ -95,19 +90,20 @@ void Background::resetPlanet(Planet& planetToReset)
     const float ScaleMultiplier = helpers::randFlt();
     planetToReset.scale = helpers::lerpWithDeviation(BaseScale, ScaleSpread, ScaleMultiplier);
 
-    planetToReset.planetTextureNum = GetRandomValue(0, PlanetRows * PlanetColumns - 1u);
+    planetToReset.planetTextureNum = std::rand() % PlanetPaths.size();
 
     // add velocity based on planet scale
     planetToReset.velocity.x = MoveSpeed * (ScaleMultiplier + 0.5f );
     planetToReset.velocity.y = 0.0f;
 
-    planetToReset.relativePos.x = 1.2f;
-
+    planetToReset.relativePos.x = 1.4f;
 
     // do not spawn planets near player ship
     const float rndRelPosY = helpers::randFlt();
     const float rndTrueRelPosY = helpers::randFlt();
-    planetToReset.relativePos.y = rndRelPosY <= 0.5f ? rndTrueRelPosY * 0.3f : 1.0f - rndTrueRelPosY * 0.3f;;
+    planetToReset.relativePos.y = rndRelPosY <= 0.5f ? rndTrueRelPosY * 0.3f : 1.0f - rndTrueRelPosY * 0.3f;
 
     planetToReset.startDelay = helpers::lerpWithDeviation(SpawnPlanetDelay, SpawnPlanetDelaySpread, helpers::randFlt());
+
+    planetToReset.rotation = helpers::randFlt(0.0f, 360.0f);
 }
