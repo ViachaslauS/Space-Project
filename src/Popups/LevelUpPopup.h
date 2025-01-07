@@ -34,6 +34,7 @@ private:
 
 private:
     Texture m_bgTexture;
+    Texture m_selTexture;
 
     std::vector<PanelInfo> m_infos;
 };

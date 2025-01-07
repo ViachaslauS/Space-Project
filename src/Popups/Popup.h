@@ -11,6 +11,8 @@ class CustomButton
 public:
     CustomButton();
 
+    void init(const Rectangle& inRect, const Vector2& inAnchor, const Vector2& inOrigin, const std::string& inText, int inFont);
+
     Rectangle rect{};
     Vector2 anchor{};
 
@@ -65,6 +67,9 @@ protected:
     Game* m_game = nullptr;
 
     Vector2 m_windowScale{}; // to draw bg
+
+    bool bShowBg = true;
+    Color bgColor = { 0, 0, 0, 100 };
 
 private:
     bool m_isVisible = false;

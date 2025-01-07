@@ -7,17 +7,37 @@ MainMenuPopup::MainMenuPopup(helpers::MulticastDelegate<>& quitSignal)
     , m_quitSignal(quitSignal)
 {
     setType(PopupType::MainMenuPopup);
+
+    Vector2 screenSize = { static_cast<float>(GetScreenWidth()),
+                          static_cast<float>(GetScreenHeight()) };
+
+    m_rect.width = screenSize.x * 0.3f;
+    m_rect.height = screenSize.y * 0.4f;
+
+    m_rect.x = (screenSize.x - m_rect.width) * 0.5f;
+    m_rect.y = (screenSize.y - m_rect.height) * 0.55f;
+
+    m_startBtn.init(
+        Rectangle{ 545, 370, 350, 95 },
+        { }, {},
+        "Start game", 30
+    );
+    m_quitBtn.init(
+        Rectangle{ 545, 490, 350, 95 },
+        { }, {},
+        "Quit game", 30
+    );
 }
 
 void MainMenuPopup::update(float dt)
 {
-    if (m_isStartGamePressed)
+    if (m_startBtn.isPressed())
     {
         m_isStartGamePressed = false;
         show(false);
         return;
     }
-    if (m_isQuit)
+    if (m_quitBtn.isPressed())
     {
         m_quitSignal.broadcast(); 
     }
@@ -25,8 +45,8 @@ void MainMenuPopup::update(float dt)
 
 void MainMenuPopup::render()
 {
-    if (GuiButton((Rectangle { 600, 370, 120, 30 }), "Start Game")) m_isStartGamePressed = true;
+    Popup::render();
 
-    if (GuiButton((Rectangle{ 600, 450, 120, 30 }), "Rage Quit")) m_isQuit = true;
-
+    m_startBtn.render({});
+    m_quitBtn.render({});
 }

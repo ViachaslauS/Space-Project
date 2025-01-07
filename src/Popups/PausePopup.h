@@ -17,4 +17,7 @@ private:
     
     bool m_isResumePressed = false;
     bool m_isGoToMenuPressed = false;
+
+    CustomButton m_resumeButton;
+    CustomButton m_endButton;
 };

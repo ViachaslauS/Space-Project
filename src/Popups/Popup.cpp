@@ -9,25 +9,25 @@ namespace
     constexpr Rectangle bgRectPopup
     {
         0, 0,
-        458.0f, 166.0f
+        433.0f, 148.0f
     };
 
-    const char* bgPathButton = "popup/window.png";
+    const char* bgPathButton = "popup/button.png";
     const char* bgPathButtonSelected = "popup/window_selected.png";
 
     constexpr Rectangle bgRectButton
     {
         0, 0,
-        458.0f, 166.0f
+        433.0f, 148.0f
     };
 
     const NPatchInfo bgNpatchButton
     {
         .source = bgRectPopup,
-        .left = 37,
-        .top = 34,
-        .right = 40,
-        .bottom = 36,
+        .left = 14,
+        .top = 14,
+        .right = 14,
+        .bottom = 14,
         .layout = NPATCH_NINE_PATCH
     };
 
@@ -47,7 +47,7 @@ namespace
         .layout = NPATCH_NINE_PATCH
     };
 
-    const char* bgPathPopup = "popup/window.png";
+    const char* bgPathPopup = "popup/popup.png";
 
     const NPatchInfo bgNpatchPopup
     {
@@ -87,6 +87,10 @@ void Popup::update(float dt)
 
 void Popup::render()
 {
+    if (bShowBg)
+    {
+        DrawRectangle(0.0f, 0.0f, GetScreenWidth(), GetScreenHeight(), bgColor);
+    }
     DrawTextureNPatch(m_bgTexture, bgNpatchPopup, m_rect, {}, 0.0f, WHITE);
 }
 
@@ -105,6 +109,15 @@ CustomButton::CustomButton()
     text = "";
     bgTexture = LoadTexture(bgPathButton);
     bgTextureSelected = LoadTexture(bgPathButtonSelected);
+}
+
+void CustomButton::init(const Rectangle& inRect, const Vector2& inAnchor, const Vector2& inOrigin, const std::string& inText, int inFont)
+{
+    rect = inRect;
+    anchor = inAnchor;
+    origin = inOrigin;
+    text = inText;
+    font = inFont;
 }
 
 bool CustomButton::isPressed()

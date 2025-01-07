@@ -6,17 +6,39 @@
 PausePopup::PausePopup(AppContext& ctx)
     : m_context(ctx)
 {
+    setType(PopupType::PausePopup);
+
+    Vector2 screenSize = { static_cast<float>(GetScreenWidth()),
+                           static_cast<float>(GetScreenHeight()) };
+
+    m_rect.width = screenSize.x * 0.3f;
+    m_rect.height = screenSize.y * 0.4f;
+
+    m_rect.x = (screenSize.x - m_rect.width) * 0.5f;
+    m_rect.y = (screenSize.y - m_rect.height) * 0.55f;
+
+    m_resumeButton.init(
+        Rectangle{ 545, 370, 350, 95 },
+        { }, {},
+        "Resume game", 30
+    );
+    m_endButton.init(
+        Rectangle{ 545, 490, 350, 95 },
+        { }, {},
+        "End game", 30
+    );
+
 }
 
 void PausePopup::update(float dt)
 {
-    if (m_isResumePressed)
+    if (m_resumeButton.isPressed())
     {
         m_isResumePressed = false;
         show(false);
         return;
     }
-    if (m_isGoToMenuPressed)
+    if (m_endButton.isPressed())
     {
         m_isGoToMenuPressed = false;
         show(false);
@@ -31,13 +53,8 @@ void PausePopup::update(float dt)
 
 void PausePopup::render()
 {
-    if (GuiButton((Rectangle { 600, 370, 120, 30 }), "Resume Game")) 
-    {
-        m_isResumePressed = true;
-    }
+    Popup::render();
 
-    if (GuiButton((Rectangle{ 600, 450, 120, 30 }), "Go to menu")) 
-    {
-        m_isGoToMenuPressed = true;
-    }
+    m_resumeButton.render({});
+    m_endButton.render({});
 }

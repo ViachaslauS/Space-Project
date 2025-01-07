@@ -12,39 +12,40 @@
 
 namespace
 {
-    const char* bgTextureName = "popups.png";
+    const char* bgTextureName = "popup/window.png";
+    const char* bgPathButtonSelected = "popup/window_selected.png";
 
     const Rectangle bgItemRect =
     {
-        36.0f, 45.0f,
-        243.0f, 101.0f
+        0.0f, 0.0f,
+        458.0f, 166.0f
     };
 
     NPatchInfo bgNpatchPopup = {
         .source = bgItemRect,
-        .left = 34,
+        .left = 37,
         .top = 34,
-        .right = 102,
-        .bottom = 18,
+        .right = 40,
+        .bottom = 36,
         .layout = NPATCH_NINE_PATCH
     };
 
-    const Vector2 relBgScale = { 0.22f, 0.42f };
+    const Vector2 relBgScale = { 0.28f, 0.35f };
     const float relDistBetween = 0.04f;
-
-    const int SelectedYOffset = 524;
-    const Rectangle bgItemRectSelected =
+  
+    const Rectangle bgRectButtonSelected
     {
-        54.0f, SelectedYOffset,
-        243.0f, 101.0f
+        0, 0,
+        387.0f, 102.0f
     };
 
-    NPatchInfo bgNpatchSelected = {
-        .source = bgItemRectSelected,
-        .left = 33,
-        .top = 34,
-        .right = 102,
-        .bottom = 18,
+    const NPatchInfo bgNpatchButtonSelected
+    {
+        .source = bgRectButtonSelected,
+        .left = 41,
+        .top = 35,
+        .right = 41,
+        .bottom = 35,
         .layout = NPATCH_NINE_PATCH
     };
 
@@ -57,6 +58,7 @@ LevelUpPopup::LevelUpPopup()
     setType(PopupType::LevelUpPopup);
 
     m_bgTexture = LoadTexture(bgTextureName);
+    m_selTexture = LoadTexture(bgPathButtonSelected);
 }
 
 void LevelUpPopup::update(float dt)
@@ -108,10 +110,30 @@ void LevelUpPopup::render()
     for (int i = 0; i < m_infos.size(); i++)
     {
         const auto& panel = m_infos[i];
-        NPatchInfo targetNPatch = panel.bSelected ? bgNpatchSelected : bgNpatchPopup;
 
-        DrawTextureNPatch(m_bgTexture, targetNPatch, panel.rectData, { 0.0f, 0.0f }, 0.0f, WHITE);
-        DrawText(panel.prop.desc, panel.rectData.x + panel.rectData.width * 0.05f, panel.rectData.y + panel.rectData.height * 0.3f, 30, WHITE);
+        DrawTextureNPatch(m_bgTexture, bgNpatchPopup, panel.rectData, { 0.0f, 0.0f }, 0.0f, WHITE);
+
+        constexpr float FontSize = 30;
+        const char* TEMPLATE = "TEMPLATE STRING";
+        Vector2 textVec = helpers::getDrawPosInRectCenter(panel.rectData, TEMPLATE, FontSize);
+        textVec.y -= FontSize * 2.0f;
+        
+        DrawText(panel.prop.desc, textVec.x, textVec.y, FontSize, WHITE);
+    
+        if (panel.bSelected)
+        {
+            Rectangle selectedRect
+            {
+                panel.rectData.x + bgNpatchPopup.left,
+                panel.rectData.y + bgNpatchPopup.top,
+
+                 panel.rectData.width - (bgNpatchPopup.left + bgNpatchPopup.right),
+                 panel.rectData.height - (bgNpatchPopup.top + bgNpatchPopup.bottom),
+
+            };
+            DrawTextureNPatch(m_selTexture, bgNpatchButtonSelected,
+                selectedRect, { }, 0.0f, WHITE);
+        }
     }
 }
 
