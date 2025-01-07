@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <external/reasings.h.>
+#include "external/reasings.h"
 
 namespace
 {
@@ -98,7 +98,7 @@ void Gravigun::renderCrosshair(Vector2 pos) const
 
         const Rectangle bordersRect
         {
-            0.0f, 0.0f, m_crosshairGraviBack.width, m_crosshairGraviBack.height
+            0.0f, 0.0f, (float)m_crosshairGraviBack.width, (float)m_crosshairGraviBack.height
         };
 
         // first step - decrease scale
@@ -138,7 +138,7 @@ void Gravigun::renderCrosshair(Vector2 pos) const
         // third step - show end
         else
         {
-            const float internalProgress = (reloadProgress - step1_Duration - step2_Duration) / step3_Duration;  
+            const float internalProgress = (reloadProgress - step1_Duration - step2_Duration) / step3_Duration;
             const float converterdProgress = 1.0f + helpers::lerpTudaSuda(internalProgress) * 0.1f;
 
             const Rectangle borderPos
@@ -155,7 +155,7 @@ void Gravigun::renderCrosshair(Vector2 pos) const
 
     // draw arrow info
     {
-        const Vector2 ScreenSize{ GetScreenWidth(), GetScreenHeight() };
+        const Vector2 ScreenSize{ (float)GetScreenWidth(), (float)GetScreenHeight() };
 
         const std::string textInfo = std::string("wasd / arrows to\nselect gravizone direction");
         const float fontSize = 25.0f;
@@ -163,7 +163,7 @@ void Gravigun::renderCrosshair(Vector2 pos) const
         const Rectangle arrowRectBase
         {
             0.0f, 0.0f,
-            m_arrowTexture.width, m_arrowTexture.height
+            (float)m_arrowTexture.width, (float)m_arrowTexture.height
         };
 
         const Rectangle arrowRectDest

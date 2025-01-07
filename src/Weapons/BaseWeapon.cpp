@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Weapons/BaseWeapon.h"
 
 #include "ObjectsManager.h"
