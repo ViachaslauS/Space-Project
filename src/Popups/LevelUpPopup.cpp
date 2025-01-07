@@ -85,7 +85,7 @@ void LevelUpPopup::update(float dt)
         {
             panel.bSelected = true;
 
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && panel.scaleProgress >= ScaleTime)
             {
                 m_game->getSkills().learnPlayerSkill(*m_game, panel.prop.skill, panel.prop.level + 1);
                 show(false);
