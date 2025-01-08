@@ -91,6 +91,25 @@ add_subdirectory(src/external/raylib)
 
 target_link_libraries(gravigun PRIVATE box2d raylib)
 target_include_directories(gravigun PRIVATE include src)
+if (${PLATFORM} STREQUAL "Web")
+    set(EMSCRIPTEN_LINK_FLAGS
+        "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/resources/web/index.html"
+        "-s ALLOW_MEMORY_GROWTH=1"
+        "-s ENVIRONMENT=web"
+        "-s ASYNCIFY"
+        "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/resources@resources")
+
+    if (${DISABLE_WASM})
+        list(APPEND EMSCRIPTEN_LINK_FLAGS
+            "-s WASM=0"
+            "-s BINARYEN=0")
+    endif()
+    list(JOIN EMSCRIPTEN_LINK_FLAGS " " EMSCRIPTEN_LINK_ARGS)
+    message(ERROR "${EMSCRIPTEN_LINK_ARGS}")
+    set_target_properties(gravigun PROPERTIES
+        LINK_FLAGS "${EMSCRIPTEN_LINK_ARGS}"
+        SUFFIX ".html")
+endif()
 
 if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT gravigun)
