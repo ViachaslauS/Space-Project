@@ -16,6 +16,32 @@ namespace {
         .bottom{0},
         .layout{NPATCH_NINE_PATCH}
     };
+
+    void processZoneCollision(Physics& phys, GravityZone& z, GameObject *o)
+    {
+        Vector2 vec;
+        switch (z.dir) {
+        case GravityZone::Direction::Top:
+            vec.y = -z.force;
+            vec.x = 0.0f;
+            break;
+        case GravityZone::Direction::Right:
+            vec.y = 0.0f;
+            vec.x = z.force;
+            break;
+        case GravityZone::Direction::Down:
+            vec.y = z.force;
+            vec.x = 0.0f;
+            break;
+        case GravityZone::Direction::Left:
+            vec.y = 0.0f;
+            vec.x = -z.force;
+            break;
+        }
+
+        phys.applyForce(o->m_physicsComp, vec);
+        o->damage(z.damage * 0.016f);
+    }
 }
 
 GravityZone::GravityZone(ObjectsManager &om,
@@ -33,14 +59,10 @@ GravityZone::GravityZone(ObjectsManager &om,
 {
     m_pos = pos;
     m_size = size;
-}
-
-GravityZone::~GravityZone()
-{
-    for (auto a : affectedComps) {
-        applyDamage(a, true);
-        applyForce(a, true);
-    }
+    bounds.x = pos.x;
+    bounds.y = pos.y;
+    bounds.width = size.x;
+    bounds.height = size.y;
 }
 
 void GravityZone::render()
@@ -51,67 +73,6 @@ void GravityZone::render()
 void GravityZone::update(float dt)
 {
     rendering.update(dt);
-}
-
-void GravityZone::applyForce(PhysicsComp *comp, bool exit)
-{
-    Vector2 vec;
-    switch (dir) {
-    case Direction::Top:
-        vec.y = -force;
-        vec.x = 0.0f;
-        break;
-    case Direction::Right:
-        vec.y = 0.0f;
-        vec.x = force;
-        break;
-    case Direction::Down:
-        vec.y = force;
-        vec.x = 0.0f;
-        break;
-    case Direction::Left:
-        vec.y = 0.0f;
-        vec.x = -force;
-        break;
-    }
-
-    // TODO: damage if there's opposing force
-    Vector2 res;
-    if (exit) {
-        assert(std::find(affectedComps.begin(), affectedComps.end(), comp) != affectedComps.end());
-        affectedComps.erase(std::remove(affectedComps.begin(), affectedComps.end(), comp));
-        res = Vector2Subtract(comp->gravityZoneForce, vec);
-    } else {
-        affectedComps.push_back(comp);
-        res = Vector2Add(comp->gravityZoneForce, vec);
-    }
-
-    comp->gravityZoneForce = res;
-}
-
-void GravityZone::applyDamage(PhysicsComp *comp, bool exit)
-{
-    if (exit) {
-        comp->gravityZoneDamage -= damage;
-        if (comp->gravityZoneDamage < 0.0f) {
-            comp->gravityZoneDamage = 0.0f;
-        }
-    } else {
-        comp->gravityZoneDamage += damage;
-    }
-}
-
-void GravityZone::onSensorCollision(GameObject *other, bool exit) {
-    auto move = false;
-    switch (other->m_objectType) {
-    case ObjectType::RocketProjectile:
-    case ObjectType::Asteroid:
-    case ObjectType::EnemyShip:
-        applyDamage(other->m_physicsComp, exit);
-        applyForce(other->m_physicsComp, exit);
-    default:
-        break;
-    }
 }
 
 GravityZoneSystem::GravityZoneSystem(Physics &p, ObjectsManager &om)
@@ -143,18 +104,21 @@ void GravityZoneSystem::addZone(const Vector2 &pos, GravityZone::Direction dir, 
                                                  params.gzLifetime,
                                                  dir,
                                                  damage));
-
-    physics.createRectangularBody(pos, params.width, params.height, newZone.get());
 }
 
 void GravityZoneSystem::update(float dt)
 {
     for (auto i = 0; i < activeZones.size();)
     {
-        activeZones[i]->update(dt);
+        const auto &z = activeZones[i];
+        z->update(dt);
 
-        activeZones[i]->remainingTime -= dt;
-        if (activeZones[i]->remainingTime < 0.0f)
+        physics.checkRectangleCollision(activeZones[i]->bounds, [this, &z](GameObject *o) {
+            processZoneCollision(physics, *z, o);
+        });
+
+        z->remainingTime -= dt;
+        if (z->remainingTime < 0.0f)
         {
             activeZones[i] = std::move(activeZones.back());
             activeZones.pop_back();
@@ -169,20 +133,6 @@ void GravityZoneSystem::render()
     for (auto &z : activeZones)
     {
         z->render();
-    }
-}
-
-void GravityZoneSystem::removeFromAffectedComps(PhysicsComp *comp)
-{
-    for (auto &z : activeZones) {
-        if (z == nullptr) {
-            //removing the zone itself, skipping...
-            continue;
-        }
-        if (auto it = std::find(z->affectedComps.begin(), z->affectedComps.end(), comp);
-            it != z->affectedComps.end()) {
-            z->affectedComps.erase(it);
-        }
     }
 }
 

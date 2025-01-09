@@ -130,10 +130,6 @@ void GameObject::onCollision(GameObject *other)
     // void by default?
 }
 
-void GameObject::onSensorCollision(GameObject *other, bool exit)
-{
-}
-
 float GameObject::getCurrentHP() const
 {
     return m_vitalityData.currentHP;
