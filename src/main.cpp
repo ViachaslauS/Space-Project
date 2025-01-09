@@ -7,6 +7,11 @@
 
 */
 
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#endif
+
 #include "raylib.h"
 
 #include "GameObject.h"
@@ -32,10 +37,44 @@ void renderContext(AppContext& ctx)
     ctx.popups.render();
 }
 
+#if defined(__EMSCRIPTEN__)
+namespace {
+struct UserData {
+    Music *backMusic;
+    Game *game;
+    AppContext *context;
+};
+
+UserData userData;
+
+void mainLoop()
+{
+    UpdateMusicStream(*userData.backMusic);
+    const auto dt = GetFrameTime();
+    userData.game->setActive(userData.context->popups.isCoveredPopup() == false);
+    userData.game->update(dt);
+
+    updateContext(dt, *userData.context);
+
+    //Render
+    BeginDrawing();
+    ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+    userData.game->render();
+    renderContext(*userData.context);
+
+    EndDrawing();
+}
+}
+#endif
+
 int main ()
 {
     // Tell the window to use vsync and work on high DPI displays
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
+
+#if defined(WEB)
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+#endif
 
     SetRandomSeed(std::time(0));
     std::srand(std::time(0));
@@ -76,8 +115,16 @@ int main ()
 
     //Disable esc key
     SetExitKey(0);
+    SetTargetFPS(60);
 
     // game loop
+#if defined(__EMSCRIPTEN__)
+    userData.backMusic = &backMusic;
+    userData.game = &game;
+    userData.context = &context;
+
+    emscripten_set_main_loop(mainLoop, 0, true);
+#else
     while (!WindowShouldClose())  // run the loop untill the user presses ESCAPE or presses the Close button on the window
     {
         //Update
@@ -100,6 +147,7 @@ int main ()
             break;
         }
     }
+#endif
 
     // cleanup
     // unload our texture so it can be cleaned up
