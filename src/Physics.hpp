@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -13,8 +14,6 @@ struct GravityZoneSystem;
 
 struct PhysicsComp
 {
-    float gravityZoneDamage = 0.0f;
-    Vector2 gravityZoneForce;
     GameObject *object;
     b2ShapeId shapeId;
     b2BodyId id;
@@ -32,6 +31,7 @@ struct Physics
 
     void setVelocity(PhysicsComp *comp, const Vector2 &velocity);
     void setVelocityWithRotation(PhysicsComp *comp, const Vector2 &velocity);
+    void checkRectangleCollision(const Rectangle &rect, const std::function<void(GameObject *)> &callback);
 
     Vector2 getVelocity(PhysicsComp *comp);
     float getRotation(PhysicsComp *comp);

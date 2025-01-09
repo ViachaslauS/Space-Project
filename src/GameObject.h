@@ -61,7 +61,6 @@ public:
     float getCurrentHP() const;
 
     virtual void onCollision(GameObject *other);
-    virtual void onSensorCollision(GameObject *other, bool exit);
 
     helpers::MulticastDelegate<float, const VitalityData&> OnReceiveDamage;
 

@@ -27,21 +27,12 @@ public:
                 Direction dir,
                 float damage);
 
-    ~GravityZone() override;
-
-    void applyForce(PhysicsComp *comp, bool exit);
-    void applyDamage(PhysicsComp *comp, bool exit);
-
     float force = 300000.0f;
     float damage;
     float remainingTime;
 
     void render() override;
     void update(float dt) override;
-
-    void onSensorCollision(GameObject *other, bool exit) override;
-
-    std::vector<PhysicsComp *> affectedComps;
 
     class Particles
     {
@@ -90,6 +81,7 @@ public:
     };
 
     Rendering rendering;
+    Rectangle bounds; // possibly not the same as in rendering
 
     Direction dir;
 };
@@ -113,7 +105,6 @@ struct GravityZoneSystem
     GZParams params;
 
     void addZone(const Vector2 &pos, GravityZone::Direction dir, float damage);
-    void removeFromAffectedComps(PhysicsComp *comp);
 
     void update(float dt);
     void render();

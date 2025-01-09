@@ -151,24 +151,38 @@ namespace
     }
 
     uint32_t getCategory(int teamId) {
-        // 0 player
-        // 1 enemy
-        // 2 asteroids
+        // team ids       cat
+        // 0 player        2
+        // 1 enemy         4 (1 << 2)
+        // 2 asteroids     8 (1 << 3)
+        // category 1 is reserved for technical things like
+        // geometry queries
         if (teamId == 0) {
-            return 1;
+            return 2;
         } else if (teamId == 1) {
-            return 1 << 1;
+            return 1 << 2;
         }
-        return 1 << 2;
+        return 1 << 3;
     }
 
     uint32_t getMask(int teamId) {
         if (teamId == 0) {
-            return 1 << 1 | 1 << 2;
+            return 1 | 1 << 2 | 1 << 3;
         } else if (teamId == 1) {
-            return 1 | 1 << 2;
+            return 1 | 2 | 1 << 3;
         }
-        return 1 | 1 << 1 | 1 << 2;
+        return 0xFFFFFFFF; // collide with everything
+    }
+
+    struct OverlapResult {
+        std::vector<GameObject *> intersectedObjects;
+    };
+
+    bool processOverlap(b2ShapeId shapeId, void* context) {
+        auto r = reinterpret_cast<OverlapResult *>(context);
+        auto userData = b2Shape_GetUserData(shapeId);
+        r->intersectedObjects.push_back(reinterpret_cast<GameObject *>(userData));
+        return true;
     }
 }
 
@@ -310,7 +324,6 @@ bool Physics::removeBody(PhysicsComp *comp)
     {
         if (B2_ID_EQUALS(comps[i]->id, comp->id))
         {
-            gravityZones->removeFromAffectedComps(comp);
             b2DestroyBody(comp->id);
             comps[i] = std::move(comps.back());
             comps.pop_back();
@@ -329,23 +342,6 @@ void Physics::update()
     auto dt = GetFrameTime();
     b2World_Step(b2d->worldId, dt > 0.016 ? 0.016 : dt, 4);
 
-    b2SensorEvents sensorEvents = b2World_GetSensorEvents(b2d->worldId);
-    for (int i = 0; i < sensorEvents.beginCount; ++i)
-    {
-        b2SensorBeginTouchEvent* beginTouch = sensorEvents.beginEvents + i;
-        auto obj1 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginTouch->sensorShapeId));
-        auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(beginTouch->visitorShapeId));
-        obj1->onSensorCollision(obj2, false);
-    }
-
-    for (int i = 0; i < sensorEvents.endCount; ++i)
-    {
-        b2SensorEndTouchEvent* endTouch = sensorEvents.endEvents + i;
-        auto obj1 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(endTouch->sensorShapeId));
-        auto obj2 = reinterpret_cast<GameObject *>(b2Shape_GetUserData(endTouch->visitorShapeId));
-        obj1->onSensorCollision(obj2, true);
-    }
-
     auto contactEvents = b2World_GetContactEvents(b2d->worldId);
     for (int i = 0; i < contactEvents.beginCount; ++i)
     {
@@ -356,18 +352,11 @@ void Physics::update()
     }
 
     for (auto &c : comps) {
-        b2Vec2 vec { c->gravityZoneForce.x, c->gravityZoneForce.y };
-        b2Body_ApplyForceToCenter(c->id, vec, true);
-
         auto pos = b2Body_GetPosition(c->id);
         c->object->setPos({ pos.x, pos.y });
 
         auto rot = b2Body_GetRotation(c->id);
         c->object->setRotation(b2Rot_GetAngle(rot));
-
-        if (c->gravityZoneDamage > 0.0f) {
-            c->object->damage(c->gravityZoneDamage * 0.016f);
-        }
     }
 }
 
@@ -396,6 +385,20 @@ void Physics::setVelocityWithRotation(PhysicsComp *comp, const Vector2 &velocity
     b2Body_SetLinearVelocity(comp->id, vec);
     auto pos = b2Body_GetPosition(comp->id);
     b2Body_SetTransform(comp->id, pos, rot);
+}
+
+void Physics::checkRectangleCollision(const Rectangle &rect, const std::function<void(GameObject *)> &callback)
+{
+    b2QueryFilter filter = b2DefaultQueryFilter();
+    b2AABB aabb { rect.x,
+        rect.y,
+        rect.x + rect.width,
+        rect.y + rect.height };
+    OverlapResult res;
+    b2World_OverlapAABB(b2d->worldId, aabb, filter, processOverlap, (void *)(&res));
+    for (auto o : res.intersectedObjects) {
+        callback(o);
+    }
 }
 
 Vector2 Physics::getVelocity(PhysicsComp *comp)
