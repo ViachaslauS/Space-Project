@@ -96,7 +96,6 @@ if (${PLATFORM} STREQUAL "Web")
         "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/resources/web/index.html"
         "-s ALLOW_MEMORY_GROWTH=1"
         "-s ENVIRONMENT=web"
-        "-s ASYNCIFY"
         "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/resources@resources")
 
     if (${DISABLE_WASM})
