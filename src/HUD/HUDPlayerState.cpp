@@ -148,12 +148,12 @@ void HUDPlayerState::renderWeapons()
 
         DrawTexture(bgToRender, offset.x, offset.y, WHITE);
 
-        const Vector2 weaponPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height }, 
+        const Vector2 weaponPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height },
             { (float)-weapon.weaponTexture.width, (float)-weapon.weaponTexture.height }), 0.5f);
 
 
         DrawTexture(weapon.weaponTexture, offset.x + weaponPos.x, offset.y + weaponPos.y, WHITE);
-    
+
         if (weapon.isActive)
         {
             const Vector2 selectorPos = Vector2Scale(Vector2Add({ (float)bgToRender.width, (float)bgToRender.height },
@@ -173,13 +173,13 @@ void HUDPlayerState::renderWeapons()
             WeaponReloadFillRect.width* weapon.reloadProgress,
             WeaponReloadFillRect.height, WeaponReloadColor
         );
-    
+
         if (weapon.isSelectable)
         {
             const Rectangle backRect = {
                 offset.x - m_numBack.width * 0.5f + bgToRender.width,
                 offset.y - m_numBack.height * 0.9f + bgToRender.height,
-                m_numBack.width, m_numBack.height
+                (float)m_numBack.width, (float)m_numBack.height
             };
 
             DrawTexture(m_numBack, backRect.x, backRect.y, WHITE);
@@ -216,7 +216,7 @@ void HUDPlayerState::renderVitality()
         ShieldWidth, TargetSize.y
     };
     // draw shield
-    DrawRectangle(shieldBarPos.x + NPatch.left, shieldBarPos.y + NPatch.top, 
+    DrawRectangle(shieldBarPos.x + NPatch.left, shieldBarPos.y + NPatch.top,
         (ShieldWidth * shieldProgress - NPatch.right * 2),
         TargetSize.y - NPatch.top * 2, ShieldColor);
     DrawTextureNPatch(m_progressTexture, NPatch, rectShield, {}, 0.0f, WHITE);
@@ -225,8 +225,8 @@ void HUDPlayerState::renderVitality()
     {
         hpBarPos.x, hpBarPos.y,
         HpWidth, TargetSize.y
-    }; 
-    
+    };
+
     // draw hp
     DrawRectangle(hpBarPos.x + NPatch.left, hpBarPos.y + NPatch.top,
         (HpWidth * hpProgress - NPatch.right * 2),
